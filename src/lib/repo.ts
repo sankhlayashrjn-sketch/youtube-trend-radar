@@ -20,7 +20,7 @@ export function istDate(d = new Date()): string {
 }
 
 /** Bump when fetch/cluster logic changes so cached videos from older logic are never reused. */
-const PIPELINE_VERSION = "v2";
+const PIPELINE_VERSION = "v3";
 
 export function settingsHash(s: Pick<Settings, "region" | "categories">): string {
   return createHash("sha1")

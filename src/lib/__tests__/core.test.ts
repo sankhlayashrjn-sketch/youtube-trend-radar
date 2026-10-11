@@ -92,3 +92,23 @@ describe("brief schema", () => {
     expect(() => verifyExamples(brief, [{ id: "vid1" }])).toThrow();
   });
 });
+
+describe("niche filtering", () => {
+  const fx: ClusterFacts[] = [1, 2, 3, 4].map((n) => ({
+    clusterId: n, videoCount: 5, creatorCount: 4, totalViews: 1000 * n, avgVelocity: 100, avgEngagement: 0.04,
+    medianLengthMin: 8, topTags: [],
+    topVideos: [{ id: `v${n}`, title: `V${n}`, channel: "C", url: `https://www.youtube.com/watch?v=v${n}`, views: 10, lengthMin: 5 }],
+  }));
+  const head = ["one aaa", "two bbb", "three ccc"];
+  it("drops off-niche themes when at least 3 on-niche remain", () => {
+    const ai = aiBriefSchema.parse({ headline: head, themes: [1, 2, 3, 4].map((id) => ({ ...aiTheme(id), onNiche: id !== 4 })) });
+    expect(assembleBrief(ai, fx, meta).themes).toHaveLength(3);
+  });
+  it("keeps off-niche themes, forced to skip, when fewer than 3 are on-niche", () => {
+    const ai = aiBriefSchema.parse({ headline: head, themes: [1, 2, 3, 4].map((id) => ({ ...aiTheme(id), onNiche: id === 1 })) });
+    const b = assembleBrief(ai, fx, meta);
+    expect(b.themes).toHaveLength(4);
+    expect(b.themes[0].urgency.level).toBe("film_now");
+    expect(b.themes.slice(1).every((t) => t.urgency.level === "skip")).toBe(true);
+  });
+});

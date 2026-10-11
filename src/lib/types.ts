@@ -53,6 +53,8 @@ export type Theme = z.infer<typeof themeSchema>;
 /** What Gemini is allowed to write. Numbers/videos are merged in by code. */
 export const aiThemeSchema = z.object({
   clusterId: z.number().int(),
+  /** true only if the cluster is clearly about the tracked categories */
+  onNiche: z.boolean().default(true),
   name: z.string().min(2).max(80),
   summary: z.string().min(10),
   whyNow: z.string().min(10),

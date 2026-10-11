@@ -9,9 +9,12 @@ export const DAILY_QUOTA = 10_000;
 /** Refuse to start a run if it could push the day's usage past this. */
 export const QUOTA_GUARD = 9_000;
 
-/** Keyword -> YouTube videoCategoryId, so the "most popular" chart matches what the user tracks. */
+/**
+ * Keyword -> YouTube videoCategoryId, so the "most popular" chart matches what the user tracks.
+ * Only topic-specific categories are listed. Generic ones (Howto & Style, Entertainment, People & Blogs)
+ * mostly return general vlogs, so lifestyle niches such as fashion rely on keyword searches instead.
+ */
 const CATEGORY_KEYWORDS: [RegExp, string][] = [
-  [/fashion|style|outfit|makeup|beauty|skincare|hair|diy|how.?to|lifestyle|home decor|cooking|recipe/i, "26"],
   [/\b(ai|tech|technology|gadgets?|smartphones?|phones?|laptops?|software|apps?|coding|programming|chatgpt|gemini|productivity|science)\b/i, "28"],
   [/gaming|game|esports|minecraft|bgmi|valorant/i, "20"],
   [/music|song|singer|album|rap/i, "10"],
@@ -22,8 +25,7 @@ const CATEGORY_KEYWORDS: [RegExp, string][] = [
   [/comedy|standup|stand-up|prank|meme/i, "23"],
   [/news|politic|election/i, "25"],
   [/movie|film|trailer|cinema|bollywood|web series/i, "1"],
-  [/entertainment|reality show|celebrity|tv show/i, "24"],
-  [/\b(pets?|dogs?|cats?|animals?)\b/i, "15"],
+    [/\b(pets?|dogs?|cats?|animals?)\b/i, "15"],
   [/finance|invest|stock|crypto|business|startup/i, "28"],
 ];
 
@@ -113,15 +115,22 @@ export async function fetchTrendingVideos(opts: {
   // 2) Keyword searches (100 units each, capped), recent 7 days.
   const publishedAfter = new Date(Date.now() - 7 * 86_400_000).toISOString();
   const kws = categories.slice(0, MAX_SEARCHES);
+  // Spend the whole search budget: few keywords => several result pages each, many keywords => one page each.
+  const pagesPerKw = Math.min(4, Math.max(1, Math.floor(MAX_SEARCHES / Math.max(kws.length, 1))));
   let searches = 0;
-  for (const q of kws) {
-    quota.charge(COST.search);
-    searches++;
-    const r = await yt<{ items: { id: { videoId?: string } }[] }>("search", {
-      part: "id", q, type: "video", order: "date", publishedAfter, regionCode: region, maxResults: Math.min(50, Math.max(15, Math.ceil(80 / Math.max(kws.length, 1)))),
-    });
-    r.items.forEach((i) => i.id.videoId && ids.add(i.id.videoId));
-    if (ids.size >= target * 2) break;
+  outer: for (const q of kws) {
+    let pageToken: string | undefined;
+    for (let p = 0; p < pagesPerKw; p++) {
+      quota.charge(COST.search);
+      searches++;
+      const r: { items: { id: { videoId?: string } }[]; nextPageToken?: string } = await yt("search", {
+        part: "id", q, type: "video", order: "date", publishedAfter, regionCode: region, maxResults: 50, pageToken,
+      });
+      r.items.forEach((i) => i.id.videoId && ids.add(i.id.videoId));
+      if (ids.size >= target * 2) break outer;
+      pageToken = r.nextPageToken;
+      if (!pageToken) break;
+    }
   }
 
   // 3) Details in batches of 50.

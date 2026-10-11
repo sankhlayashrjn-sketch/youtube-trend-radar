@@ -68,6 +68,7 @@ Return JSON ONLY with this exact shape:
   "headline": ["line 1", "line 2", "line 3"],   // exactly 3 short lines: "This week in 3 lines"
   "themes": [ {
     "clusterId": <number from data>,
+    "onNiche": true | false,   // true ONLY if this cluster is clearly about the tracked categories; false for general vlogs, entertainment, other topics
     "name": "short theme name",
     "summary": "1-2 sentences on what creators are covering",
     "whyNow": "1-2 sentences grounded in the cluster's numbers",
@@ -89,7 +90,11 @@ export function assembleBrief(
 ): Brief {
   const byId = new Map(facts.map((f) => [f.clusterId, f]));
   const themes: Theme[] = [];
-  for (const t of ai.themes) {
+  // Prefer on-niche themes: drop off-niche ones when at least 3 on-niche themes remain, otherwise keep them (forced to "skip").
+  const onNiche = ai.themes.filter((t) => t.onNiche);
+  const keepOffNiche = onNiche.length < 3;
+  for (const raw of keepOffNiche ? ai.themes : onNiche) {
+    const t = keepOffNiche && !raw.onNiche ? { ...raw, urgency: "skip" as const } : raw;
     const f = byId.get(t.clusterId);
     if (!f) continue; // unknown cluster id from the model: ignore
     byId.delete(t.clusterId);
