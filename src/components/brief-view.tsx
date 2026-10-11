@@ -1,15 +1,9 @@
-"use client";
-
-import { useState } from "react";
 import type { Brief } from "@/lib/types";
-import { fmtNum, VIEW_STEPS } from "@/lib/format";
+import { fmtNum } from "@/lib/format";
 import { ThemeCard } from "@/components/theme-card";
 import { VelocityChart } from "@/components/velocity-chart";
 
-export function BriefView({ brief }: { brief: Brief }) {
-  const [step, setStep] = useState(0);
-  const minViews = VIEW_STEPS[step];
-
+export function BriefView({ brief, minViews = 0 }: { brief: Brief; minViews?: number }) {
   return (
     <div className="space-y-8">
       <section aria-labelledby="headline" className="relative overflow-hidden rounded-3xl bg-zinc-900 p-6 text-white shadow-lg sm:p-10 dark:bg-card dark:ring-1 dark:ring-border">
@@ -32,25 +26,11 @@ export function BriefView({ brief }: { brief: Brief }) {
 
       <VelocityChart themes={brief.themes} />
 
-      <div className="rounded-2xl border bg-card p-5 shadow-sm sm:p-6">
-        <div className="flex items-baseline justify-between gap-3">
-          <label htmlFor="min-views" className="font-heading text-lg font-semibold">Minimum views for example videos</label>
-          <output htmlFor="min-views" className="text-sm font-semibold text-primary">
-            {minViews === 0 ? "Any" : `${fmtNum(minViews)}+`}
-          </output>
-        </div>
-        <input
-          id="min-views"
-          type="range"
-          min={0}
-          max={VIEW_STEPS.length - 1}
-          step={1}
-          value={step}
-          onChange={(e) => setStep(Number(e.target.value))}
-          aria-valuetext={minViews === 0 ? "No minimum" : `${minViews.toLocaleString()} views`}
-          className="mt-3 w-full accent-[var(--primary)]"
-        />
-      </div>
+      {minViews > 0 && (
+        <p className="text-sm text-muted-foreground">
+          Example videos are limited to <span className="font-semibold text-foreground">{fmtNum(minViews)}+ views</span>. Change this in Settings.
+        </p>
+      )}
 
       <section aria-label="Theme clusters" className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {brief.themes.map((t, i) => (

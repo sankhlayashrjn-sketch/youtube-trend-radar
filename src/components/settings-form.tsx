@@ -7,11 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { REGIONS, settingsSchema, type Settings } from "@/lib/types";
+import { fmtNum, VIEW_STEPS } from "@/lib/format";
 
 export function SettingsForm({ initial }: { initial: Settings }) {
   const [categories, setCategories] = useState(initial.categories);
   const [region, setRegion] = useState(initial.region);
   const [email, setEmail] = useState(initial.email);
+  const [step, setStep] = useState(() => {
+    const i = VIEW_STEPS.findIndex((v) => v >= initial.minViews);
+    return i === -1 ? VIEW_STEPS.length - 1 : i;
+  });
   const [draft, setDraft] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
@@ -29,7 +34,7 @@ export function SettingsForm({ initial }: { initial: Settings }) {
 
   async function save(ev: React.FormEvent) {
     ev.preventDefault();
-    const parsed = settingsSchema.safeParse({ categories, region, email });
+    const parsed = settingsSchema.safeParse({ categories, region, email, minViews: VIEW_STEPS[step] });
     if (!parsed.success) {
       const map: Record<string, string> = {};
       parsed.error.issues.forEach((i) => (map[String(i.path[0])] ??= i.message));
@@ -78,6 +83,25 @@ export function SettingsForm({ initial }: { initial: Settings }) {
         <select id="region" value={region} onChange={(e) => setRegion(e.target.value)} className="h-9 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:w-72">
           {REGIONS.map((r) => <option key={r.code} value={r.code}>{r.name} ({r.code})</option>)}
         </select>
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex items-baseline justify-between gap-3 sm:w-96">
+          <Label htmlFor="min-views">Minimum views for example videos</Label>
+          <output htmlFor="min-views" className="text-sm font-semibold text-primary">{VIEW_STEPS[step] === 0 ? "Any" : `${fmtNum(VIEW_STEPS[step])}+`}</output>
+        </div>
+        <input
+          id="min-views"
+          type="range"
+          min={0}
+          max={VIEW_STEPS.length - 1}
+          step={1}
+          value={step}
+          onChange={(e) => setStep(Number(e.target.value))}
+          aria-valuetext={VIEW_STEPS[step] === 0 ? "No minimum" : `${VIEW_STEPS[step].toLocaleString()} views`}
+          className="w-full accent-[var(--primary)] sm:w-96"
+        />
+        <p className="text-xs text-muted-foreground">From 0 to 20M. Hides example videos below this many views on the dashboard and archive.</p>
       </div>
 
       <div className="space-y-2">

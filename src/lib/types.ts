@@ -69,6 +69,7 @@ export const settingsSchema = z.object({
   categories: z.array(z.string().trim().min(2).max(60)).min(1, "Add at least one category").max(12, "Max 12 categories"),
   region: z.string().length(2).toUpperCase(),
   email: z.string().email("Enter a valid email"),
+  minViews: z.number().int().min(0).max(20_000_000).default(0),
 });
 export type Settings = z.infer<typeof settingsSchema>;
 

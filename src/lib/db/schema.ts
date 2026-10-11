@@ -7,6 +7,7 @@ export const settings = pgTable("settings", {
   categories: jsonb("categories").$type<string[]>().notNull().default([]),
   region: text("region").notNull().default("IN"),
   email: text("email").notNull().default(""),
+  minViews: integer("min_views").notNull().default(0),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

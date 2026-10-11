@@ -28,11 +28,12 @@ export function settingsHash(s: Pick<Settings, "region" | "categories">): string
 
 export async function getSettings(): Promise<Settings> {
   const rows = await db().select().from(schema.settings).where(eq(schema.settings.id, 1));
-  if (rows[0]) return { categories: rows[0].categories, region: rows[0].region, email: rows[0].email };
+  if (rows[0]) return { categories: rows[0].categories, region: rows[0].region, email: rows[0].email, minViews: rows[0].minViews };
   const def: Settings = {
     categories: DEFAULT_CATEGORIES,
     region: "IN",
     email: process.env.EMAIL_TO ?? "",
+    minViews: 0,
   };
   await db().insert(schema.settings).values({ id: 1, ...def }).onConflictDoNothing();
   return def;

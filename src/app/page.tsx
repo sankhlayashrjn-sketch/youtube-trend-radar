@@ -1,4 +1,5 @@
 import { getLatest } from "@/lib/latest";
+import { getSettings } from "@/lib/repo";
 import { fmtDate } from "@/lib/format";
 import { BriefView } from "@/components/brief-view";
 import { EmptyState } from "@/components/empty-state";
@@ -9,6 +10,7 @@ export const dynamic = "force-dynamic";
 
 export default async function Dashboard() {
   const latest = await getLatest();
+  const minViews = await getSettings().then((s) => s.minViews).catch(() => 0);
   return (
     <div className="space-y-8">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
@@ -21,7 +23,7 @@ export default async function Dashboard() {
         {latest.brief && <GenerateButton variant="outline" />}
       </div>
       {latest.stale && latest.staleReason && <StaleBanner reason={latest.staleReason} />}
-      {latest.brief ? <BriefView brief={latest.brief} /> : <EmptyState />}
+      {latest.brief ? <BriefView brief={latest.brief} minViews={minViews} /> : <EmptyState />}
     </div>
   );
 }
