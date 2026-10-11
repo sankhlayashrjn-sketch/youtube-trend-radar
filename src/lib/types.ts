@@ -8,6 +8,7 @@ export const exampleVideoSchema = z.object({
   title: z.string(),
   channel: z.string(),
   url: z.string().url(),
+  publishedAt: z.string().optional(),
   views: z.number().int().nonnegative(),
 });
 
@@ -24,7 +25,7 @@ export const themeSchema = z.object({
   }),
   winningFormat: z.string().min(3),
   typicalLengthMinutes: z.number().positive(),
-  exampleVideos: z.array(exampleVideoSchema).min(1).max(6),
+  exampleVideos: z.array(exampleVideoSchema).min(1).max(8),
   filmingAngle: z.object({ title: z.string().min(3), angle: z.string().min(10) }),
   urgency: z.object({ level: urgencySchema, reason: z.string().min(3) }),
   saturation: saturationSchema,

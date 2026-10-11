@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import { getEnv } from "./env";
-import { fmtNum } from "./format";
+import { fmtNum, timeAgo } from "./format";
 import type { Brief } from "./types";
 
 const esc = (s: string) =>
@@ -25,7 +25,7 @@ export function renderEmail(brief: Brief, opts: { stale?: boolean } = {}): { sub
       const examples = t.exampleVideos
         .map(
           (v) =>
-            `<li style="margin:0 0 4px 0;"><a href="${esc(v.url)}" style="color:${accent};text-decoration:none;">${esc(v.title)}</a> <span style="color:#6b7280;">· ${esc(v.channel)} · ${fmtNum(v.views)} views</span></li>`,
+            `<li style="margin:0 0 4px 0;"><a href="${esc(v.url)}" style="color:${accent};text-decoration:none;">${esc(v.title)}</a> <span style="color:#6b7280;">· ${esc(v.channel)} · ${fmtNum(v.views)} views${v.publishedAt ? ` · ${timeAgo(v.publishedAt)}` : ""}</span></li>`,
         )
         .join("");
       return `

@@ -1,6 +1,6 @@
 import { ExternalLink, Flame, Clock3, Timer, Users, Eye, Zap, ChevronDown, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { fmtNum } from "@/lib/format";
+import { fmtNum, timeAgo } from "@/lib/format";
 import type { Theme } from "@/lib/types";
 
 const URGENCY = {
@@ -36,8 +36,9 @@ export function SaturationMeter({ level }: { level: Theme["saturation"] }) {
   );
 }
 
-export function ThemeCard({ theme, rank }: { theme: Theme; rank: number }) {
+export function ThemeCard({ theme, rank, minViews = 0 }: { theme: Theme; rank: number; minViews?: number }) {
   const u = URGENCY[theme.urgency.level];
+  const examples = theme.exampleVideos.filter((v) => v.views >= minViews);
   const UIcon = u.icon;
   return (
     <article className="flex flex-col gap-4 rounded-2xl border bg-card p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6" aria-labelledby={`theme-${rank}`}>
@@ -82,16 +83,17 @@ export function ThemeCard({ theme, rank }: { theme: Theme; rank: number }) {
 
       <details className="group rounded-lg border">
         <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-2.5 text-sm font-medium outline-none focus-visible:ring-3 focus-visible:ring-ring/50 rounded-lg">
-          Example videos ({theme.exampleVideos.length})
+          Example videos ({examples.length}{minViews > 0 ? ` of ${theme.exampleVideos.length}` : ""})
           <ChevronDown className="size-4 transition-transform group-open:rotate-180" aria-hidden />
         </summary>
+        {examples.length === 0 && <p className="border-t px-4 py-3 text-sm text-muted-foreground">No example videos above {fmtNum(minViews)} views.</p>}
         <ul className="divide-y border-t">
-          {theme.exampleVideos.map((v) => (
+          {examples.map((v) => (
             <li key={v.id}>
               <a href={v.url} target="_blank" rel="noopener noreferrer" className="flex items-start justify-between gap-3 px-4 py-2.5 text-sm hover:bg-muted/60 focus-visible:bg-muted/60 focus-visible:outline-none">
                 <span>
                   <span className="line-clamp-2 font-medium">{v.title}</span>
-                  <span className="text-xs text-muted-foreground">{v.channel} · {fmtNum(v.views)} views</span>
+                  <span className="text-xs text-muted-foreground">{v.channel} · {fmtNum(v.views)} views{v.publishedAt && <span suppressHydrationWarning> · posted {timeAgo(v.publishedAt)}</span>}</span>
                 </span>
                 <ExternalLink className="mt-1 size-3.5 shrink-0 text-muted-foreground" aria-label="Opens on YouTube" />
               </a>

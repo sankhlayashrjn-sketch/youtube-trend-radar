@@ -11,7 +11,6 @@ const LINKS = [
   { href: "/", label: "Dashboard" },
   { href: "/archive", label: "Archive" },
   { href: "/settings", label: "Settings" },
-  { href: "/components-map", label: "Components" },
 ];
 
 export function SiteNav() {

@@ -12,7 +12,7 @@ export type ClusterFacts = {
   avgEngagement: number;
   medianLengthMin: number;
   topTags: string[];
-  topVideos: { id: string; title: string; channel: string; url: string; views: number; lengthMin: number }[];
+  topVideos: { id: string; title: string; channel: string; url: string; views: number; lengthMin: number; publishedAt?: string }[];
 };
 
 const url = (id: string) => `https://www.youtube.com/watch?v=${id}`;
@@ -39,8 +39,8 @@ export function buildFacts(videos: VideoRow[], clusters: Cluster[]): ClusterFact
         avgEngagement: +(vs.reduce((s, v) => s + v.engagement, 0) / Math.max(vs.length, 1)).toFixed(4),
         medianLengthMin: +(median(vs.map((v) => v.durationSec)) / 60).toFixed(1),
         topTags: [...tagCount.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([t]) => t),
-        topVideos: diverse.slice(0, 5).map((v) => ({
-          id: v.id, title: v.title, channel: v.channel, url: url(v.id), views: v.views,
+        topVideos: diverse.slice(0, 8).map((v) => ({
+          id: v.id, title: v.title, channel: v.channel, url: url(v.id), views: v.views, publishedAt: v.publishedAt.toISOString(),
           lengthMin: +(v.durationSec / 60).toFixed(1),
         })),
       };
@@ -60,7 +60,7 @@ Below are topic clusters found this week. Each cluster has facts computed by cod
 - Write for a creator: concrete, specific, no fluff.
 
 DATA (JSON):
-${JSON.stringify(facts)}
+${JSON.stringify(facts.map((f) => ({ ...f, topVideos: f.topVideos.slice(0, 5).map((v) => ({ id: v.id, title: v.title, channel: v.channel, url: v.url, views: v.views, lengthMin: v.lengthMin })) })))}
 
 Return JSON ONLY with this exact shape:
 {
@@ -93,8 +93,8 @@ export function assembleBrief(
     if (!f) continue; // unknown cluster id from the model: ignore
     byId.delete(t.clusterId);
     // Example videos come only from the fetched set; URLs are rebuilt from the verified id.
-    const exampleVideos = f.topVideos.slice(0, 4).map((v) => ({
-      id: v.id, title: v.title, channel: v.channel, url: url(v.id), views: v.views,
+    const exampleVideos = f.topVideos.slice(0, 8).map((v) => ({
+      id: v.id, title: v.title, channel: v.channel, url: url(v.id), views: v.views, publishedAt: v.publishedAt,
     }));
     themes.push({
       name: t.name,

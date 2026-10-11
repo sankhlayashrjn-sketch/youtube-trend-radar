@@ -59,16 +59,14 @@ Env vars are validated with Zod on first use; error messages list names only, ne
 - **Supabase free projects pause after about 7 days of inactivity.** A daily Vercel cron pings `/api/health` (`select 1`) to keep it awake. If the project ever pauses, restore it from the Supabase dashboard; the app shows the bundled `seed/brief.json` meanwhile.
 - Vercel Hobby crons run once per day at most, in UTC, and may fire any time within the scheduled hour. Saturday 23:00 UTC is Sunday 04:30 IST, far before noon.
 
-## Components Map
-
-A visual version lives at `/components-map`.
+## Components Map (architecture)
 
 ```mermaid
 flowchart TD
   subgraph Triggers
     CRON[Vercel Cron<br/>Sat 23:00 UTC = Sun 04:30 IST]
     HEALTH[Daily health cron]
-    UI[Web UI<br/>/ · /archive · /settings · /components-map]
+    UI[Web UI<br/>/ · /archive · /settings]
   end
   subgraph API[API routes]
     GEN[POST /api/generate<br/>stage per call, rate-limited]
@@ -114,7 +112,7 @@ flowchart TD
 2. On a card, read **Why now** (real numbers), the highlighted **Film this** angle, and expand **Example videos**.
 3. Click **Generate now** and watch Fetching → Clustering → Writing brief → Done; check your inbox for the same brief.
 4. Open **Settings**, add a category (e.g. "AI coding tools"), save, and generate again: the brief changes.
-5. Open **Archive** for past briefs and **/components-map** for the architecture.
+5. Open **Archive** for past briefs. Drag **Minimum views** to filter example videos.
 
 ## Known limitations
 
