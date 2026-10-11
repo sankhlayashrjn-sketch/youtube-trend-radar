@@ -40,6 +40,10 @@ export const briefSchema = z.object({
     quotaUsed: z.number().int().nonnegative(),
     generatedAt: z.string(),
     dataSource: z.enum(["live", "cached", "seed"]),
+    // What the brief was built for, so the UI can tell when settings have changed since.
+    categories: z.array(z.string()).optional(),
+    region: z.string().optional(),
+    settingsHash: z.string().optional(),
   }),
 });
 

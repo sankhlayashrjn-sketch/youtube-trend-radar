@@ -50,8 +50,9 @@ export function buildFacts(videos: VideoRow[], clusters: Cluster[]): ClusterFact
 }
 
 export function buildPrompt(facts: ClusterFacts[], region: string, categories: string[]): string {
-  return `You are a YouTube content strategist writing a weekly brief for Ishaan, an Indian tech YouTuber (AI tools, productivity apps, tech reviews; posts 3 videos/week).
-Region: ${region}. Tracked categories: ${categories.join(", ")}.
+  return `You are a YouTube content strategist writing a weekly brief for a creator who posts 3 videos a week.
+The creator's niche is defined ONLY by these tracked categories: ${categories.join(", ")}. Region: ${region}.
+Tailor every name, angle and title to that niche. If a cluster is unrelated to the niche, mark it urgency "skip" and say so.
 
 Below are topic clusters found this week. Each cluster has facts computed by code. STRICT RULES:
 - Use ONLY numbers and video titles present in the data. Never invent statistics, channels, or URLs.
@@ -71,7 +72,7 @@ Return JSON ONLY with this exact shape:
     "summary": "1-2 sentences on what creators are covering",
     "whyNow": "1-2 sentences grounded in the cluster's numbers",
     "winningFormat": "format that is winning (e.g. hands-on tutorial, comparison, news reaction, listicle)",
-    "filmingTitle": "a suggested video title for Ishaan",
+    "filmingTitle": "a suggested video title for the creator",
     "filmingAngle": "1-2 sentences on the angle to take",
     "urgency": "film_now" | "soon" | "skip",
     "urgencyReason": "one line reason",
@@ -131,10 +132,13 @@ export function verifyExamples(brief: Brief, videos: { id: string }[]): void {
 export async function writeBrief(
   facts: ClusterFacts[],
   videos: VideoRow[],
-  ctx: { region: string; categories: string[]; weekOf: string; quotaUsed: number; dataSource: "live" | "cached" | "seed" },
+  ctx: { region: string; categories: string[]; weekOf: string; quotaUsed: number; dataSource: "live" | "cached" | "seed"; settingsHash?: string },
 ): Promise<Brief> {
   const ai = await generateJson(buildPrompt(facts, ctx.region, ctx.categories), aiBriefSchema);
   const brief = assembleBrief(ai, facts, { ...ctx, videoCount: videos.length });
+  brief.meta.categories = ctx.categories;
+  brief.meta.region = ctx.region;
+  brief.meta.settingsHash = ctx.settingsHash;
   verifyExamples(brief, videos);
   return brief;
 }

@@ -134,7 +134,7 @@ async function stageBrief(runId: number, opts: { email: boolean }) {
   const quotaUsed = run?.quotaUsed ?? 0;
   const brief = await writeBrief(facts, videos, {
     region: s.region, categories: s.categories, weekOf: istDate(), quotaUsed,
-    dataSource: quotaUsed === 0 ? "cached" : "live",
+    dataSource: quotaUsed === 0 ? "cached" : "live", settingsHash: hash,
   });
   const briefId = await saveBrief(brief);
 

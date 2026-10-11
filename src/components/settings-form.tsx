@@ -47,7 +47,7 @@ export function SettingsForm({ initial }: { initial: Settings }) {
     try {
       const res = await fetch("/api/settings", { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify(parsed.data) });
       if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? "Save failed");
-      toast.success("Settings saved", { description: "Your next brief will use these." });
+      toast.success("Settings saved", { description: "Open the dashboard and click Generate now to build a brief for these categories." });
     } catch (e) {
       toast.error("Couldn't save settings", { description: (e as Error).message });
     } finally {

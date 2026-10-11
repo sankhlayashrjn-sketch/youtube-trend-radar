@@ -9,6 +9,34 @@ export const DAILY_QUOTA = 10_000;
 /** Refuse to start a run if it could push the day's usage past this. */
 export const QUOTA_GUARD = 9_000;
 
+/** Keyword -> YouTube videoCategoryId, so the "most popular" chart matches what the user tracks. */
+const CATEGORY_KEYWORDS: [RegExp, string][] = [
+  [/fashion|style|outfit|makeup|beauty|skincare|hair|diy|how.?to|lifestyle|home decor|cooking|recipe/i, "26"],
+  [/\b(ai|tech|technology|gadgets?|smartphones?|phones?|laptops?|software|apps?|coding|programming|chatgpt|gemini|productivity|science)\b/i, "28"],
+  [/gaming|game|esports|minecraft|bgmi|valorant/i, "20"],
+  [/music|song|singer|album|rap/i, "10"],
+  [/education|learn|study|exam|tutorial|course|upsc|jee|neet/i, "27"],
+  [/sport|cricket|football|fitness|workout|gym|ipl|soccer/i, "17"],
+  [/travel|trip|vlog.*travel|tourism/i, "19"],
+  [/\b(cars?|bikes?|autos?|motors?|ev)\b/i, "2"],
+  [/comedy|standup|stand-up|prank|meme/i, "23"],
+  [/news|politic|election/i, "25"],
+  [/movie|film|trailer|cinema|bollywood|web series/i, "1"],
+  [/entertainment|reality show|celebrity|tv show/i, "24"],
+  [/\b(pets?|dogs?|cats?|animals?)\b/i, "15"],
+  [/finance|invest|stock|crypto|business|startup/i, "28"],
+];
+
+/** Up to 2 category ids that match the tracked keywords. Empty means "skip the chart, rely on searches". */
+export function chartCategoriesFor(categories: string[]): string[] {
+  const ids: string[] = [];
+  for (const [re, id] of CATEGORY_KEYWORDS) {
+    if (categories.some((c) => re.test(c)) && !ids.includes(id)) ids.push(id);
+    if (ids.length === 2) break;
+  }
+  return ids;
+}
+
 export class QuotaTracker {
   used = 0;
   constructor(public readonly budget = 1_500) {}
@@ -69,8 +97,8 @@ export async function fetchTrendingVideos(opts: {
   const { region, categories, quota, target = 100 } = opts;
   const ids = new Set<string>();
 
-  // 1) Most popular (1 unit each), filtered to tech-relevant categories: Science & Technology (28), Education (27).
-  for (const cat of ["28", "27"]) {
+  // 1) Most popular (1 unit each), only for YouTube categories that match the tracked keywords.
+  for (const cat of chartCategoriesFor(categories)) {
     quota.charge(COST.videosList);
     const r = await yt<{ items: { id: string }[] }>("videos", {
       part: "id", chart: "mostPopular", regionCode: region, videoCategoryId: cat, maxResults: 50,
@@ -90,7 +118,7 @@ export async function fetchTrendingVideos(opts: {
     quota.charge(COST.search);
     searches++;
     const r = await yt<{ items: { id: { videoId?: string } }[] }>("search", {
-      part: "id", q, type: "video", order: "date", publishedAfter, regionCode: region, maxResults: 15,
+      part: "id", q, type: "video", order: "date", publishedAfter, regionCode: region, maxResults: Math.min(50, Math.max(15, Math.ceil(80 / Math.max(kws.length, 1)))),
     });
     r.items.forEach((i) => i.id.videoId && ids.add(i.id.videoId));
     if (ids.size >= target * 2) break;
