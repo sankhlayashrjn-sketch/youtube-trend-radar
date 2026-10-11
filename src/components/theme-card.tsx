@@ -90,7 +90,7 @@ export function ThemeCard({
         ) : (
           <ul className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2" aria-label="Example videos">
             {examples.map((v) => (
-              <li key={v.id} className="w-44 shrink-0 snap-start">
+              <li key={v.id} className="relative w-44 shrink-0 snap-start">
                 <a href={v.url} target="_blank" rel="noopener noreferrer" className="group/v block rounded-xl outline-none focus-visible:ring-3 focus-visible:ring-ring/60">
                   <span className="relative block aspect-video overflow-hidden rounded-xl bg-muted">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
