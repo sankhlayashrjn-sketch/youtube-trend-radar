@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { Moon, Radar, Sun } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
+import { PlayMark } from "@/components/play-mark";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -21,10 +22,8 @@ export function SiteNav() {
     <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2 font-heading text-lg font-semibold">
-          <span className="grid size-8 place-items-center rounded-lg bg-primary text-primary-foreground">
-            <Radar className="size-4" aria-hidden />
-          </span>
-          <span className="hidden sm:inline">Trend Radar</span>
+          <PlayMark className="hover-wiggle h-6 w-8" />
+          <span className="hidden sm:inline">Trend <span className="text-primary">Radar</span></span>
         </Link>
         <nav aria-label="Main" className="ml-auto flex items-center gap-1 overflow-x-auto">
           {LINKS.map((l) => {

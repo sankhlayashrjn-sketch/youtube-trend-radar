@@ -18,7 +18,7 @@ export function appUrl(): string {
 }
 
 export function renderEmail(brief: Brief, opts: { stale?: boolean } = {}): { subject: string; html: string } {
-  const accent = "#4f46e5";
+  const accent = "#e11d1d";
   const themes = brief.themes
     .map((t) => {
       const u = URG[t.urgency.level];
@@ -40,7 +40,7 @@ export function renderEmail(brief: Brief, opts: { stale?: boolean } = {}): { sub
   <p style="margin:0 0 12px 0;font-size:13px;color:#4b5563;">
     <strong>${t.stats.creatorCount}</strong> creators · <strong>${fmtNum(t.stats.totalViews)}</strong> views · <strong>${fmtNum(t.stats.avgVelocity)}</strong>/hr · ~<strong>${t.typicalLengthMinutes.toFixed(0)} min</strong> · ${esc(t.winningFormat)}
   </p>
-  <div style="background:#eef2ff;border-left:4px solid ${accent};border-radius:8px;padding:12px 14px;margin:0 0 12px 0;">
+  <div style="background:#fef2f2;border-left:4px solid ${accent};border-radius:8px;padding:12px 14px;margin:0 0 12px 0;">
     <div style="font-size:11px;font-weight:700;letter-spacing:.06em;color:${accent};">FILM THIS</div>
     <div style="font-size:15px;font-weight:600;color:#111827;margin:2px 0;">${esc(t.filmingAngle.title)}</div>
     <div style="font-size:14px;color:#374151;line-height:1.45;">${esc(t.filmingAngle.angle)}</div>
@@ -62,7 +62,7 @@ export function renderEmail(brief: Brief, opts: { stale?: boolean } = {}): { sub
 </td></tr>
 <tr><td style="padding:0 0 16px 0;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#111827;border-radius:12px;"><tr><td style="padding:22px;">
-    <div style="font-size:12px;font-weight:700;letter-spacing:.08em;color:#a5b4fc;margin-bottom:8px;">THIS WEEK IN 3 LINES</div>
+    <div style="font-size:12px;font-weight:700;letter-spacing:.08em;color:#fca5a5;margin-bottom:8px;">THIS WEEK IN 3 LINES</div>
     ${brief.headline.map((l) => `<div style="font-size:17px;line-height:1.4;color:#ffffff;margin:0 0 6px 0;">${esc(l)}</div>`).join("")}
   </td></tr></table>
 </td></tr>
