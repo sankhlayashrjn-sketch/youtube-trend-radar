@@ -11,3 +11,11 @@
 | 7 | Embeddings stored as `jsonb` number[] | Avoids pgvector dependency; k-means runs in code. |
 | 8 | `videos.settings_hash` column | Daily cache is keyed on (day, region, categories). |
 | 9 | Verify script appends CRON_SECRET if missing | Secret generated with crypto, never printed. |
+| 10 | Disabled `cacheComponents`/`partialPrefetching` in next.config | Pages read live DB data per request (`dynamic = "force-dynamic"`), which that mode forbids. |
+| 11 | Mostly-popular chart limited to categories 28 (Sci/Tech) and 27 (Education) | The unfiltered chart pulled music/movie trailers into tech clusters (seen in first real run). |
+| 12 | Shorts (<=60s) and videos older than 14 days dropped before clustering | Typical-length stats should reflect long-form; trends should be recent. |
+| 13 | Brief numbers/example videos are merged by code; Gemini writes only prose | Prevents invented stats/URLs; example IDs verified against the fetched set. |
+| 14 | Manual generate is split into fetch/cluster/brief calls with DB-backed rate limit (4/hr, one active run) | Drives the progress UI, avoids function timeouts and quota burn. |
+| 15 | Second cron `/api/health` daily | Keeps the free Supabase project from pausing. |
+| 16 | Replaced shadcn-generated `from "cn"` imports with `@/lib/utils` | The bare `cn` npm package is unrelated. |
+| 17 | `EMAIL_TO` env as default recipient, stored in DB settings after first load | Resend free sender only delivers to the signup address; keeps the address out of git. |

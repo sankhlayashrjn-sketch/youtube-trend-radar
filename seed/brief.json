@@ -1,0 +1,281 @@
+{
+  "weekOf": "2026-10-11",
+  "headline": [
+    "Sale season exposes and flagship hardware unboxings are driving peak aggregate viewership.",
+    "AI tools and productivity workflows show the highest audience engagement rate at 18.7%.",
+    "Fast-moving sale guides and iQOO 16 coverage offer immediate search momentum."
+  ],
+  "themes": [
+    {
+      "name": "E-Commerce Mega Sales & Viral Hardware Teasers",
+      "summary": "Creators are publishing extensive festive buying guides around Flipkart Big Billion Days 2026 alongside viral tech gifting shorts and hardware curiosity deep-dives like WTF is a Googlebook?.",
+      "whyNow": "The cluster generated 47,100,189 total views across 14 creators with an average velocity of 24,785 views/hour.",
+      "stats": {
+        "creatorCount": 14,
+        "videoCount": 14,
+        "totalViews": 47100189,
+        "avgVelocity": 24785,
+        "avgEngagement": 0.0244
+      },
+      "winningFormat": "buyer's guide listicle",
+      "typicalLengthMinutes": 14,
+      "exampleVideos": [
+        {
+          "id": "vVoITvAys_U",
+          "title": "Family को Surprise करने के लिए Beta लाया ये Phones! 😱 #shorts",
+          "channel": "Tech Master",
+          "url": "https://www.youtube.com/watch?v=vVoITvAys_U",
+          "views": 25131374
+        },
+        {
+          "id": "0biCLgoY9JA",
+          "title": "New Phone Bana Diya 😍 GIVEAWAY ",
+          "channel": "Sourav Joshi Vlogs",
+          "url": "https://www.youtube.com/watch?v=0biCLgoY9JA",
+          "views": 10855143
+        },
+        {
+          "id": "_0G4OG39XjI",
+          "title": "WTF is a Googlebook?",
+          "channel": "Marques Brownlee",
+          "url": "https://www.youtube.com/watch?v=_0G4OG39XjI",
+          "views": 5854366
+        },
+        {
+          "id": "zZ8dupGrPZA",
+          "title": "Best Smartphones to Buy in Amazon Great Indian Festival & Flipkart Big Billion Days 2026 |10K-₹1Lakh",
+          "channel": "Prasadtechintelugu",
+          "url": "https://www.youtube.com/watch?v=zZ8dupGrPZA",
+          "views": 1589590
+        }
+      ],
+      "filmingAngle": {
+        "title": "Best Tech & Productivity Setups to Buy in Flipkart Big Billion Days 2026",
+        "angle": "Filter through promotional sale hype to deliver a curated buyer guide focused strictly on high-value productivity gear, laptops, and flagship phones."
+      },
+      "urgency": {
+        "level": "soon",
+        "reason": "Massive overall volume but heavily crowded with viral vlog formats and broad deal rundowns."
+      },
+      "saturation": "high"
+    },
+    {
+      "name": "AI Builders & Free Productivity Stacks",
+      "summary": "Coverage spans practical AI integrations with Google Gemini and ChatGPT coding prompts, contrasted against minimalist free productivity setups that replace paid subscriptions.",
+      "whyNow": "Driven by 12 creators, this cluster reached 3,007,555 total views at 1,847 views/hour while yielding an exceptional engagement rate of 0.1871.",
+      "stats": {
+        "creatorCount": 12,
+        "videoCount": 12,
+        "totalViews": 3007555,
+        "avgVelocity": 1847,
+        "avgEngagement": 0.1871
+      },
+      "winningFormat": "hands-on tutorial",
+      "typicalLengthMinutes": 2.4,
+      "exampleVideos": [
+        {
+          "id": "CeGoImlgIL0",
+          "title": "Learning How to Front Flip with Interactive Visualizations and @GoogleGemini#GooglePartner 🤸‍♂️✨",
+          "channel": "Alan's Universe",
+          "url": "https://www.youtube.com/watch?v=CeGoImlgIL0",
+          "views": 2640347
+        },
+        {
+          "id": "5HY-625voBw",
+          "title": "Sony Hid Secret Software Inside Its Music CDs 😱 | The Dark Side of Sony|#shorts #trending",
+          "channel": "Cheran Academy",
+          "url": "https://www.youtube.com/watch?v=5HY-625voBw",
+          "views": 362188
+        },
+        {
+          "id": "6wY9rS_c_vg",
+          "title": "I Stopped Paying for Productivity Apps — Here’s My Free Apple System",
+          "channel": "AshLee Digital",
+          "url": "https://www.youtube.com/watch?v=6wY9rS_c_vg",
+          "views": 3021
+        },
+        {
+          "id": "e-gvceXxUsI",
+          "title": "Mahalaya vs chatgpt #chatgpt #mahalaya #comedy",
+          "channel": "Bidisha Biswas",
+          "url": "https://www.youtube.com/watch?v=e-gvceXxUsI",
+          "views": 885
+        }
+      ],
+      "filmingAngle": {
+        "title": "I Stopped Paying for Productivity Apps — My Free AI & Notion System",
+        "angle": "Showcase how to replace expensive subscription software using free ChatGPT automations, native tools, and streamlined workspace templates."
+      },
+      "urgency": {
+        "level": "film_now",
+        "reason": "Peak engagement rate of 0.1871 perfectly matches Ishaan's core productivity and AI audience."
+      },
+      "saturation": "medium"
+    },
+    {
+      "name": "Next-Gen Flagship Hardware Unboxings",
+      "summary": "Channels are pushing hands-on first impressions and hardware spec breakdowns for next-gen flagships like the iQOO 16 and Xiaomi 18 Pro.",
+      "whyNow": "11 creators accumulated 2,706,979 total views with an aggressive pace of 6,997 views/hour.",
+      "stats": {
+        "creatorCount": 11,
+        "videoCount": 11,
+        "totalViews": 2706979,
+        "avgVelocity": 6997,
+        "avgEngagement": 0.031
+      },
+      "winningFormat": "first look unboxing",
+      "typicalLengthMinutes": 3,
+      "exampleVideos": [
+        {
+          "id": "zcf9JFzZKTc",
+          "title": "iQOO 16 Unboxing & First Look ⚡ SD 8 Elite Extreme Gen 6, 8400mAh, 2K+165Hz & More",
+          "channel": "Trakin Tech",
+          "url": "https://www.youtube.com/watch?v=zcf9JFzZKTc",
+          "views": 1098981
+        },
+        {
+          "id": "42tdaFp1nIQ",
+          "title": "Xiaomi 18 Pro | Limited Edition",
+          "channel": "CallMeShazzam TECH",
+          "url": "https://www.youtube.com/watch?v=42tdaFp1nIQ",
+          "views": 649337
+        },
+        {
+          "id": "-WQgwns0w38",
+          "title": "vivo V80 Unboxing & Test📌 4K Cinematic camera, Metal Frame, Zeiss Telephoto",
+          "channel": "Technology Gyan",
+          "url": "https://www.youtube.com/watch?v=-WQgwns0w38",
+          "views": 640699
+        },
+        {
+          "id": "Ja9JweG_D2U",
+          "title": "MY MACBOOK M4 MAX IS ROCKING | ALMOST WENT FOR THE M5 MAX",
+          "channel": "Mumbiker Nikhil",
+          "url": "https://www.youtube.com/watch?v=Ja9JweG_D2U",
+          "views": 217244
+        }
+      ],
+      "filmingAngle": {
+        "title": "iQOO 16 Unboxing & First Look: Real-World Productivity & Battery Test",
+        "angle": "Review the iQOO 16 from a power-user perspective, testing whether the massive battery and processor upgrades deliver actual daily productivity value."
+      },
+      "urgency": {
+        "level": "film_now",
+        "reason": "High average velocity of 6,997 views/hour signals immediate search intent around the iQOO 16 launch."
+      },
+      "saturation": "medium"
+    },
+    {
+      "name": "Sale Reality Checks & Tech News Exposés",
+      "summary": "Tech creators are dissecting deceptive festival sale pricing and discussing major upcoming telecom shifts like Jio 6G launch timelines.",
+      "whyNow": "Captured 2,187,649 total views across only 5 creators with a velocity of 4,464 views/hour.",
+      "stats": {
+        "creatorCount": 5,
+        "videoCount": 5,
+        "totalViews": 2187649,
+        "avgVelocity": 4464,
+        "avgEngagement": 0.0158
+      },
+      "winningFormat": "myth-busting breakdown",
+      "typicalLengthMinutes": 9.4,
+      "exampleVideos": [
+        {
+          "id": "3LUF60gn6pw",
+          "title": "Flipkart Big Billion Days 2026 fooling us | Reality Exposed | Fake iPhone sale | Technical Dost",
+          "channel": "Technical Dost",
+          "url": "https://www.youtube.com/watch?v=3LUF60gn6pw",
+          "views": 1307665
+        },
+        {
+          "id": "OqG6h2eoAbA",
+          "title": "Best Phones & Electronics  to buy on Flipkart Big Billion Day Sale !",
+          "channel": "Tech Burner",
+          "url": "https://www.youtube.com/watch?v=OqG6h2eoAbA",
+          "views": 501691
+        },
+        {
+          "id": "X3vPTVzsR5s",
+          "title": "വമ്പൻ ഓഫറുകൾ.  Flipkart Big Billion Days 2026 Best Offers! iPhone offers, realme P4 Series, Samsung.",
+          "channel": "PrathapGTech",
+          "url": "https://www.youtube.com/watch?v=X3vPTVzsR5s",
+          "views": 216987
+        },
+        {
+          "id": "v-lnjwmXXFI",
+          "title": "Jio 6G India Launch😍,Price Hike GST Sad News😓,Color Os 17 India Launch,Ambani Vs Elon Musk Big War",
+          "channel": "Techno Ruhez",
+          "url": "https://www.youtube.com/watch?v=v-lnjwmXXFI",
+          "views": 161298
+        }
+      ],
+      "filmingAngle": {
+        "title": "Flipkart Big Billion Days 2026 Sale Reality: Don't Fall for Fake Tech Deals",
+        "angle": "Audit advertised discounts on smartphones and gadgets to show viewers price tracker evidence and which deals are genuinely worth taking."
+      },
+      "urgency": {
+        "level": "film_now",
+        "reason": "High velocity of 4,464 views/hour with only 5 competing creators creates a low-saturation opportunity."
+      },
+      "saturation": "low"
+    },
+    {
+      "name": "Hardware Quirks & Multi-PC Networking Tips",
+      "summary": "Creators are posting quick-tip hardware setups, smart accessories, and technical PC networking walk-throughs primarily in regional formats.",
+      "whyNow": "Logged 1,031,128 total views across 4 creators with 5,829 views/hour velocity and a 0.0526 engagement rate.",
+      "stats": {
+        "creatorCount": 4,
+        "videoCount": 4,
+        "totalViews": 1031128,
+        "avgVelocity": 5829,
+        "avgEngagement": 0.0526
+      },
+      "winningFormat": "quick troubleshooting guide",
+      "typicalLengthMinutes": 1.7,
+      "exampleVideos": [
+        {
+          "id": "MvJPu5VQf1o",
+          "title": "5 PC ya onna connect panrathu yeppadi??",
+          "channel": "Engineering Facts",
+          "url": "https://www.youtube.com/watch?v=MvJPu5VQf1o",
+          "views": 591778
+        },
+        {
+          "id": "sJOs8-xbLxs",
+          "title": "Samsung la e ivlo tan service a?😨 Inta mathiri gaps a adachurunga",
+          "channel": "Tech Satire",
+          "url": "https://www.youtube.com/watch?v=sJOs8-xbLxs",
+          "views": 259419
+        },
+        {
+          "id": "gcd983fZhDs",
+          "title": "Why I hate Iphones (I don't)",
+          "channel": "Arjyoulive",
+          "url": "https://www.youtube.com/watch?v=gcd983fZhDs",
+          "views": 175939
+        },
+        {
+          "id": "be54rBTAMAE",
+          "title": "Samsungs New Smart Tags are pretty cool! #tech #samsung",
+          "channel": "Andrew Bond",
+          "url": "https://www.youtube.com/watch?v=be54rBTAMAE",
+          "views": 3992
+        }
+      ],
+      "filmingAngle": {
+        "title": "Connect Multiple PCs Like a Pro: Seamless Desk Setup Guide",
+        "angle": "Demonstrate practical methods to connect and control multiple laptops and PCs using a single keyboard and mouse workflow."
+      },
+      "urgency": {
+        "level": "soon",
+        "reason": "Solid velocity of 5,829 views/hour, but audience demand is split by regional language preferences."
+      },
+      "saturation": "low"
+    }
+  ],
+  "meta": {
+    "videoCount": 47,
+    "quotaUsed": 505,
+    "generatedAt": "2026-10-11T07:55:02.440Z",
+    "dataSource": "seed"
+  }
+}
