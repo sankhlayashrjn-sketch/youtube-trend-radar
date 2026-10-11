@@ -64,7 +64,7 @@ export function ThemeCard({
       id={`theme-${rank}`}
       aria-labelledby={`theme-title-${rank}`}
       className={cn(
-        "pop-in flex scroll-mt-24 flex-col gap-5 rounded-3xl border bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl motion-reduce:transform-none sm:p-6",
+        "pop-in flex min-w-0 scroll-mt-24 flex-col gap-5 rounded-3xl border bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl motion-reduce:transform-none sm:p-6",
         flash && "flash-ring border-primary",
       )}
     >
