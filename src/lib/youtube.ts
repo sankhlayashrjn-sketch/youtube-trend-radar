@@ -117,17 +117,18 @@ export async function fetchTrendingVideos(opts: {
   const kws = categories.slice(0, MAX_SEARCHES);
   // Spend the whole search budget: few keywords => several result pages each, many keywords => one page each.
   const pagesPerKw = Math.min(4, Math.max(1, Math.floor(MAX_SEARCHES / Math.max(kws.length, 1))));
+  // Every keyword gets an equal share of the results, so no category can crowd out the others.
+  const perPage = Math.min(50, Math.max(10, Math.ceil((target * 1.6) / (Math.max(kws.length, 1) * pagesPerKw))));
   let searches = 0;
-  outer: for (const q of kws) {
+  for (const q of kws) {
     let pageToken: string | undefined;
     for (let p = 0; p < pagesPerKw; p++) {
       quota.charge(COST.search);
       searches++;
       const r: { items: { id: { videoId?: string } }[]; nextPageToken?: string } = await yt("search", {
-        part: "id", q, type: "video", order: "date", publishedAfter, regionCode: region, maxResults: 50, pageToken,
+        part: "id", q, type: "video", order: "date", publishedAfter, regionCode: region, maxResults: perPage, pageToken,
       });
       r.items.forEach((i) => i.id.videoId && ids.add(i.id.videoId));
-      if (ids.size >= target * 2) break outer;
       pageToken = r.nextPageToken;
       if (!pageToken) break;
     }
