@@ -1,36 +1,124 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# YouTube Trend Radar
 
-## Getting Started
+An AI-powered **weekly Sunday content strategy brief** for a tech YouTuber (AI tools, productivity apps, tech reviews). It does not list videos. It finds **patterns**: 3-5 theme clusters that multiple creators are covering this week, which formats are winning, typical length, and a filming recommendation with urgency.
 
-First, run the development server:
+- Generated and emailed every **Sunday ~04:30 AM IST** (Vercel Cron, Saturday 23:00 UTC).
+- Categories, region and recipient are configurable in `/settings`.
+- All AI uses **Gemini Flash only** (plus Gemini embeddings). No Anthropic/Claude API.
+- Everything runs on free tiers: Vercel Hobby, Supabase, YouTube Data API, Gemini, Resend.
+
+## How it works
+
+1. **Fetch**: `videos.list?chart=mostPopular` (tech categories) + capped `search.list` (one per category keyword, max 10, last 7 days) + batched `videos.list` for stats. Quota is tracked per run and guarded daily.
+2. **Metrics (code, not AI)**: views/hour (velocity), engagement rate, duration bucket, unique creators.
+3. **Cluster**: Gemini embeddings of title + tags, then k-means in code (k = 3-6 chosen by cluster survival and silhouette). Any cluster with **fewer than 3 distinct creators is dropped**: a trend needs multiple creators.
+4. **Brief**: Gemini Flash writes names, explanations and filming angles as JSON validated by Zod (retry once with the error). Numbers and example videos are merged in by code and example URLs are verified against the fetched set, so the model cannot invent stats or links.
+5. **Save and send**: brief stored in Postgres, then emailed through Resend. Each stage persists its result.
+
+If YouTube or Gemini fails, the last saved brief is shown with a **stale** banner and the error is logged.
+
+## Setup
 
 ```bash
+npm install
+cp .env.example .env.local   # fill in the values
+npm run db:migrate           # apply the schema to Supabase
+npm run verify-keys          # tiny test call per key
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Name | Purpose |
+|------|---------|
+| `YOUTUBE_API_KEY` | YouTube Data API v3 |
+| `GEMINI_API_KEY` | Gemini Flash + embeddings |
+| `RESEND_API_KEY` | Email |
+| `DATABASE_URL` | Supabase **Transaction pooler** string (port 6543). URL-encode special characters in the password (`@` → `%40`) |
+| `MIGRATION_URL` | Optional session pooler (5432), only if drizzle-kit fails on 6543 |
+| `CRON_SECRET` | `openssl rand -hex 32`; Vercel sends it as `Authorization: Bearer ...` |
+| `EMAIL_FROM` | Sender. Default `Trend Radar <onboarding@resend.dev>` |
+| `EMAIL_TO` | Default recipient (Resend's free sender only delivers to your signup address) |
+| `GEMINI_MODEL` / `GEMINI_EMBEDDING_MODEL` | Default `gemini-3.8-flash` / `gemini-embedding-001` |
+| `APP_URL` | Optional public URL used in the email footer |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Env vars are validated with Zod on first use; error messages list names only, never values.
 
-## Learn More
+### Scripts
 
-To learn more about Next.js, take a look at the following resources:
+| Command | What it does |
+|---------|--------------|
+| `npm run verify-keys` | Pass/fail table for YouTube, Gemini, embeddings, DB (`-- --email` also tests Resend) |
+| `npx tsx scripts/run-pipeline.ts [--email] [--seed]` | Run the real pipeline locally; `--seed` writes `seed/brief.json` |
+| `npm test` | Vitest: metrics, clustering rule, brief schema |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Reliability notes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Daily cache**: if videos for the same settings were fetched today, YouTube is not called again.
+- **Manual generation is rate-limited** (one active run, 4 per hour) and guarded by a daily quota budget.
+- **Supabase free projects pause after about 7 days of inactivity.** A daily Vercel cron pings `/api/health` (`select 1`) to keep it awake. If the project ever pauses, restore it from the Supabase dashboard; the app shows the bundled `seed/brief.json` meanwhile.
+- Vercel Hobby crons run once per day at most, in UTC, and may fire any time within the scheduled hour. Saturday 23:00 UTC is Sunday 04:30 IST, far before noon.
 
-## Deploy on Vercel
+## Components Map
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+A visual version lives at `/components-map`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```mermaid
+flowchart TD
+  subgraph Triggers
+    CRON[Vercel Cron<br/>Sat 23:00 UTC = Sun 04:30 IST]
+    HEALTH[Daily health cron]
+    UI[Web UI<br/>/ · /archive · /settings · /components-map]
+  end
+  subgraph API[API routes]
+    GEN[POST /api/generate<br/>stage per call, rate-limited]
+    CR[GET /api/cron/weekly-brief<br/>Bearer CRON_SECRET]
+    LAT[GET /api/brief/latest]
+    SET[GET/PUT /api/settings]
+    HLT[GET /api/health]
+  end
+  subgraph Lib[Pipeline src/lib]
+    YT[youtube.ts<br/>fetch + quota guard]
+    MET[metrics.ts<br/>velocity, engagement, buckets]
+    GM[gemini.ts<br/>embeddings + Flash, backoff]
+    CL[cluster.ts<br/>k-means + 3-creator rule]
+    BR[brief.ts<br/>prompt, Zod, URL verify]
+    EM[email.ts<br/>HTML email]
+  end
+  DB[(Supabase Postgres<br/>settings · videos · briefs · runs)]
+  YTAPI[[YouTube Data API v3]]
+  GAPI[[Gemini Flash + embeddings]]
+  RS[[Resend]]
+
+  CRON --> CR
+  HEALTH --> HLT
+  UI --> GEN
+  UI --> LAT
+  UI --> SET
+  GEN --> YT
+  CR --> YT
+  YT --> YTAPI
+  YT --> MET --> DB
+  DB --> GM --> GAPI
+  GM --> CL --> BR --> GAPI
+  BR --> DB
+  BR --> EM --> RS
+  LAT --> DB
+  SET --> DB
+  HLT --> DB
+```
+
+## Demo script
+
+1. Open the live URL: the hero shows the **3-line headline**, then the momentum chart and 3-5 theme cards.
+2. On a card, read **Why now** (real numbers), the highlighted **Film this** angle, and expand **Example videos**.
+3. Click **Generate now** and watch Fetching → Clustering → Writing brief → Done; check your inbox for the same brief.
+4. Open **Settings**, add a category (e.g. "AI coding tools"), save, and generate again: the brief changes.
+5. Open **Archive** for past briefs and **/components-map** for the architecture.
+
+## Known limitations
+
+- Resend's free sender can only email the account owner's address.
+- Free Gemini tier has per-minute limits; the app retries with backoff but a very busy minute can still fail a run (the last brief stays visible).
+- YouTube search is keyword-based, so very niche categories may yield fewer than 3 multi-creator trends; the run then keeps the last brief.
+- Velocity is views per hour since upload, a proxy that favours very new uploads.
