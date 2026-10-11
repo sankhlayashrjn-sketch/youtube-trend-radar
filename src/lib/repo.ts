@@ -19,9 +19,12 @@ export function istDate(d = new Date()): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(d);
 }
 
+/** Bump when fetch/cluster logic changes so cached videos from older logic are never reused. */
+const PIPELINE_VERSION = "v2";
+
 export function settingsHash(s: Pick<Settings, "region" | "categories">): string {
   return createHash("sha1")
-    .update(s.region + "|" + [...s.categories].map((c) => c.toLowerCase().trim()).sort().join(","))
+    .update(PIPELINE_VERSION + "|" + s.region + "|" + [...s.categories].map((c) => c.toLowerCase().trim()).sort().join(","))
     .digest("hex")
     .slice(0, 12);
 }
