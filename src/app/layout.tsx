@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description: "A weekly Sunday content strategy brief: the patterns creators are riding, not a list of videos.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${display.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
