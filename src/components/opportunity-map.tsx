@@ -18,8 +18,8 @@ function Bubble({ cx = 0, cy = 0, payload, onSelect }: DotProps & { onSelect: (i
       role="button"
       tabIndex={0}
       aria-label={`Theme ${payload.i + 1}: ${payload.name}`}
-      className="cursor-pointer outline-none transition-transform hover:scale-110 focus-visible:scale-110"
-      style={{ transformOrigin: `${cx}px ${cy}px`, transformBox: "fill-box" }}
+      className="cursor-pointer outline-none transition-transform hover:scale-105 focus-visible:scale-105"
+      style={{ transformOrigin: "center", transformBox: "fill-box" }}
       onClick={() => onSelect(payload.i)}
       onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onSelect(payload.i)}
     >
@@ -64,7 +64,11 @@ export function OpportunityMap({ themes, signals, onSelect }: { themes: Theme[];
             <XAxis type="number" dataKey="x" name="Creators" domain={[0, maxX]} tickFormatter={(v) => String(Math.round(v))} tick={{ fontSize: 12, fill: "currentColor" }} stroke="currentColor" label={{ value: "Competition (creators covering it)", position: "insideBottom", offset: -12, fontSize: 12, fill: "currentColor" }} />
             <YAxis type="number" dataKey="y" name="Views/hr" domain={[0, maxY]} tickFormatter={(v) => fmtNum(v)} width={60} tick={{ fontSize: 12, fill: "currentColor" }} stroke="currentColor" label={{ value: "Views per hour", angle: -90, position: "insideLeft", offset: -2, fontSize: 12, fill: "currentColor" }} />
             <Tooltip
-              cursor={{ strokeDasharray: "3 3" }}
+              cursor={false}
+              isAnimationActive={false}
+              offset={14}
+              allowEscapeViewBox={{ x: false, y: true }}
+              wrapperStyle={{ pointerEvents: "none", zIndex: 20, outline: "none" }}
               content={({ active, payload }) => {
                 const d = active ? (payload?.[0]?.payload as Dot | undefined) : undefined;
                 if (!d) return null;
