@@ -1,179 +1,242 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1200" viewBox="0 0 1700 1200" font-family="Segoe UI, Arial, Helvetica, sans-serif">
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#6b7280"/></marker></defs>
-<rect width="1700" height="1200" fill="#ffffff"/>
-<rect x="30" y="26" width="46" height="34" rx="9" fill="#e11d1d"/><path d="M47 34 v18 l16 -9 z" fill="#fff"/>
-<text x="92" y="52" font-size="30" font-weight="800" fill="#111827" text-anchor="start">YouTube Trend Radar: Components Map</text>
-<text x="92" y="76" font-size="15" font-weight="400" fill="#6b7280" text-anchor="start">Weekly AI content-strategy brief. Next.js on Vercel, Supabase Postgres, Gemini Flash only, everything on free tiers.</text>
-<rect x="30" y="100" width="1640" height="200" rx="20" fill="#f9fafb" stroke="#e5e7eb" stroke-width="2"/>
-<text x="52" y="130" font-size="14" font-weight="800" fill="#e11d1d" text-anchor="start">1  TRIGGERS + UI</text>
-<text x="1648" y="130" font-size="13" font-weight="400" fill="#6b7280" text-anchor="end">What starts a run, and what the user sees</text>
-<rect x="52" y="140" width="956" height="140" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-<rect x="52" y="140" width="6" height="140" rx="3" fill="#e11d1d"/>
-<text x="72" y="170" font-size="18" font-weight="700" fill="#111827" text-anchor="start">Web app (Next.js App Router, TypeScript, Tailwind, shadcn/ui)</text>
-<text x="72" y="196" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Dashboard: 3-line headline, Signals panel (insight tiles + opportunity map), filterable and sortable theme cards, Generate now</text>
-<text x="72" y="217" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Theme card: example videos with full stats, signal meters, cover maker (PNG download), editable draft script (auto-save)</text>
-<text x="72" y="238" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Archive (list + detail)  |  Settings: categories, region, email, minimum views (Zod validated)  |  Light and dark mode</text>
-<rect x="1026" y="140" width="320" height="140" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-<rect x="1026" y="140" width="6" height="140" rx="3" fill="#e11d1d"/>
-<text x="1046" y="170" font-size="18" font-weight="700" fill="#111827" text-anchor="start">Vercel Cron (weekly)</text>
-<text x="1046" y="196" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">0 23 * * 6 = Sat 23:00 UTC</text>
-<text x="1046" y="217" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">= Sunday 04:30 AM IST</text>
-<text x="1046" y="238" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">Bearer CRON_SECRET</text>
-<rect x="1364" y="140" width="284" height="140" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-<rect x="1364" y="140" width="6" height="140" rx="3" fill="#6b7280"/>
-<text x="1384" y="170" font-size="18" font-weight="700" fill="#111827" text-anchor="start">Vercel Cron (daily)</text>
-<text x="1384" y="196" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">0 6 * * * calls /api/health</text>
-<text x="1384" y="217" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">keeps free Supabase from</text>
-<text x="1384" y="238" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">pausing after 7 idle days</text>
-<rect x="30" y="320" width="1640" height="170" rx="20" fill="#f9fafb" stroke="#e5e7eb" stroke-width="2"/>
-<text x="52" y="350" font-size="14" font-weight="800" fill="#e11d1d" text-anchor="start">2  API ROUTES</text>
-<text x="1490" y="350" font-size="13" font-weight="400" fill="#6b7280" text-anchor="end">Next.js route handlers</text>
-<rect x="52" y="360" width="250" height="115" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-<rect x="52" y="360" width="6" height="115" rx="3" fill="#e11d1d"/>
-<text x="72" y="390" font-size="15" font-weight="700" fill="#111827" text-anchor="start">POST /api/generate</text>
-<text x="72" y="416" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">One stage per call (fetch,</text>
-<text x="72" y="437" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">cluster, brief). Rate limited:</text>
-<text x="72" y="458" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">4 per hour</text>
-<rect x="317" y="360" width="250" height="115" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-<rect x="317" y="360" width="6" height="115" rx="3" fill="#e11d1d"/>
-<text x="337" y="390" font-size="15" font-weight="700" fill="#111827" text-anchor="start">GET /api/brief/latest</text>
-<text x="337" y="416" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Latest brief plus stale and</text>
-<text x="337" y="437" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">settings-changed flags</text>
-<rect x="582" y="360" width="250" height="115" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-<rect x="582" y="360" width="6" height="115" rx="3" fill="#e11d1d"/>
-<text x="602" y="390" font-size="15" font-weight="700" fill="#111827" text-anchor="start">GET, PUT /api/settings</text>
-<text x="602" y="416" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Zod validation, saved to</text>
-<text x="602" y="437" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">the database</text>
-<rect x="847" y="360" width="250" height="115" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-<rect x="847" y="360" width="6" height="115" rx="3" fill="#e11d1d"/>
-<text x="867" y="390" font-size="15" font-weight="700" fill="#111827" text-anchor="start">GET, POST, PUT /api/script</text>
-<text x="867" y="416" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Draft with Gemini, load and</text>
-<text x="867" y="437" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">save edits. 40 per day cap</text>
-<rect x="1112" y="360" width="250" height="115" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-<rect x="1112" y="360" width="6" height="115" rx="3" fill="#e11d1d"/>
-<text x="1132" y="390" font-size="15" font-weight="700" fill="#111827" text-anchor="start">GET /api/cron/weekly-brief</text>
-<text x="1132" y="416" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Secret checked (401 otherwise).</text>
-<text x="1132" y="437" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Runs all stages, emails brief,</text>
-<text x="1132" y="458" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">stale fallback on failure</text>
-<rect x="1377" y="360" width="250" height="115" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-<rect x="1377" y="360" width="6" height="115" rx="3" fill="#e11d1d"/>
-<text x="1397" y="390" font-size="15" font-weight="700" fill="#111827" text-anchor="start">GET /api/health</text>
-<text x="1397" y="416" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Database ping: select 1</text>
-<line x1="177" y1="280" x2="177" y2="358" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
-<line x1="442" y1="280" x2="442" y2="358" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
-<line x1="707" y1="280" x2="707" y2="358" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
-<line x1="972" y1="280" x2="972" y2="358" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
-<line x1="1242" y1="280" x2="1242" y2="358" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
-<line x1="1507" y1="280" x2="1507" y2="358" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
-<rect x="30" y="510" width="1640" height="285" rx="20" fill="#f9fafb" stroke="#e5e7eb" stroke-width="2"/>
-<text x="52" y="540" font-size="14" font-weight="800" fill="#e11d1d" text-anchor="start">3  PIPELINE (src/lib)</text>
-<text x="1648" y="540" font-size="13" font-weight="400" fill="#6b7280" text-anchor="end">Each stage saves its result to the database, so a timeout never loses work</text>
-<rect x="52" y="555" width="240" height="220" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-<rect x="52" y="555" width="6" height="220" rx="3" fill="#e11d1d"/>
-<text x="72" y="585" font-size="19" font-weight="700" fill="#111827" text-anchor="start">1  Fetch</text>
-<text x="72" y="611" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">youtube.ts</text>
-<text x="72" y="632" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">mostPopular (matched</text>
-<text x="72" y="653" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">categories) + capped</text>
-<text x="72" y="674" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">search.list (7 days)</text>
-<text x="72" y="695" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">+ videos.list batches</text>
-<text x="72" y="716" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">Quota guard, daily cache</text>
-<line x1="293" y1="665" x2="311" y2="665" stroke="#e11d1d" stroke-width="2.5" marker-end="url(#arrow)"/>
-<rect x="312" y="555" width="240" height="220" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-<rect x="312" y="555" width="6" height="220" rx="3" fill="#e11d1d"/>
-<text x="332" y="585" font-size="19" font-weight="700" fill="#111827" text-anchor="start">2  Metrics</text>
-<text x="332" y="611" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">metrics.ts (plain code)</text>
-<text x="332" y="632" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">views per hour (velocity)</text>
-<text x="332" y="653" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">engagement rate</text>
-<text x="332" y="674" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">duration bucket</text>
-<text x="332" y="695" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">unique creators</text>
-<line x1="553" y1="665" x2="571" y2="665" stroke="#e11d1d" stroke-width="2.5" marker-end="url(#arrow)"/>
-<rect x="572" y="555" width="240" height="220" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-<rect x="572" y="555" width="6" height="220" rx="3" fill="#e11d1d"/>
-<text x="592" y="585" font-size="19" font-weight="700" fill="#111827" text-anchor="start">3  Embed</text>
-<text x="592" y="611" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">gemini.ts</text>
-<text x="592" y="632" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">Gemini embedding of</text>
-<text x="592" y="653" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">title + tags (768 dims)</text>
-<text x="592" y="674" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">Retry with backoff on 429</text>
-<line x1="813" y1="665" x2="831" y2="665" stroke="#e11d1d" stroke-width="2.5" marker-end="url(#arrow)"/>
-<rect x="832" y="555" width="240" height="220" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-<rect x="832" y="555" width="6" height="220" rx="3" fill="#e11d1d"/>
-<text x="852" y="585" font-size="19" font-weight="700" fill="#111827" text-anchor="start">4  Cluster</text>
-<text x="852" y="611" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">cluster.ts</text>
-<text x="852" y="632" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">k-means, k = 3 to 6</text>
-<text x="852" y="653" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">Drop clusters with fewer</text>
-<text x="852" y="674" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">than 3 distinct creators</text>
-<line x1="1073" y1="665" x2="1091" y2="665" stroke="#e11d1d" stroke-width="2.5" marker-end="url(#arrow)"/>
-<rect x="1092" y="555" width="240" height="220" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-<rect x="1092" y="555" width="6" height="220" rx="3" fill="#e11d1d"/>
-<text x="1112" y="585" font-size="19" font-weight="700" fill="#111827" text-anchor="start">5  Write brief</text>
-<text x="1112" y="611" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">brief.ts</text>
-<text x="1112" y="632" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">Gemini Flash returns JSON</text>
-<text x="1112" y="653" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">Zod validate, retry once</text>
-<text x="1112" y="674" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">Code merges real numbers</text>
-<text x="1112" y="695" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">and verifies video URLs</text>
-<line x1="1333" y1="665" x2="1351" y2="665" stroke="#e11d1d" stroke-width="2.5" marker-end="url(#arrow)"/>
-<rect x="1352" y="555" width="240" height="220" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-<rect x="1352" y="555" width="6" height="220" rx="3" fill="#e11d1d"/>
-<text x="1372" y="585" font-size="19" font-weight="700" fill="#111827" text-anchor="start">6  Email</text>
-<text x="1372" y="611" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">email.ts</text>
-<text x="1372" y="632" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">Resend, inline-safe HTML</text>
-<text x="1372" y="653" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">mirrors the dashboard</text>
-<text x="1372" y="674" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">escapes untrusted text</text>
-<path d="M177 475 V500 H262 V553" fill="none" stroke="#9ca3af" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
-<path d="M1242 475 V500 H262" fill="none" stroke="#9ca3af" stroke-width="2.5" stroke-linejoin="round"/>
-<rect x="30" y="815" width="1640" height="300" rx="20" fill="#f9fafb" stroke="#e5e7eb" stroke-width="2"/>
-<text x="52" y="845" font-size="14" font-weight="800" fill="#e11d1d" text-anchor="start">4  DATA + SERVICES</text>
-<rect x="52" y="855" width="260" height="240" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-<rect x="52" y="855" width="6" height="240" rx="3" fill="#ef4444"/>
-<text x="72" y="885" font-size="17" font-weight="700" fill="#111827" text-anchor="start">YouTube Data API v3</text>
-<text x="72" y="911" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">videos.list, search.list</text>
-<text x="72" y="932" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">10,000 units per day free</text>
-<text x="72" y="953" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">about 800 units per run</text>
-<rect x="330" y="855" width="800" height="240" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-<rect x="330" y="855" width="6" height="240" rx="3" fill="#10b981"/>
-<text x="350" y="885" font-size="17" font-weight="700" fill="#111827" text-anchor="start">Supabase Postgres (database only), Drizzle ORM + postgres-js</text>
-<text x="350" y="907" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Transaction pooler (port 6543), prepare:false</text>
-<rect x="350" y="927" width="144" height="150" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
-<text x="362" y="957" font-size="17" font-weight="700" fill="#111827" text-anchor="start">settings</text>
-<text x="362" y="983" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">categories, region,</text>
-<text x="362" y="1004" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">email, min views</text>
-<rect x="504" y="927" width="144" height="150" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
-<text x="516" y="957" font-size="17" font-weight="700" fill="#111827" text-anchor="start">videos</text>
-<text x="516" y="983" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">stats, velocity,</text>
-<text x="516" y="1004" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">embeddings, cache</text>
-<rect x="658" y="927" width="144" height="150" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
-<text x="670" y="957" font-size="17" font-weight="700" fill="#111827" text-anchor="start">briefs</text>
-<text x="670" y="983" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">validated brief</text>
-<text x="670" y="1004" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">JSON per run</text>
-<rect x="812" y="927" width="144" height="150" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
-<text x="824" y="957" font-size="17" font-weight="700" fill="#111827" text-anchor="start">runs</text>
-<text x="824" y="983" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">stage, quota used,</text>
-<text x="824" y="1004" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">error, times</text>
-<rect x="966" y="927" width="144" height="150" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
-<text x="978" y="957" font-size="17" font-weight="700" fill="#111827" text-anchor="start">scripts</text>
-<text x="978" y="983" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">editable draft</text>
-<text x="978" y="1004" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">per brief + theme</text>
-<rect x="1148" y="855" width="260" height="240" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-<rect x="1148" y="855" width="6" height="240" rx="3" fill="#4f46e5"/>
-<text x="1168" y="885" font-size="17" font-weight="700" fill="#111827" text-anchor="start">Gemini Flash + Embeddings</text>
-<text x="1168" y="911" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">gemini-3.8-flash (brief,</text>
-<text x="1168" y="932" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">scripts)</text>
-<text x="1168" y="953" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">gemini-embedding-001</text>
-<text x="1168" y="974" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">(clustering)</text>
-<text x="1168" y="995" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">The only AI provider</text>
-<rect x="1426" y="855" width="222" height="240" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-<rect x="1426" y="855" width="6" height="240" rx="3" fill="#0ea5e9"/>
-<text x="1446" y="885" font-size="17" font-weight="700" fill="#111827" text-anchor="start">Resend</text>
-<text x="1446" y="911" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Email delivery</text>
-<text x="1446" y="932" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Free sender, sends to</text>
-<text x="1446" y="953" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">the owner's address</text>
-<text x="1446" y="974" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">EMAIL_FROM configurable</text>
-<line x1="250" y1="777" x2="250" y2="853" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
-<line x1="432" y1="777" x2="432" y2="853" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
-<line x1="952" y1="777" x2="952" y2="853" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
-<path d="M692 777 V805 H1180 V853" fill="none" stroke="#9ca3af" stroke-width="2.5" stroke-linejoin="round" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
-<line x1="1212" y1="777" x2="1212" y2="853" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
-<line x1="1472" y1="777" x2="1472" y2="853" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
-<text x="52" y="1150" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">Guardrails: Zod validation on every input and AI output, env validated at startup, secrets never logged, stale-brief fallback if YouTube or Gemini fails,</text>
-<text x="52" y="1172" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">daily cache and quota guard, secret-protected cron, 204 automated tests plus a live smoke test.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1170" viewBox="0 0 2000 1170" font-family="Segoe UI, Arial, Helvetica, sans-serif">
+<defs><marker id="ah" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M0 0 L12 6 L0 12 z" fill="#6b5a4a"/></marker></defs>
+<rect width="2000" height="1170" fill="#eceff8"/>
+<text x="1000" y="58" font-size="40" font-weight="800" fill="#2a2118" text-anchor="middle">YouTube Trend Radar — Components Map</text>
+<text x="1000" y="94" font-size="19" fill="#4b4036" text-anchor="middle">One Sunday run → live YouTube data → code measures and groups it → AI writes the brief → saved and emailed → Ishaan films the right video</text>
+<path d="M12 128 a18 18 0 0 1 18 -18 H1970 a18 18 0 0 1 18 18 V156 H12 Z" fill="#6b5a4a"/>
+<text x="134" y="140" font-size="18" font-weight="800" fill="#fff" text-anchor="middle">Actor</text>
+<text x="388" y="140" font-size="18" font-weight="800" fill="#fff" text-anchor="middle">Trigger</text>
+<text x="658" y="140" font-size="18" font-weight="800" fill="#fff" text-anchor="middle">Input</text>
+<text x="928" y="140" font-size="18" font-weight="800" fill="#fff" text-anchor="middle">Context</text>
+<text x="1198" y="140" font-size="18" font-weight="800" fill="#fff" text-anchor="middle">Processing</text>
+<text x="1468" y="140" font-size="18" font-weight="800" fill="#fff" text-anchor="middle">AI</text>
+<text x="1738" y="140" font-size="18" font-weight="800" fill="#fff" text-anchor="middle">Output</text>
+<rect x="256" y="158" width="1732" height="124" fill="#e8ecf8"/>
+<rect x="12" y="160" width="243" height="122" fill="#6b5a4a"/>
+<text x="134" y="218" font-size="25" font-weight="800" fill="#fff" text-anchor="middle">Ishaan</text>
+<text x="134" y="242" font-size="14" fill="#efe6dc" text-anchor="middle">(Creator)</text>
+<rect x="256" y="282" width="1732" height="124" fill="#eee9f6"/>
+<rect x="12" y="284" width="243" height="122" fill="#6b5a4a"/>
+<text x="134" y="342" font-size="25" font-weight="800" fill="#fff" text-anchor="middle">Vercel Cron</text>
+<text x="134" y="366" font-size="14" fill="#efe6dc" text-anchor="middle">(Scheduler)</text>
+<rect x="256" y="406" width="1732" height="124" fill="#f1eed4"/>
+<rect x="12" y="408" width="243" height="122" fill="#6b5a4a"/>
+<text x="134" y="466" font-size="25" font-weight="800" fill="#fff" text-anchor="middle">Our app</text>
+<text x="134" y="490" font-size="14" fill="#efe6dc" text-anchor="middle">(Next.js on Vercel)</text>
+<rect x="256" y="530" width="1732" height="124" fill="#f6e7e3"/>
+<rect x="12" y="532" width="243" height="122" fill="#6b5a4a"/>
+<text x="134" y="590" font-size="25" font-weight="800" fill="#fff" text-anchor="middle">YouTube</text>
+<text x="134" y="614" font-size="14" fill="#efe6dc" text-anchor="middle">(Data API v3)</text>
+<rect x="256" y="654" width="1732" height="124" fill="#f4e4ee"/>
+<rect x="12" y="656" width="243" height="122" fill="#6b5a4a"/>
+<text x="134" y="714" font-size="25" font-weight="800" fill="#fff" text-anchor="middle">Gemini</text>
+<text x="134" y="738" font-size="14" fill="#efe6dc" text-anchor="middle">(Reasoning)</text>
+<rect x="256" y="778" width="1732" height="124" fill="#e1efe6"/>
+<rect x="12" y="780" width="243" height="122" fill="#6b5a4a"/>
+<text x="134" y="838" font-size="25" font-weight="800" fill="#fff" text-anchor="middle">Supabase</text>
+<text x="134" y="862" font-size="14" fill="#efe6dc" text-anchor="middle">(Memory)</text>
+<rect x="256" y="902" width="1732" height="124" fill="#e0eef2"/>
+<rect x="12" y="904" width="243" height="122" fill="#6b5a4a"/>
+<text x="134" y="962" font-size="25" font-weight="800" fill="#fff" text-anchor="middle">Resend</text>
+<text x="134" y="986" font-size="14" fill="#efe6dc" text-anchor="middle">(Email)</text>
+<path d="M545 220 L520 220 L520 840 L545 840" fill="none" stroke="#6b5a4a" stroke-width="2.4" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#ah)"/>
+<path d="M388 388 L388 454 L545 454" fill="none" stroke="#6b5a4a" stroke-width="2.4" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#ah)"/>
+<path d="M275 220 L266 220 L266 486 L545 486" fill="none" stroke="#6b5a4a" stroke-width="2.4" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#ah)"/>
+<path d="M771 454 L815 454" fill="none" stroke="#6b5a4a" stroke-width="2.4" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#ah)"/>
+<path d="M771 840 L790 840 L790 482 L815 482" fill="none" stroke="#6b5a4a" stroke-width="2.4" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#ah)"/>
+<path d="M928 512 L928 548" fill="none" stroke="#6b5a4a" stroke-width="2.4" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#ah)"/>
+<path d="M1041 592 L1050 592 L1050 468 L1085 468" fill="none" stroke="#6b5a4a" stroke-width="2.4" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#ah)"/>
+<path d="M1198 512 L1198 672" fill="none" stroke="#6b5a4a" stroke-width="2.4" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#ah)"/>
+<path d="M1198 760 L1198 796" fill="none" stroke="#6b5a4a" stroke-width="2.4" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#ah)"/>
+<path d="M1311 702 L1325 702 L1325 482 L1355 482" fill="none" stroke="#6b5a4a" stroke-width="2.4" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#ah)"/>
+<path d="M1468 512 L1468 672" fill="none" stroke="#6b5a4a" stroke-width="2.4" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#ah)"/>
+<path d="M1581 702 L1603 702 L1603 482 L1625 482" fill="none" stroke="#6b5a4a" stroke-width="2.4" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#ah)"/>
+<path d="M1851 468 L1880 468 L1880 826 L1851 826" fill="none" stroke="#6b5a4a" stroke-width="2.4" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#ah)"/>
+<path d="M1880 826 L1880 964 L1851 964" fill="none" stroke="#6b5a4a" stroke-width="2.4" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#ah)"/>
+<path d="M1625 964 L1073 964 L1073 220 L1085 220" fill="none" stroke="#6b5a4a" stroke-width="2.4" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#ah)"/>
+<path d="M1311 220 L1355 220" fill="none" stroke="#6b5a4a" stroke-width="2.4" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#ah)"/>
+<path d="M1581 220 L1625 220" fill="none" stroke="#6b5a4a" stroke-width="2.4" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#ah)"/>
+<path d="M1851 236 L1915 236 L1915 732 L1851 732" fill="none" stroke="#6b5a4a" stroke-width="2.4" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#ah)"/>
+<path d="M1851 702 L1952 702 L1952 206 L1851 206" fill="none" stroke="#6b5a4a" stroke-width="2.4" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#ah)"/>
+<rect x="1085" y="310" width="496" height="68" rx="12" fill="#d3e8cf" stroke="#68a465" stroke-width="2.4" stroke-dasharray="6 5"/>
+<text x="1333" y="336" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Side job: pings every morning</text>
+<text x="1333" y="357" font-size="12" fill="#4b4036" text-anchor="middle">06:00 UTC health check keeps the free database awake (it sleeps after 7 idle days)</text>
+<rect x="275" y="176" width="226" height="88" rx="12" fill="#dde2f7" stroke="#7a86c9" stroke-width="2.4"/>
+<circle cx="277" cy="178" r="13" fill="#6b5a4a" stroke="#fff" stroke-width="2"/>
+<text x="277" y="183" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">A</text>
+<text x="388" y="203" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Taps Generate now</text>
+<text x="388" y="223" font-size="12" fill="#4b4036" text-anchor="middle">or just waits for Sunday</text>
+<text x="388" y="238.5" font-size="12" fill="#4b4036" text-anchor="middle">4 tries an hour</text>
+<text x="388" y="254" font-size="12" fill="#4b4036" text-anchor="middle">progress bar shows each step</text>
+<rect x="545" y="176" width="226" height="88" rx="12" fill="#dde2f7" stroke="#7a86c9" stroke-width="2.4"/>
+<circle cx="547" cy="178" r="13" fill="#6b5a4a" stroke="#fff" stroke-width="2"/>
+<text x="547" y="183" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">1</text>
+<text x="658" y="203" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Sets his niche</text>
+<text x="658" y="223" font-size="12" fill="#4b4036" text-anchor="middle">8 keywords · region India</text>
+<text x="658" y="238.5" font-size="12" fill="#4b4036" text-anchor="middle">email · minimum views</text>
+<text x="658" y="254" font-size="12" fill="#4b4036" text-anchor="middle">checked before it is saved</text>
+<rect x="1085" y="176" width="226" height="88" rx="12" fill="#dde2f7" stroke="#7a86c9" stroke-width="2.4"/>
+<circle cx="1087" cy="178" r="13" fill="#6b5a4a" stroke="#fff" stroke-width="2"/>
+<text x="1087" y="183" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">13</text>
+<text x="1198" y="203" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Reads the brief</text>
+<text x="1198" y="223" font-size="12" fill="#4b4036" text-anchor="middle">email on Sunday, or dashboard</text>
+<text x="1198" y="238.5" font-size="12" fill="#4b4036" text-anchor="middle">3-line headline · signals map</text>
+<text x="1198" y="254" font-size="12" fill="#4b4036" text-anchor="middle">filters · sort · jump to a theme</text>
+<rect x="1355" y="176" width="226" height="88" rx="12" fill="#dde2f7" stroke="#7a86c9" stroke-width="2.4"/>
+<circle cx="1357" cy="178" r="13" fill="#6b5a4a" stroke="#fff" stroke-width="2"/>
+<text x="1357" y="183" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">14</text>
+<text x="1468" y="203" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Explores the themes</text>
+<text x="1468" y="223" font-size="12" fill="#4b4036" text-anchor="middle">example videos with full stats</text>
+<text x="1468" y="238.5" font-size="12" fill="#4b4036" text-anchor="middle">views · age · length · likes</text>
+<text x="1468" y="254" font-size="12" fill="#4b4036" text-anchor="middle">minimum-views filter</text>
+<rect x="1625" y="176" width="226" height="88" rx="12" fill="#dcd4f2" stroke="#8a72c8" stroke-width="2.4"/>
+<circle cx="1627" cy="178" r="13" fill="#6b5a4a" stroke="#fff" stroke-width="2"/>
+<text x="1627" y="183" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">15</text>
+<text x="1738" y="203" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Makes the video</text>
+<text x="1738" y="223" font-size="12" fill="#4b4036" text-anchor="middle">asks for a draft script</text>
+<text x="1738" y="238.5" font-size="12" fill="#4b4036" text-anchor="middle">edits it (auto-saves) · copies</text>
+<text x="1738" y="254" font-size="12" fill="#4b4036" text-anchor="middle">designs the cover → PNG</text>
+<rect x="275" y="300" width="226" height="88" rx="12" fill="#d3e8cf" stroke="#68a465" stroke-width="2.4"/>
+<circle cx="277" cy="302" r="13" fill="#6b5a4a" stroke="#fff" stroke-width="2"/>
+<text x="277" y="307" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">2</text>
+<text x="388" y="327" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Wakes up on Sunday</text>
+<text x="388" y="347" font-size="12" fill="#4b4036" text-anchor="middle">4:30 AM IST (Sat 23:00 UTC)</text>
+<text x="388" y="362.5" font-size="12" fill="#4b4036" text-anchor="middle">proves itself with a secret key</text>
+<text x="388" y="378" font-size="12" fill="#4b4036" text-anchor="middle">ignores a repeat delivery</text>
+<rect x="545" y="424" width="226" height="88" rx="12" fill="#efe8b6" stroke="#a39433" stroke-width="2.4"/>
+<circle cx="547" cy="426" r="13" fill="#6b5a4a" stroke="#fff" stroke-width="2"/>
+<text x="547" y="431" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">3</text>
+<text x="658" y="451" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Checks the request</text>
+<text x="658" y="471" font-size="12" fill="#4b4036" text-anchor="middle">secret key · 4 runs per hour</text>
+<text x="658" y="486.5" font-size="12" fill="#4b4036" text-anchor="middle">right run, right stage only</text>
+<text x="658" y="502" font-size="12" fill="#4b4036" text-anchor="middle">bad input turned away (Zod)</text>
+<rect x="815" y="424" width="226" height="88" rx="12" fill="#efe8b6" stroke="#a39433" stroke-width="2.4"/>
+<circle cx="817" cy="426" r="13" fill="#6b5a4a" stroke="#fff" stroke-width="2"/>
+<text x="817" y="431" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">4</text>
+<text x="928" y="451" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Plans the search</text>
+<text x="928" y="471" font-size="12" fill="#4b4036" text-anchor="middle">reads his niche and today's cache</text>
+<text x="928" y="486.5" font-size="12" fill="#4b4036" text-anchor="middle">matching chart + up to 10 searches</text>
+<text x="928" y="502" font-size="12" fill="#4b4036" text-anchor="middle">equal share each · quota guard</text>
+<rect x="1085" y="424" width="226" height="88" rx="12" fill="#efe8b6" stroke="#a39433" stroke-width="2.4"/>
+<circle cx="1087" cy="426" r="13" fill="#6b5a4a" stroke="#fff" stroke-width="2"/>
+<text x="1087" y="431" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">6</text>
+<text x="1198" y="451" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Measures every video</text>
+<text x="1198" y="471" font-size="12" fill="#4b4036" text-anchor="middle">views per hour · engagement</text>
+<text x="1198" y="486.5" font-size="12" fill="#4b4036" text-anchor="middle">length · creators counted</text>
+<text x="1198" y="502" font-size="12" fill="#4b4036" text-anchor="middle">Shorts and old videos dropped</text>
+<rect x="1355" y="424" width="226" height="88" rx="12" fill="#efe8b6" stroke="#a39433" stroke-width="2.4"/>
+<circle cx="1357" cy="426" r="13" fill="#6b5a4a" stroke="#fff" stroke-width="2"/>
+<text x="1357" y="431" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">8</text>
+<text x="1468" y="451" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Groups by topic</text>
+<text x="1468" y="471" font-size="12" fill="#4b4036" text-anchor="middle">clusters the meaning numbers</text>
+<text x="1468" y="486.5" font-size="12" fill="#4b4036" text-anchor="middle">a trend needs 3+ creators</text>
+<text x="1468" y="502" font-size="12" fill="#4b4036" text-anchor="middle">one channel can't fake it</text>
+<rect x="1625" y="424" width="226" height="88" rx="12" fill="#efe8b6" stroke="#a39433" stroke-width="2.4"/>
+<circle cx="1627" cy="426" r="13" fill="#6b5a4a" stroke="#fff" stroke-width="2"/>
+<text x="1627" y="431" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">10</text>
+<text x="1738" y="451" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Builds the brief</text>
+<text x="1738" y="471" font-size="12" fill="#4b4036" text-anchor="middle">adds the real numbers back</text>
+<text x="1738" y="486.5" font-size="12" fill="#4b4036" text-anchor="middle">checks every video link</text>
+<text x="1738" y="502" font-size="12" fill="#4b4036" text-anchor="middle">scores momentum · competition</text>
+<rect x="815" y="548" width="226" height="88" rx="12" fill="#d3e8cf" stroke="#68a465" stroke-width="2.4"/>
+<circle cx="817" cy="550" r="13" fill="#6b5a4a" stroke="#fff" stroke-width="2"/>
+<text x="817" y="555" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">5</text>
+<text x="928" y="575" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Supplies live videos</text>
+<text x="928" y="595" font-size="12" fill="#4b4036" text-anchor="middle">search · most popular · details</text>
+<text x="928" y="610.5" font-size="12" fill="#4b4036" text-anchor="middle">about 800 of 10,000 free units</text>
+<text x="928" y="626" font-size="12" fill="#4b4036" text-anchor="middle">gives up after 20 seconds</text>
+<rect x="1085" y="672" width="226" height="88" rx="12" fill="#f3d2e0" stroke="#c4558a" stroke-width="2.4"/>
+<circle cx="1087" cy="674" r="13" fill="#6b5a4a" stroke="#fff" stroke-width="2"/>
+<text x="1087" y="679" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">7</text>
+<text x="1198" y="699" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Turns titles into numbers</text>
+<text x="1198" y="719" font-size="12" fill="#4b4036" text-anchor="middle">Gemini embeddings (768 numbers)</text>
+<text x="1198" y="734.5" font-size="12" fill="#4b4036" text-anchor="middle">titles + tags become a map</text>
+<text x="1198" y="750" font-size="12" fill="#4b4036" text-anchor="middle">waits and retries if busy</text>
+<rect x="1355" y="672" width="226" height="88" rx="12" fill="#f3d2e0" stroke="#c4558a" stroke-width="2.4"/>
+<circle cx="1357" cy="674" r="13" fill="#6b5a4a" stroke="#fff" stroke-width="2"/>
+<text x="1357" y="679" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">9</text>
+<text x="1468" y="699" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Writes the brief</text>
+<text x="1468" y="719" font-size="12" fill="#4b4036" text-anchor="middle">names · why now · film angle</text>
+<text x="1468" y="734.5" font-size="12" fill="#4b4036" text-anchor="middle">urgency · cover text · on-topic?</text>
+<text x="1468" y="750" font-size="12" fill="#4b4036" text-anchor="middle">answer checked, retried once</text>
+<rect x="1625" y="672" width="226" height="88" rx="12" fill="#f3d2e0" stroke="#c4558a" stroke-width="2.4"/>
+<text x="1738" y="699" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Drafts the script</text>
+<text x="1738" y="719" font-size="12" fill="#4b4036" text-anchor="middle">hook · sections · [SHOW] notes</text>
+<text x="1738" y="734.5" font-size="12" fill="#4b4036" text-anchor="middle">[VERIFY] marks, no made-up facts</text>
+<text x="1738" y="750" font-size="12" fill="#4b4036" text-anchor="middle">English or Hinglish · 40 a day</text>
+<rect x="545" y="796" width="226" height="88" rx="12" fill="#cde6df" stroke="#4c9887" stroke-width="2.4"/>
+<text x="658" y="823" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Remembers his niche</text>
+<text x="658" y="843" font-size="12" fill="#4b4036" text-anchor="middle">keywords · region · email</text>
+<text x="658" y="858.5" font-size="12" fill="#4b4036" text-anchor="middle">minimum views</text>
+<text x="658" y="874" font-size="12" fill="#4b4036" text-anchor="middle">the settings page reads it back</text>
+<rect x="1085" y="796" width="226" height="88" rx="12" fill="#cde6df" stroke="#4c9887" stroke-width="2.4"/>
+<text x="1198" y="823" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Keeps today's videos</text>
+<text x="1198" y="843" font-size="12" fill="#4b4036" text-anchor="middle">stats + meaning numbers</text>
+<text x="1198" y="858.5" font-size="12" fill="#4b4036" text-anchor="middle">same day + same niche = no refetch</text>
+<text x="1198" y="874" font-size="12" fill="#4b4036" text-anchor="middle">tidied up after 30 days</text>
+<rect x="1625" y="796" width="226" height="88" rx="12" fill="#cde6df" stroke="#4c9887" stroke-width="2.4"/>
+<circle cx="1627" cy="798" r="13" fill="#6b5a4a" stroke="#fff" stroke-width="2"/>
+<text x="1627" y="803" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">11</text>
+<text x="1738" y="823" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Saves every brief</text>
+<text x="1738" y="843" font-size="12" fill="#4b4036" text-anchor="middle">archive of past weeks</text>
+<text x="1738" y="858.5" font-size="12" fill="#4b4036" text-anchor="middle">run log · scripts you edited</text>
+<text x="1738" y="874" font-size="12" fill="#4b4036" text-anchor="middle">dashboard reads from here</text>
+<rect x="1625" y="920" width="226" height="88" rx="12" fill="#d3e8cf" stroke="#68a465" stroke-width="2.4"/>
+<circle cx="1627" cy="922" r="13" fill="#6b5a4a" stroke="#fff" stroke-width="2"/>
+<text x="1627" y="927" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">12</text>
+<text x="1738" y="947" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Emails the brief</text>
+<text x="1738" y="967" font-size="12" fill="#4b4036" text-anchor="middle">same layout as the dashboard</text>
+<text x="1738" y="982.5" font-size="12" fill="#4b4036" text-anchor="middle">last good copy if a run fails</text>
+<text x="1738" y="998" font-size="12" fill="#4b4036" text-anchor="middle">free sender → his own inbox</text>
+<rect x="494.5" y="605" width="51" height="22" rx="11" fill="#fff" stroke="#6b5a4a" stroke-width="1.4"/>
+<text x="520" y="620.5" font-size="12" fill="#2a2118" text-anchor="middle">saves</text>
+<rect x="426.5" y="443" width="51" height="22" rx="11" fill="#fff" stroke="#6b5a4a" stroke-width="1.4"/>
+<text x="452" y="458.5" font-size="12" fill="#2a2118" text-anchor="middle">wakes</text>
+<rect x="317.8" y="475" width="44.4" height="22" rx="11" fill="#fff" stroke="#6b5a4a" stroke-width="1.4"/>
+<text x="340" y="490.5" font-size="12" fill="#2a2118" text-anchor="middle">taps</text>
+<rect x="751.3" y="699" width="77.4" height="22" rx="11" fill="#fff" stroke="#6b5a4a" stroke-width="1.4"/>
+<text x="790" y="714.5" font-size="12" fill="#2a2118" text-anchor="middle">his niche</text>
+<rect x="905.8" y="519" width="44.4" height="22" rx="11" fill="#fff" stroke="#6b5a4a" stroke-width="1.4"/>
+<text x="928" y="534.5" font-size="12" fill="#2a2118" text-anchor="middle">asks</text>
+<rect x="1011.2" y="519" width="57.599999999999994" height="22" rx="11" fill="#fff" stroke="#6b5a4a" stroke-width="1.4"/>
+<text x="1040" y="534.5" font-size="12" fill="#2a2118" text-anchor="middle">videos</text>
+<rect x="1146.1" y="581" width="103.8" height="22" rx="11" fill="#fff" stroke="#6b5a4a" stroke-width="1.4"/>
+<text x="1198" y="596.5" font-size="12" fill="#2a2118" text-anchor="middle">titles + tags</text>
+<rect x="1172.5" y="767" width="51" height="22" rx="11" fill="#fff" stroke="#6b5a4a" stroke-width="1.4"/>
+<text x="1198" y="782.5" font-size="12" fill="#2a2118" text-anchor="middle">saved</text>
+<rect x="1289.6" y="581" width="70.8" height="22" rx="11" fill="#fff" stroke="#6b5a4a" stroke-width="1.4"/>
+<text x="1325" y="596.5" font-size="12" fill="#2a2118" text-anchor="middle">meanings</text>
+<rect x="1426" y="581" width="84" height="22" rx="11" fill="#fff" stroke="#6b5a4a" stroke-width="1.4"/>
+<text x="1468" y="596.5" font-size="12" fill="#2a2118" text-anchor="middle">the topics</text>
+<rect x="1567.6" y="581" width="70.8" height="22" rx="11" fill="#fff" stroke="#6b5a4a" stroke-width="1.4"/>
+<text x="1603" y="596.5" font-size="12" fill="#2a2118" text-anchor="middle">write-up</text>
+<rect x="1854.5" y="661" width="51" height="22" rx="11" fill="#fff" stroke="#6b5a4a" stroke-width="1.4"/>
+<text x="1880" y="676.5" font-size="12" fill="#2a2118" text-anchor="middle">saves</text>
+<rect x="1854.5" y="923" width="51" height="22" rx="11" fill="#fff" stroke="#6b5a4a" stroke-width="1.4"/>
+<text x="1880" y="938.5" font-size="12" fill="#2a2118" text-anchor="middle">sends</text>
+<rect x="1304.5" y="953" width="51" height="22" rx="11" fill="#fff" stroke="#6b5a4a" stroke-width="1.4"/>
+<text x="1330" y="968.5" font-size="12" fill="#2a2118" text-anchor="middle">email</text>
+<rect x="1307.5" y="209" width="51" height="22" rx="11" fill="#fff" stroke="#6b5a4a" stroke-width="1.4"/>
+<text x="1333" y="224.5" font-size="12" fill="#2a2118" text-anchor="middle">opens</text>
+<rect x="1580.8" y="209" width="44.4" height="22" rx="11" fill="#fff" stroke="#6b5a4a" stroke-width="1.4"/>
+<text x="1603" y="224.5" font-size="12" fill="#2a2118" text-anchor="middle">then</text>
+<rect x="1892.8" y="477" width="44.4" height="22" rx="11" fill="#fff" stroke="#6b5a4a" stroke-width="1.4"/>
+<text x="1915" y="492.5" font-size="12" fill="#2a2118" text-anchor="middle">asks</text>
+<rect x="1926.5" y="601" width="51" height="22" rx="11" fill="#fff" stroke="#6b5a4a" stroke-width="1.4"/>
+<text x="1952" y="616.5" font-size="12" fill="#2a2118" text-anchor="middle">draft</text>
+<text x="1000" y="1058" font-size="16" font-style="italic" fill="#4b4036" text-anchor="middle">How to read it: follow the numbers 1 to 15 left to right. The circled A is the optional manual button; dashed arrows show what gets passed on.</text>
+<rect x="384.20000000000005" y="1076" width="203.4" height="38" rx="19" fill="#efe8b6" stroke="#a39433" stroke-width="2.4"/>
+<text x="485.90000000000003" y="1100" font-size="16" font-weight="600" fill="#2a2118" text-anchor="middle">Code does the rules</text>
+<rect x="603.6" y="1076" width="220.6" height="38" rx="19" fill="#f3d2e0" stroke="#c4558a" stroke-width="2.4"/>
+<text x="713.9" y="1100" font-size="16" font-weight="600" fill="#2a2118" text-anchor="middle">AI does the reasoning</text>
+<rect x="840.2" y="1076" width="151.8" height="38" rx="19" fill="#dde2f7" stroke="#7a86c9" stroke-width="2.4"/>
+<text x="916.1" y="1100" font-size="16" font-weight="600" fill="#2a2118" text-anchor="middle">People decide</text>
+<rect x="1008" y="1076" width="169" height="38" rx="19" fill="#dcd4f2" stroke="#8a72c8" stroke-width="2.4"/>
+<text x="1092.5" y="1100" font-size="16" font-weight="600" fill="#2a2118" text-anchor="middle">People shape it</text>
+<rect x="1193" y="1076" width="194.79999999999998" height="38" rx="19" fill="#d3e8cf" stroke="#68a465" stroke-width="2.4"/>
+<text x="1290.4" y="1100" font-size="16" font-weight="600" fill="#2a2118" text-anchor="middle">Connected services</text>
+<rect x="1403.8" y="1076" width="212" height="38" rx="19" fill="#cde6df" stroke="#4c9887" stroke-width="2.4"/>
+<text x="1509.8" y="1100" font-size="16" font-weight="600" fill="#2a2118" text-anchor="middle">Every step is stored</text>
+<text x="1000" y="1140" font-size="14" fill="#4b4036" text-anchor="middle">Stack: Next.js on Vercel · Supabase (Postgres) · Gemini Flash + embeddings · YouTube Data API · Resend · Vercel Cron · all free tiers</text>
+<text x="1000" y="1160" font-size="14" fill="#4b4036" text-anchor="middle">Safety net: every input and AI answer is checked (Zod) · last good brief if a run fails · 230 automated tests · CI on every push · 66-point live smoke test</text>
 </svg>
