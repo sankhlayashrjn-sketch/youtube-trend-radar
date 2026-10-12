@@ -77,6 +77,10 @@ npm run smoke -- https://your-site.vercel.app
 
 ## Components Map (architecture)
 
+![Components map](docs/components-map.png)
+
+Image: [`docs/components-map.png`](docs/components-map.png) (editable source: `docs/components-map.svg`, regenerate with `node docs/build-components-map.js`). The same architecture as a Mermaid diagram:
+
 ```mermaid
 flowchart TD
   subgraph Triggers
@@ -89,6 +93,7 @@ flowchart TD
     CR[GET /api/cron/weekly-brief<br/>Bearer CRON_SECRET]
     LAT[GET /api/brief/latest]
     SET[GET/PUT /api/settings]
+    SCR[GET/POST/PUT /api/script<br/>draft + edit scripts]
     HLT[GET /api/health]
   end
   subgraph Lib[Pipeline src/lib]
@@ -99,7 +104,7 @@ flowchart TD
     BR[brief.ts<br/>prompt, Zod, URL verify]
     EM[email.ts<br/>HTML email]
   end
-  DB[(Supabase Postgres<br/>settings · videos · briefs · runs)]
+  DB[(Supabase Postgres<br/>settings · videos · briefs · runs · scripts)]
   YTAPI[[YouTube Data API v3]]
   GAPI[[Gemini Flash + embeddings]]
   RS[[Resend]]
@@ -119,8 +124,18 @@ flowchart TD
   BR --> EM --> RS
   LAT --> DB
   SET --> DB
+  UI --> SCR
+  SCR --> GM
+  SCR --> DB
   HLT --> DB
 ```
+
+## Docs for the exam
+
+- [`docs/components-map.png`](docs/components-map.png): Components Map image
+- [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md): 3-minute demo video script and checklist
+- [`docs/VIVA_PREP.md`](docs/VIVA_PREP.md): viva questions with answers and key numbers
+- [`DECISIONS.md`](DECISIONS.md), [`TEST_REPORT.md`](TEST_REPORT.md)
 
 ## Demo script
 

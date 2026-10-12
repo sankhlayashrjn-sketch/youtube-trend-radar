@@ -1,0 +1,179 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1200" viewBox="0 0 1700 1200" font-family="Segoe UI, Arial, Helvetica, sans-serif">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#6b7280"/></marker></defs>
+<rect width="1700" height="1200" fill="#ffffff"/>
+<rect x="30" y="26" width="46" height="34" rx="9" fill="#e11d1d"/><path d="M47 34 v18 l16 -9 z" fill="#fff"/>
+<text x="92" y="52" font-size="30" font-weight="800" fill="#111827" text-anchor="start">YouTube Trend Radar: Components Map</text>
+<text x="92" y="76" font-size="15" font-weight="400" fill="#6b7280" text-anchor="start">Weekly AI content-strategy brief. Next.js on Vercel, Supabase Postgres, Gemini Flash only, everything on free tiers.</text>
+<rect x="30" y="100" width="1640" height="200" rx="20" fill="#f9fafb" stroke="#e5e7eb" stroke-width="2"/>
+<text x="52" y="130" font-size="14" font-weight="800" fill="#e11d1d" text-anchor="start">1  TRIGGERS + UI</text>
+<text x="1648" y="130" font-size="13" font-weight="400" fill="#6b7280" text-anchor="end">What starts a run, and what the user sees</text>
+<rect x="52" y="140" width="956" height="140" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+<rect x="52" y="140" width="6" height="140" rx="3" fill="#e11d1d"/>
+<text x="72" y="170" font-size="18" font-weight="700" fill="#111827" text-anchor="start">Web app (Next.js App Router, TypeScript, Tailwind, shadcn/ui)</text>
+<text x="72" y="196" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Dashboard: 3-line headline, Signals panel (insight tiles + opportunity map), filterable and sortable theme cards, Generate now</text>
+<text x="72" y="217" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Theme card: example videos with full stats, signal meters, cover maker (PNG download), editable draft script (auto-save)</text>
+<text x="72" y="238" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Archive (list + detail)  |  Settings: categories, region, email, minimum views (Zod validated)  |  Light and dark mode</text>
+<rect x="1026" y="140" width="320" height="140" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+<rect x="1026" y="140" width="6" height="140" rx="3" fill="#e11d1d"/>
+<text x="1046" y="170" font-size="18" font-weight="700" fill="#111827" text-anchor="start">Vercel Cron (weekly)</text>
+<text x="1046" y="196" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">0 23 * * 6 = Sat 23:00 UTC</text>
+<text x="1046" y="217" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">= Sunday 04:30 AM IST</text>
+<text x="1046" y="238" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">Bearer CRON_SECRET</text>
+<rect x="1364" y="140" width="284" height="140" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+<rect x="1364" y="140" width="6" height="140" rx="3" fill="#6b7280"/>
+<text x="1384" y="170" font-size="18" font-weight="700" fill="#111827" text-anchor="start">Vercel Cron (daily)</text>
+<text x="1384" y="196" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">0 6 * * * calls /api/health</text>
+<text x="1384" y="217" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">keeps free Supabase from</text>
+<text x="1384" y="238" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">pausing after 7 idle days</text>
+<rect x="30" y="320" width="1640" height="170" rx="20" fill="#f9fafb" stroke="#e5e7eb" stroke-width="2"/>
+<text x="52" y="350" font-size="14" font-weight="800" fill="#e11d1d" text-anchor="start">2  API ROUTES</text>
+<text x="1490" y="350" font-size="13" font-weight="400" fill="#6b7280" text-anchor="end">Next.js route handlers</text>
+<rect x="52" y="360" width="250" height="115" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+<rect x="52" y="360" width="6" height="115" rx="3" fill="#e11d1d"/>
+<text x="72" y="390" font-size="15" font-weight="700" fill="#111827" text-anchor="start">POST /api/generate</text>
+<text x="72" y="416" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">One stage per call (fetch,</text>
+<text x="72" y="437" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">cluster, brief). Rate limited:</text>
+<text x="72" y="458" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">4 per hour</text>
+<rect x="317" y="360" width="250" height="115" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+<rect x="317" y="360" width="6" height="115" rx="3" fill="#e11d1d"/>
+<text x="337" y="390" font-size="15" font-weight="700" fill="#111827" text-anchor="start">GET /api/brief/latest</text>
+<text x="337" y="416" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Latest brief plus stale and</text>
+<text x="337" y="437" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">settings-changed flags</text>
+<rect x="582" y="360" width="250" height="115" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+<rect x="582" y="360" width="6" height="115" rx="3" fill="#e11d1d"/>
+<text x="602" y="390" font-size="15" font-weight="700" fill="#111827" text-anchor="start">GET, PUT /api/settings</text>
+<text x="602" y="416" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Zod validation, saved to</text>
+<text x="602" y="437" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">the database</text>
+<rect x="847" y="360" width="250" height="115" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+<rect x="847" y="360" width="6" height="115" rx="3" fill="#e11d1d"/>
+<text x="867" y="390" font-size="15" font-weight="700" fill="#111827" text-anchor="start">GET, POST, PUT /api/script</text>
+<text x="867" y="416" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Draft with Gemini, load and</text>
+<text x="867" y="437" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">save edits. 40 per day cap</text>
+<rect x="1112" y="360" width="250" height="115" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+<rect x="1112" y="360" width="6" height="115" rx="3" fill="#e11d1d"/>
+<text x="1132" y="390" font-size="15" font-weight="700" fill="#111827" text-anchor="start">GET /api/cron/weekly-brief</text>
+<text x="1132" y="416" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Secret checked (401 otherwise).</text>
+<text x="1132" y="437" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Runs all stages, emails brief,</text>
+<text x="1132" y="458" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">stale fallback on failure</text>
+<rect x="1377" y="360" width="250" height="115" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+<rect x="1377" y="360" width="6" height="115" rx="3" fill="#e11d1d"/>
+<text x="1397" y="390" font-size="15" font-weight="700" fill="#111827" text-anchor="start">GET /api/health</text>
+<text x="1397" y="416" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Database ping: select 1</text>
+<line x1="177" y1="280" x2="177" y2="358" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="442" y1="280" x2="442" y2="358" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="707" y1="280" x2="707" y2="358" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="972" y1="280" x2="972" y2="358" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="1242" y1="280" x2="1242" y2="358" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="1507" y1="280" x2="1507" y2="358" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="30" y="510" width="1640" height="285" rx="20" fill="#f9fafb" stroke="#e5e7eb" stroke-width="2"/>
+<text x="52" y="540" font-size="14" font-weight="800" fill="#e11d1d" text-anchor="start">3  PIPELINE (src/lib)</text>
+<text x="1648" y="540" font-size="13" font-weight="400" fill="#6b7280" text-anchor="end">Each stage saves its result to the database, so a timeout never loses work</text>
+<rect x="52" y="555" width="240" height="220" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+<rect x="52" y="555" width="6" height="220" rx="3" fill="#e11d1d"/>
+<text x="72" y="585" font-size="19" font-weight="700" fill="#111827" text-anchor="start">1  Fetch</text>
+<text x="72" y="611" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">youtube.ts</text>
+<text x="72" y="632" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">mostPopular (matched</text>
+<text x="72" y="653" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">categories) + capped</text>
+<text x="72" y="674" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">search.list (7 days)</text>
+<text x="72" y="695" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">+ videos.list batches</text>
+<text x="72" y="716" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">Quota guard, daily cache</text>
+<line x1="293" y1="665" x2="311" y2="665" stroke="#e11d1d" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="312" y="555" width="240" height="220" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+<rect x="312" y="555" width="6" height="220" rx="3" fill="#e11d1d"/>
+<text x="332" y="585" font-size="19" font-weight="700" fill="#111827" text-anchor="start">2  Metrics</text>
+<text x="332" y="611" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">metrics.ts (plain code)</text>
+<text x="332" y="632" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">views per hour (velocity)</text>
+<text x="332" y="653" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">engagement rate</text>
+<text x="332" y="674" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">duration bucket</text>
+<text x="332" y="695" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">unique creators</text>
+<line x1="553" y1="665" x2="571" y2="665" stroke="#e11d1d" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="572" y="555" width="240" height="220" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+<rect x="572" y="555" width="6" height="220" rx="3" fill="#e11d1d"/>
+<text x="592" y="585" font-size="19" font-weight="700" fill="#111827" text-anchor="start">3  Embed</text>
+<text x="592" y="611" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">gemini.ts</text>
+<text x="592" y="632" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">Gemini embedding of</text>
+<text x="592" y="653" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">title + tags (768 dims)</text>
+<text x="592" y="674" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">Retry with backoff on 429</text>
+<line x1="813" y1="665" x2="831" y2="665" stroke="#e11d1d" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="832" y="555" width="240" height="220" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+<rect x="832" y="555" width="6" height="220" rx="3" fill="#e11d1d"/>
+<text x="852" y="585" font-size="19" font-weight="700" fill="#111827" text-anchor="start">4  Cluster</text>
+<text x="852" y="611" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">cluster.ts</text>
+<text x="852" y="632" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">k-means, k = 3 to 6</text>
+<text x="852" y="653" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">Drop clusters with fewer</text>
+<text x="852" y="674" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">than 3 distinct creators</text>
+<line x1="1073" y1="665" x2="1091" y2="665" stroke="#e11d1d" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="1092" y="555" width="240" height="220" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+<rect x="1092" y="555" width="6" height="220" rx="3" fill="#e11d1d"/>
+<text x="1112" y="585" font-size="19" font-weight="700" fill="#111827" text-anchor="start">5  Write brief</text>
+<text x="1112" y="611" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">brief.ts</text>
+<text x="1112" y="632" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">Gemini Flash returns JSON</text>
+<text x="1112" y="653" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">Zod validate, retry once</text>
+<text x="1112" y="674" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">Code merges real numbers</text>
+<text x="1112" y="695" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">and verifies video URLs</text>
+<line x1="1333" y1="665" x2="1351" y2="665" stroke="#e11d1d" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="1352" y="555" width="240" height="220" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+<rect x="1352" y="555" width="6" height="220" rx="3" fill="#e11d1d"/>
+<text x="1372" y="585" font-size="19" font-weight="700" fill="#111827" text-anchor="start">6  Email</text>
+<text x="1372" y="611" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">email.ts</text>
+<text x="1372" y="632" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">Resend, inline-safe HTML</text>
+<text x="1372" y="653" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">mirrors the dashboard</text>
+<text x="1372" y="674" font-size="13.5" font-weight="400" fill="#6b7280" text-anchor="start">escapes untrusted text</text>
+<path d="M177 475 V500 H262 V553" fill="none" stroke="#9ca3af" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M1242 475 V500 H262" fill="none" stroke="#9ca3af" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="30" y="815" width="1640" height="300" rx="20" fill="#f9fafb" stroke="#e5e7eb" stroke-width="2"/>
+<text x="52" y="845" font-size="14" font-weight="800" fill="#e11d1d" text-anchor="start">4  DATA + SERVICES</text>
+<rect x="52" y="855" width="260" height="240" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+<rect x="52" y="855" width="6" height="240" rx="3" fill="#ef4444"/>
+<text x="72" y="885" font-size="17" font-weight="700" fill="#111827" text-anchor="start">YouTube Data API v3</text>
+<text x="72" y="911" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">videos.list, search.list</text>
+<text x="72" y="932" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">10,000 units per day free</text>
+<text x="72" y="953" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">about 800 units per run</text>
+<rect x="330" y="855" width="800" height="240" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+<rect x="330" y="855" width="6" height="240" rx="3" fill="#10b981"/>
+<text x="350" y="885" font-size="17" font-weight="700" fill="#111827" text-anchor="start">Supabase Postgres (database only), Drizzle ORM + postgres-js</text>
+<text x="350" y="907" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Transaction pooler (port 6543), prepare:false</text>
+<rect x="350" y="927" width="144" height="150" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
+<text x="362" y="957" font-size="17" font-weight="700" fill="#111827" text-anchor="start">settings</text>
+<text x="362" y="983" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">categories, region,</text>
+<text x="362" y="1004" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">email, min views</text>
+<rect x="504" y="927" width="144" height="150" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
+<text x="516" y="957" font-size="17" font-weight="700" fill="#111827" text-anchor="start">videos</text>
+<text x="516" y="983" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">stats, velocity,</text>
+<text x="516" y="1004" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">embeddings, cache</text>
+<rect x="658" y="927" width="144" height="150" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
+<text x="670" y="957" font-size="17" font-weight="700" fill="#111827" text-anchor="start">briefs</text>
+<text x="670" y="983" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">validated brief</text>
+<text x="670" y="1004" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">JSON per run</text>
+<rect x="812" y="927" width="144" height="150" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
+<text x="824" y="957" font-size="17" font-weight="700" fill="#111827" text-anchor="start">runs</text>
+<text x="824" y="983" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">stage, quota used,</text>
+<text x="824" y="1004" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">error, times</text>
+<rect x="966" y="927" width="144" height="150" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
+<text x="978" y="957" font-size="17" font-weight="700" fill="#111827" text-anchor="start">scripts</text>
+<text x="978" y="983" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">editable draft</text>
+<text x="978" y="1004" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">per brief + theme</text>
+<rect x="1148" y="855" width="260" height="240" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+<rect x="1148" y="855" width="6" height="240" rx="3" fill="#4f46e5"/>
+<text x="1168" y="885" font-size="17" font-weight="700" fill="#111827" text-anchor="start">Gemini Flash + Embeddings</text>
+<text x="1168" y="911" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">gemini-3.8-flash (brief,</text>
+<text x="1168" y="932" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">scripts)</text>
+<text x="1168" y="953" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">gemini-embedding-001</text>
+<text x="1168" y="974" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">(clustering)</text>
+<text x="1168" y="995" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">The only AI provider</text>
+<rect x="1426" y="855" width="222" height="240" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+<rect x="1426" y="855" width="6" height="240" rx="3" fill="#0ea5e9"/>
+<text x="1446" y="885" font-size="17" font-weight="700" fill="#111827" text-anchor="start">Resend</text>
+<text x="1446" y="911" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Email delivery</text>
+<text x="1446" y="932" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">Free sender, sends to</text>
+<text x="1446" y="953" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">the owner's address</text>
+<text x="1446" y="974" font-size="13" font-weight="400" fill="#6b7280" text-anchor="start">EMAIL_FROM configurable</text>
+<line x1="250" y1="777" x2="250" y2="853" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="432" y1="777" x2="432" y2="853" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="952" y1="777" x2="952" y2="853" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M692 777 V805 H1180 V853" fill="none" stroke="#9ca3af" stroke-width="2.5" stroke-linejoin="round" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+<line x1="1212" y1="777" x2="1212" y2="853" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="1472" y1="777" x2="1472" y2="853" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#arrow)"/>
+<text x="52" y="1150" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">Guardrails: Zod validation on every input and AI output, env validated at startup, secrets never logged, stale-brief fallback if YouTube or Gemini fails,</text>
+<text x="52" y="1172" font-size="14" font-weight="400" fill="#6b7280" text-anchor="start">daily cache and quota guard, secret-protected cron, 204 automated tests plus a live smoke test.</text>
+</svg>
