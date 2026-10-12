@@ -23,3 +23,8 @@
 | 19 | Draft scripts are generated on demand with Gemini Flash text and stored in a `scripts` table | Free tier; editing auto-saves after 1.2s; capped at 40 generations per day because the app is public with no login. The prompt bans invented facts and uses [VERIFY:] markers. |
 | 20 | Example videos store likes, comments, duration, velocity, engagement and channel id | The UI and email show full per-video detail; older briefs without these fields still render. |
 | 21 | Search budget is split evenly across keywords; cache key includes a pipeline version | An early cap let the first keywords crowd out the rest. A version bump invalidates cached videos when fetch logic changes. |
+| 22 | Pipeline stages are guarded by run state (`run-state.ts`): exists, running, under 15 minutes old, waiting for that exact stage | Stops anyone replaying stages to burn Gemini quota or send emails; returns 409 |
+| 23 | Cron is idempotent: skips if a run finished in the last 30 minutes, `?force=1` overrides | Vercel can deliver a cron event more than once |
+| 24 | Request timeouts: YouTube 20s, Gemini 60-90s | A hung upstream must not consume the whole function time budget |
+| 25 | No CSP header, other security headers on | The theme bootstrap and Next inline scripts would need nonces; the rest are safe baselines |
+| 26 | CI runs a build with no secrets | Env is validated lazily; this keeps that property from regressing |

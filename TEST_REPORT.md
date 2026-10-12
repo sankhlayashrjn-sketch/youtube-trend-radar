@@ -5,7 +5,8 @@ Run date: 2026-10-12. Target: https://youtube-trend-radar-sankhlayashrjn-sketch.
 | Layer | What | Result |
 |---|---|---|
 | Static | `tsc --noEmit`, ESLint, production build | 0 errors, 0 warnings |
-| Unit + edge + regression + component | Vitest, 12 files, 204 tests | 204 passed |
+| CI | GitHub Actions on every push (typecheck, lint, tests, secret-free build) | passing; also verified from a fresh clone |
+| Unit + edge + regression + component | Vitest, 13 files, 230 tests | 230 passed |
 | Smoke (live, read-only) | `npm run smoke -- <url>`, 66 checks | 66 passed |
 | Browser (responsive) | 5 pages x 5 widths (320, 375, 768, 1024, 1280) | no horizontal overflow, nav fits |
 | Browser (accessibility) | structure audit on 3 pages | clean |
@@ -42,7 +43,19 @@ npm run smoke -- https://<your-site>       # read-only smoke test against a runn
 | 7 | Archive list overflowed the page sideways at 320px | responsive audit | `min-w-0` on list items |
 | 8 | Nav row overflowed on small phones (375px and 320px) | responsive audit | Tighter spacing, hidden scrollbar |
 | 9 | Cover emoji drawn washed-out (inherited the stripe fill alpha) | visual check | Reset fill and alpha before drawing the emoji |
-| 10 | Earlier in development: an early result cap let the first keywords crowd out the rest | manual run | Equal share per keyword (`planSearches`), now unit-tested |
+| 10 | **Any caller could replay a pipeline stage for any run id**, so `{"stage":"brief","runId":999999}` ran Gemini, saved a brief and sent an email with no rate limit | code review | A stage now runs only for a live run waiting for exactly that stage (409 otherwise); verified live |
+| 11 | A repeated Vercel cron delivery would have sent two Sunday emails | code review | Cron skips when a run finished within 30 minutes (`?force=1` overrides) |
+| 12 | `npm run typecheck` failed on a fresh clone (depended on a type Next generates during build) | first CI run | Explicit prop type; CI verified green |
+| 13 | YouTube and Gemini calls had no timeout, so a hung connection could use the whole function budget | code review | 20s YouTube timeout, 60-90s Gemini timeouts, clear error messages |
+| 14 | The database client required unrelated secrets (a missing email key would take the dashboard down) | code review | The client now needs only `DATABASE_URL` |
+| 15 | `scripts` had no foreign key to `briefs` | schema review | FK with cascade delete (migration applied) |
+| 16 | Early in development: an early result cap let the first keywords crowd out the rest | manual run | Equal share per keyword (`planSearches`), now unit-tested |
+
+## Build-quality additions
+
+- GitHub Actions CI (`.github/workflows/ci.yml`): typecheck, lint, tests and a build with no secrets.
+- Security headers on every response (nosniff, frame options, referrer policy, permissions policy, HSTS).
+- `engines` field, old-data cleanup (videos older than 30 days), 26 new backend tests.
 
 ## Known observations (not fixed)
 
