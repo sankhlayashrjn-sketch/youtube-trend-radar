@@ -1,0 +1,1 @@
+ALTER TABLE "scripts" ADD CONSTRAINT "scripts_brief_id_briefs_id_fk" FOREIGN KEY ("brief_id") REFERENCES "public"."briefs"("id") ON DELETE cascade ON UPDATE no action;

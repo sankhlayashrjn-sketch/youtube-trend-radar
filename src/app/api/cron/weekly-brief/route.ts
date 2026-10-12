@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { timingSafeEqual } from "node:crypto";
 import { runFullPipeline } from "@/lib/pipeline";
-import { latestBrief, getSettings } from "@/lib/repo";
+import { latestBrief, latestRun, getSettings } from "@/lib/repo";
+import { isDuplicateCronDelivery } from "@/lib/run-state";
 import { sendBriefEmail } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
@@ -20,6 +21,12 @@ function authorized(req: Request): boolean {
 /** Vercel Cron sends `Authorization: Bearer ${CRON_SECRET}`. Saturday 23:00 UTC = Sunday 04:30 IST. */
 export async function GET(req: Request) {
   if (!authorized(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // A duplicate delivery of the same cron event must not send a second email. ?force=1 overrides (manual testing).
+  if (new URL(req.url).searchParams.get("force") !== "1") {
+    const last = await latestRun().catch(() => null);
+    if (isDuplicateCronDelivery(last)) return NextResponse.json({ ok: true, skipped: "A run finished less than 30 minutes ago." });
+  }
 
   const res = await runFullPipeline({ manual: false, email: true });
   if (res.error) {

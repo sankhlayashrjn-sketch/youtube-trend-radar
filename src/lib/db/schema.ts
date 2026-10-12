@@ -59,7 +59,7 @@ export const scripts = pgTable(
   "scripts",
   {
     id: serial("id").primaryKey(),
-    briefId: uuid("brief_id").notNull(),
+    briefId: uuid("brief_id").notNull().references(() => briefs.id, { onDelete: "cascade" }),
     themeIndex: integer("theme_index").notNull(),
     language: text("language").notNull().default("English"),
     content: text("content").notNull(),

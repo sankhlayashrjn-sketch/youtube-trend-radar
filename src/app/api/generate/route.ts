@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { RateLimitError, runStage, startRun, STAGES } from "@/lib/pipeline";
+import { RateLimitError, RunStateError, runStage, startRun, STAGES } from "@/lib/pipeline";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     void _brief;
     return NextResponse.json({ runId, stage, ...rest });
   } catch (e) {
-    const status = e instanceof RateLimitError ? 429 : 500;
+    const status = e instanceof RateLimitError ? 429 : e instanceof RunStateError ? 409 : 500;
     return NextResponse.json({ error: (e as Error).message }, { status });
   }
 }

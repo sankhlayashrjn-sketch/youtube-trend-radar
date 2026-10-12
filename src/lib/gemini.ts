@@ -42,7 +42,7 @@ export async function embedTexts(texts: string[]): Promise<number[][]> {
       ai().models.embedContent({
         model: getEnv().GEMINI_EMBEDDING_MODEL,
         contents: batch,
-        config: { outputDimensionality: EMBED_DIMS },
+        config: { outputDimensionality: EMBED_DIMS, httpOptions: { timeout: 60_000 } },
       }),
     );
     const vals = res.embeddings ?? [];
@@ -59,7 +59,7 @@ export async function generateJson<T>(prompt: string, schema: ZodType<T>): Promi
       ai().models.generateContent({
         model: getEnv().GEMINI_MODEL,
         contents: p,
-        config: { responseMimeType: "application/json", temperature: 0.4 },
+        config: { responseMimeType: "application/json", temperature: 0.4, httpOptions: { timeout: 90_000 } },
       }),
     );
     return res.text ?? "";
@@ -87,7 +87,7 @@ export async function generateJson<T>(prompt: string, schema: ZodType<T>): Promi
 /** Plain-text generation (e.g. a draft script) with the same 429 backoff. */
 export async function generateText(prompt: string, temperature = 0.7): Promise<string> {
   const res = await withBackoff(() =>
-    ai().models.generateContent({ model: getEnv().GEMINI_MODEL, contents: prompt, config: { temperature } }),
+    ai().models.generateContent({ model: getEnv().GEMINI_MODEL, contents: prompt, config: { temperature, httpOptions: { timeout: 90_000 } } }),
   );
   const text = (res.text ?? "").trim();
   if (!text) throw new Error("Gemini returned an empty script");

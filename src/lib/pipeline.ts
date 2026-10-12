@@ -1,4 +1,4 @@
-import { and, eq, gte, sql as dsql } from "drizzle-orm";
+import { and, eq, gte, lt, sql as dsql } from "drizzle-orm";
 import { db, schema, sql } from "./db";
 import { getSettings, istDate, latestBrief, saveBrief, settingsHash, weekIdFor } from "./repo";
 import { fetchTrendingVideos, QuotaTracker, QUOTA_GUARD } from "./youtube";
@@ -8,10 +8,13 @@ import { buildFacts, writeBrief } from "./brief";
 import { sendBriefEmail } from "./email";
 import type { Brief, VideoRow } from "./types";
 
-export type Stage = "fetch" | "cluster" | "brief";
+import { checkRunnable, type Stage } from "./run-state";
+export type { Stage };
 export const STAGES: Stage[] = ["fetch", "cluster", "brief"];
 
 export class RateLimitError extends Error {}
+/** The run id supplied does not allow this stage (unknown, finished, expired or out of order). */
+export class RunStateError extends Error {}
 
 const MIN_VIDEOS = 12;
 
@@ -91,6 +94,8 @@ async function stageFetch(runId: number) {
     ...v, weekId, region: s.region, settingsHash: hash, fetchedAt: now,
   }));
   for (let i = 0; i < rows.length; i += 50) await d.insert(schema.videos).values(rows.slice(i, i + 50));
+  // Housekeeping: rows for old weeks or old settings are never read again.
+  await d.delete(schema.videos).where(lt(schema.videos.fetchedAt, new Date(Date.now() - 30 * 86_400_000)));
   await setRun(runId, { stage: "cluster", quotaUsed: result.quotaUsed });
   return { cached: false, videos: rows.length, quotaUsed: result.quotaUsed };
 }
@@ -152,6 +157,10 @@ async function stageBrief(runId: number, opts: { email: boolean }) {
 
 /** Run a single stage; on failure, mark the run failed (last saved brief stays visible as stale). */
 export async function runStage(runId: number, stage: Stage, opts: { email?: boolean } = {}) {
+  // Without this, anyone could replay "brief" for any run id and trigger Gemini and an email with no rate limit.
+  const [run] = await db().select().from(schema.runs).where(eq(schema.runs.id, runId));
+  const problem = checkRunnable(run, stage);
+  if (problem) throw new RunStateError(problem);
   try {
     if (stage === "fetch") return await stageFetch(runId);
     if (stage === "cluster") return await stageCluster(runId);

@@ -16,6 +16,13 @@ const schema = z.object({
 
 export type Env = z.infer<typeof schema>;
 
+/** The database client only needs DATABASE_URL, so a missing email key must not take the dashboard down. */
+export function getDatabaseUrl(): string {
+  const r = z.string().url().safeParse(process.env.DATABASE_URL);
+  if (!r.success) throw new Error("Invalid or missing environment variables: DATABASE_URL");
+  return r.data;
+}
+
 let cached: Env | null = null;
 
 /** Validate env lazily (so `next build` works without secrets) and never echo values. */

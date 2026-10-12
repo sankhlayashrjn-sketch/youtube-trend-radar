@@ -63,7 +63,10 @@ async function yt<T>(path: string, params: Record<string, string | number | unde
   const url = new URL(`${BASE}/${path}`);
   for (const [k, v] of Object.entries(params)) if (v !== undefined && v !== "") url.searchParams.set(k, String(v));
   url.searchParams.set("key", getEnv().YOUTUBE_API_KEY);
-  const res = await fetch(url, { cache: "no-store" });
+  // A hung connection must not eat the whole function time budget.
+  const res = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(20_000) }).catch((e) => {
+    throw new Error(e?.name === "TimeoutError" ? "YouTube API timed out" : "YouTube API unreachable");
+  });
   if (!res.ok) {
     const body = await res.text();
     const reason = /quotaExceeded|rateLimitExceeded/.test(body) ? "YouTube quota exceeded" : `YouTube API ${res.status}`;

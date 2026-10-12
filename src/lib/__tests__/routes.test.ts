@@ -10,6 +10,7 @@ const repo = vi.hoisted(() => ({
   scriptsGeneratedToday: vi.fn(),
   upsertGeneratedScript: vi.fn(),
   latestBrief: vi.fn(),
+  latestRun: vi.fn(),
 }));
 vi.mock("@/lib/repo", () => repo);
 
@@ -18,7 +19,8 @@ vi.mock("@/lib/script", () => scriptLib);
 
 const pipeline = vi.hoisted(() => {
   class RateLimitError extends Error {}
-  return { RateLimitError, runStage: vi.fn(), startRun: vi.fn(), STAGES: ["fetch", "cluster", "brief"], runFullPipeline: vi.fn() };
+  class RunStateError extends Error {}
+  return { RateLimitError, RunStateError, runStage: vi.fn(), startRun: vi.fn(), STAGES: ["fetch", "cluster", "brief"], runFullPipeline: vi.fn() };
 });
 vi.mock("@/lib/pipeline", () => pipeline);
 
@@ -45,6 +47,7 @@ const goodSettings = { categories: ["AI tools"], region: "IN", email: "a@b.co", 
 
 beforeEach(() => {
   vi.clearAllMocks();
+  repo.latestRun.mockResolvedValue(null);
   vi.spyOn(console, "error").mockImplementation(() => {});
 });
 
@@ -187,6 +190,12 @@ describe("POST /api/generate", () => {
     expect((await post({ stage: "brief" })).status).toBe(400);
     expect(pipeline.startRun).not.toHaveBeenCalled();
   });
+  it("(regression) a run-state problem (unknown, finished or out-of-order run) is a 409, not a 500 or a silent success", async () => {
+    pipeline.runStage.mockRejectedValueOnce(new pipeline.RunStateError("This run has already finished."));
+    const res = await post({ stage: "brief", runId: 123 });
+    expect(res.status).toBe(409);
+    expect((await res.json()).error).toMatch(/already finished/);
+  });
   it("starting a run is rate limited with a 429", async () => {
     pipeline.startRun.mockRejectedValueOnce(new pipeline.RateLimitError("slow down"));
     expect((await post({ stage: "fetch" })).status).toBe(429);
@@ -221,6 +230,30 @@ describe("GET /api/cron/weekly-brief security", () => {
       expect((await call(a)).status, String(a)).toBe(401);
     }
     expect(pipeline.runFullPipeline).not.toHaveBeenCalled();
+  });
+  it("(regression) a duplicate delivery right after a successful run does nothing and sends no second email", async () => {
+    repo.latestRun.mockResolvedValueOnce({ status: "done", stage: "done", startedAt: new Date(Date.now() - 120_000), finishedAt: new Date(Date.now() - 60_000) });
+    const res = await call(`Bearer ${process.env.CRON_SECRET}`);
+    expect(res.status).toBe(200);
+    expect((await res.json()).skipped).toBeTruthy();
+    expect(pipeline.runFullPipeline).not.toHaveBeenCalled();
+  });
+  it("?force=1 overrides the duplicate guard for manual testing", async () => {
+    repo.latestRun.mockResolvedValue({ status: "done", stage: "done", startedAt: new Date(), finishedAt: new Date() });
+    pipeline.runFullPipeline.mockResolvedValueOnce({ runId: 9, brief: { themes: [1, 2, 3] } });
+    const res = await cronRoute.GET(new Request("http://x/api/cron/weekly-brief?force=1", { headers: { authorization: `Bearer ${process.env.CRON_SECRET}` } }));
+    expect(res.status).toBe(200);
+    expect(pipeline.runFullPipeline).toHaveBeenCalledTimes(1);
+  });
+  it("still runs when the last run failed or is old, and when the run lookup itself fails", async () => {
+    pipeline.runFullPipeline.mockResolvedValue({ runId: 10, brief: { themes: [1, 2, 3] } });
+    repo.latestRun.mockResolvedValueOnce({ status: "failed", stage: "fetch", startedAt: new Date(), finishedAt: new Date() });
+    expect((await call(`Bearer ${process.env.CRON_SECRET}`)).status).toBe(200);
+    repo.latestRun.mockResolvedValueOnce({ status: "done", stage: "done", startedAt: new Date(Date.now() - 7 * 86_400_000), finishedAt: new Date(Date.now() - 7 * 86_400_000) });
+    expect((await call(`Bearer ${process.env.CRON_SECRET}`)).status).toBe(200);
+    repo.latestRun.mockRejectedValueOnce(new Error("db blip"));
+    expect((await call(`Bearer ${process.env.CRON_SECRET}`)).status).toBe(200);
+    expect(pipeline.runFullPipeline).toHaveBeenCalledTimes(3);
   });
   it("fails closed when CRON_SECRET is not configured", async () => {
     delete process.env.CRON_SECRET;
