@@ -142,6 +142,8 @@ export function ScriptEditor({
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }
 
+  // Keep the editor on screen once a script exists, even if the user clears every character.
+  const hasEditor = exists && loaded;
   const words = spokenWords(content);
   const busy = status === "generating" || status === "loading";
   const statusText =
@@ -168,10 +170,10 @@ export function ScriptEditor({
               </select>
             </label>
             <Button type="button" size="sm" onClick={generate} disabled={busy} className="gap-1.5">
-              {status === "generating" ? <Loader2 className="size-3.5 animate-spin" aria-hidden /> : content ? <RefreshCw className="size-3.5" aria-hidden /> : <Sparkles className="size-3.5" aria-hidden />}
-              {status === "generating" ? "Drafting…" : content ? "Draft again" : "Draft with Gemini"}
+              {status === "generating" ? <Loader2 className="size-3.5 animate-spin" aria-hidden /> : hasEditor ? <RefreshCw className="size-3.5" aria-hidden /> : <Sparkles className="size-3.5" aria-hidden />}
+              {status === "generating" ? "Drafting…" : hasEditor ? "Draft again" : "Draft with Gemini"}
             </Button>
-            {content && (
+            {hasEditor && (
               <div className="ml-auto flex gap-1.5">
                 <Button type="button" size="sm" variant="outline" onClick={copy}><ClipboardCopy className="size-3.5" aria-hidden /> Copy</Button>
                 <Button type="button" size="sm" variant="outline" onClick={download}><Download className="size-3.5" aria-hidden /> .md</Button>
@@ -182,7 +184,7 @@ export function ScriptEditor({
           {status === "loading" && <p className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin" aria-hidden /> Opening your script…</p>}
           {status === "generating" && <p className="text-sm text-muted-foreground" role="status">Gemini is writing a first draft. This takes about 20 seconds.</p>}
 
-          {content ? (
+          {hasEditor ? (
             <>
               <label className="sr-only" htmlFor={`script-${themeIndex}`}>Draft script, editable</label>
               <textarea

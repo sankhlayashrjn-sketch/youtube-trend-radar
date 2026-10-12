@@ -15,7 +15,9 @@ const UUID = /^[0-9a-f-]{36}$/i;
 export async function GET(req: Request) {
   const sp = new URL(req.url).searchParams;
   const briefId = sp.get("briefId") ?? "";
-  const themeIndex = Number(sp.get("themeIndex"));
+  const rawIndex = sp.get("themeIndex");
+  // A missing parameter must not be read as theme 0 (Number(null) === 0).
+  const themeIndex = rawIndex === null || rawIndex.trim() === "" ? NaN : Number(rawIndex);
   if (!UUID.test(briefId) || !Number.isInteger(themeIndex) || themeIndex < 0 || themeIndex > 4) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }

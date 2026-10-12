@@ -39,6 +39,17 @@ export function chartCategoriesFor(categories: string[]): string[] {
   return ids;
 }
 
+/**
+ * How to spend the search budget. Every keyword is always searched at least once (so no category is crowded out),
+ * few keywords get extra result pages, and the total never exceeds MAX_SEARCHES.
+ */
+export function planSearches(keywordCount: number, target = 100, max = MAX_SEARCHES) {
+  const keywords = Math.min(Math.max(keywordCount, 0), max);
+  const pagesPerKw = keywords === 0 ? 0 : Math.min(4, Math.max(1, Math.floor(max / keywords)));
+  const perPage = Math.min(50, Math.max(10, Math.ceil((target * 1.6) / Math.max(keywords * pagesPerKw, 1))));
+  return { keywords, pagesPerKw, perPage, totalSearches: keywords * pagesPerKw };
+}
+
 export class QuotaTracker {
   used = 0;
   constructor(public readonly budget = 1_500) {}
@@ -114,11 +125,9 @@ export async function fetchTrendingVideos(opts: {
 
   // 2) Keyword searches (100 units each, capped), recent 7 days.
   const publishedAfter = new Date(Date.now() - 7 * 86_400_000).toISOString();
-  const kws = categories.slice(0, MAX_SEARCHES);
-  // Spend the whole search budget: few keywords => several result pages each, many keywords => one page each.
-  const pagesPerKw = Math.min(4, Math.max(1, Math.floor(MAX_SEARCHES / Math.max(kws.length, 1))));
-  // Every keyword gets an equal share of the results, so no category can crowd out the others.
-  const perPage = Math.min(50, Math.max(10, Math.ceil((target * 1.6) / (Math.max(kws.length, 1) * pagesPerKw))));
+  const plan = planSearches(categories.length, target);
+  const kws = categories.slice(0, plan.keywords);
+  const { pagesPerKw, perPage } = plan;
   let searches = 0;
   for (const q of kws) {
     let pageToken: string | undefined;

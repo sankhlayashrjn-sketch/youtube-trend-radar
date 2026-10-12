@@ -84,7 +84,8 @@ export type AiBrief = z.infer<typeof aiBriefSchema>;
 
 export const settingsSchema = z.object({
   categories: z.array(z.string().trim().min(2).max(60)).min(1, "Add at least one category").max(12, "Max 12 categories"),
-  region: z.string().length(2).toUpperCase(),
+  // Only regions the dropdown offers; an unsupported code would make YouTube reject every fetch.
+  region: z.string().toUpperCase().refine((r) => REGIONS.some((x) => x.code === r), "Choose a supported region"),
   email: z.string().email("Enter a valid email"),
   minViews: z.number().int().min(0).max(20_000_000).default(0),
 });

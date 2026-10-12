@@ -1,14 +1,17 @@
 import { z } from "zod";
 
+const blankAsUnset = <T extends z.ZodType>(s: T) => z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), s);
+
 const schema = z.object({
   YOUTUBE_API_KEY: z.string().min(10),
   GEMINI_API_KEY: z.string().min(10),
   RESEND_API_KEY: z.string().min(10),
   DATABASE_URL: z.string().url(),
   CRON_SECRET: z.string().min(16),
-  EMAIL_FROM: z.string().default("Trend Radar <onboarding@resend.dev>"),
-  GEMINI_MODEL: z.string().default("gemini-3.8-flash"),
-  GEMINI_EMBEDDING_MODEL: z.string().default("gemini-embedding-001"),
+  // A blank value (e.g. "GEMINI_MODEL=" in a dashboard) must fall back to the default, not become an empty string.
+  EMAIL_FROM: blankAsUnset(z.string().default("Trend Radar <onboarding@resend.dev>")),
+  GEMINI_MODEL: blankAsUnset(z.string().default("gemini-3.8-flash")),
+  GEMINI_EMBEDDING_MODEL: blankAsUnset(z.string().default("gemini-embedding-001")),
 });
 
 export type Env = z.infer<typeof schema>;

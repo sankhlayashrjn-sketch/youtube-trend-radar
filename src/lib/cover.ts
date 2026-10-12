@@ -14,7 +14,7 @@ const STOP = new Set(["the", "a", "an", "of", "to", "for", "and", "in", "on", "w
 
 /** Fallback headline for briefs created before cover text existed: up to 4 meaningful words, in caps. */
 export function deriveCoverText(title: string, maxWords = 4): string {
-  const clean = title.replace(/[^\p{L}\p{N}\s'₹$%+&-]/gu, " ").split(/\s+/).filter(Boolean);
+  const clean = title.replace(/[^\p{L}\p{N}\s'₹$%+&-]/gu, " ").split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w));
   const picked = clean.filter((w) => !STOP.has(w.toLowerCase()));
   const words = (picked.length >= 2 ? picked : clean).slice(0, maxWords);
   return words.join(" ").toUpperCase();
