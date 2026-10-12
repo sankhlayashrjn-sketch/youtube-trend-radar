@@ -134,3 +134,25 @@ export function coverChecks(text: string, style: CoverStyle): CoverCheck[] {
     },
   ];
 }
+
+// ---- smart default for darkening an image behind the text -------------------------------------------
+
+/** Mean brightness (0 to 1) of RGBA pixel data, using the standard perceived-brightness weights. */
+export function averageLuminance(rgba: ArrayLike<number>): number {
+  let sum = 0, n = 0;
+  for (let i = 0; i + 3 < rgba.length; i += 4) {
+    if (rgba[i + 3] === 0) continue; // fully transparent pixels say nothing about brightness
+    sum += (0.2126 * rgba[i] + 0.7152 * rgba[i + 1] + 0.0722 * rgba[i + 2]) / 255;
+    n++;
+  }
+  return n ? sum / n : NaN;
+}
+
+/** Default darkening (percent) so white text stays readable: the brighter the image behind it, the more. */
+export function autoDarken(brightness: number): number {
+  if (!Number.isFinite(brightness)) return 45;
+  if (brightness < 0.25) return 30;
+  if (brightness < 0.45) return 45;
+  if (brightness < 0.65) return 60;
+  return 70;
+}

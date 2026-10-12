@@ -56,12 +56,12 @@ Env vars are validated with Zod on first use; error messages list names only, ne
 
 Each theme card has:
 - **Example videos** with views, post age and date, duration, likes, comments, views per hour and engagement.
-- **Cover maker**: a professional dark thumbnail (small label, heavy headline with one highlighted word, this week's real numbers or your own photo faded into the background) you download as a 1280x720 PNG. The highlighted word and label come from what is trending in the example videos. It is drawn in the browser, so it is free; your photo never leaves the browser. Gemini image models are paid and not used.
+- **Cover maker**: a professional dark thumbnail (small label, heavy headline with one highlighted word, this week's real numbers). Add your own image and it becomes the cover (full image, fit whole image, or a side photo), darkened automatically behind the text; clear the headline and label to use your image exactly as it is you download as a 1280x720 PNG. The highlighted word and label come from what is trending in the example videos. It is drawn in the browser, so it is free; your photo never leaves the browser. Gemini image models are paid and not used.
 - **Draft script**: Gemini Flash writes a script in English or Hinglish. You edit it in place; it auto-saves and can be copied or downloaded as Markdown.
 
 ## Testing
 
-257 automated tests (unit, edge-case, regression, component), run in GitHub Actions CI on every push, plus a read-only smoke test for any deployed URL. See [TEST_REPORT.md](TEST_REPORT.md) for coverage, results and the bugs found.
+278 automated tests (unit, edge-case, regression, component), run in GitHub Actions CI on every push, plus a read-only smoke test for any deployed URL. See [TEST_REPORT.md](TEST_REPORT.md) for coverage, results and the bugs found.
 
 ```bash
 npm test

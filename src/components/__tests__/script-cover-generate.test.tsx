@@ -162,13 +162,16 @@ describe("ScriptEditor", () => {
 describe("CoverMaker", () => {
   type Ev = ["set" | "call", string, unknown];
   let events: Ev[];
+  let imageData: number[] = []; // what "reading the pixels of the photo" returns
 
   beforeEach(() => {
     events = [];
+    imageData = [];
     const ctx = new Proxy({} as Record<string, unknown>, {
       get(_t, prop: string) {
         if (prop === "measureText") return (s: string) => ({ width: s.length * 12 });
-        if (prop === "createLinearGradient" || prop === "createRadialGradient") return () => ({ addColorStop() {} });
+        if (prop === "getImageData") return () => ({ data: imageData });
+        if (prop === "createLinearGradient" || prop === "createRadialGradient") return () => ({ addColorStop: (o: number, c: string) => { events.push(["call", "addColorStop", [o, c]]); } });
         return (...args: unknown[]) => { events.push(["call", prop, args]); };
       },
       set(_t, prop: string, value) { events.push(["set", prop, value]); return true; },
@@ -244,9 +247,26 @@ describe("CoverMaker", () => {
     expect(ys.size).toBeLessThanOrEqual(3);
   });
 
-  it("(edge) an empty headline shows a placeholder instead of a blank cover", () => {
-    render(<CoverMaker {...props} defaultText="" />);
-    expect(drawn("YOUR")).toBeTruthy();
+  it("(regression) an empty headline draws nothing: no placeholder text and no accent rule", () => {
+    render(<CoverMaker {...props} defaultText="" defaultKicker="" stats={null} />);
+    expect(texts()).toEqual([]);
+    expect(events.some(([k, n]) => k === "call" && n === "roundRect")).toBe(false);
+  });
+
+  it("(regression) clearing the headline in the field removes it from the cover", () => {
+    render(<CoverMaker {...props} />);
+    expect(drawn("BEST")).toBeTruthy();
+    events.length = 0;
+    fireEvent.change(screen.getByLabelText(/headline on the cover/i), { target: { value: "" } });
+    expect(texts().some((t) => ["BEST", "PHONE", "DEALS", "YOUR", "TITLE"].includes(t.text))).toBe(false);
+  });
+
+  it("an empty headline is a valid choice, not an error", () => {
+    render(<CoverMaker {...props} />);
+    fireEvent.change(screen.getByLabelText(/headline on the cover/i), { target: { value: "" } });
+    const checks = screen.getByLabelText("Thumbnail checks").textContent ?? "";
+    expect(checks).toMatch(/No headline/);
+    expect(checks).not.toMatch(/Aim for 2 to 4 words/);
   });
 
   it("(edge) no label means no label is drawn", () => {
@@ -310,6 +330,132 @@ describe("CoverMaker", () => {
       expect(texts().filter((t) => t.text === "3.6Cr").length).toBeLessThanOrEqual(1); // only the earlier first draw
       fireEvent.click(screen.getByRole("button", { name: /remove photo/i }));
       expect(screen.getByRole("button", { name: /add your photo/i })).toBeTruthy();
+    });
+
+    const addPhoto = async () => {
+      render(<CoverMaker {...props} />);
+      pick(new File(["x"], "me.png", { type: "image/png" }));
+      await waitFor(() => expect(screen.getByRole("button", { name: /change photo/i })).toBeTruthy());
+    };
+    const lastImage = () => [...events].reverse().find(([k, n]) => k === "call" && n === "drawImage")?.[2] as unknown[] | undefined;
+    const stops = () => events.filter(([k, n]) => k === "call" && n === "addColorStop").map(([, , a]) => String((a as unknown[])[1]));
+
+    it("(regression) the photo IS the cover by default: it fills the whole canvas, not just a right-hand panel", async () => {
+      await addPhoto();
+      expect(screen.getByRole("button", { name: "Full image" }).getAttribute("aria-pressed")).toBe("true");
+      // the stand-in image is 800x600; filling 1280x720 means scale 1.6 -> 1280x960, centred vertically
+      expect(lastImage()?.slice(1)).toEqual([0, -120, 1280, 960]);
+    });
+
+    it("(regression) with your image there is no default vignette, glow or panel on top of it", async () => {
+      await addPhoto();
+      events.length = 0;
+      // a genuine redraw (selecting the already-selected layout would not redraw)
+      fireEvent.click(screen.getByRole("button", { name: /^Graphite$/ }));
+      expect(stops().some((c) => c === "rgba(0,0,0,0.42)")).toBe(false); // the vignette
+      expect(texts().some((t) => t.text === "THIS WEEK")).toBe(false); // the stats panel
+    });
+
+    it("'Fit whole image' never crops: the full image is visible, centred on the background", async () => {
+      await addPhoto();
+      fireEvent.click(screen.getByRole("button", { name: "Fit whole image" }));
+      expect(lastImage()?.slice(1)).toEqual([160, 0, 960, 720]);
+    });
+
+    it("'Side photo' keeps the old split layout (photo drawn through a fade layer)", async () => {
+      await addPhoto();
+      events.length = 0;
+      fireEvent.click(screen.getByRole("button", { name: "Side photo" }));
+      const imgs = events.filter(([k, n]) => k === "call" && n === "drawImage");
+      expect(imgs.length).toBeGreaterThanOrEqual(2);
+      expect((imgs[imgs.length - 1][2] as unknown[])[0]).toBeInstanceOf(HTMLCanvasElement);
+      expect(stops().some((c) => c === "rgba(0,0,0,0.42)")).toBe(true); // vignette is back
+    });
+
+    it("(regression) clearing headline and label shows your image exactly as it is: no text, no darkening", async () => {
+      await addPhoto();
+      fireEvent.change(screen.getByLabelText(/headline on the cover/i), { target: { value: "" } });
+      fireEvent.change(screen.getByLabelText(/label above the headline/i), { target: { value: "" } });
+      events.length = 0;
+      // a genuine redraw (selecting the already-selected layout would not redraw)
+      fireEvent.click(screen.getByRole("button", { name: /^Graphite$/ }));
+      expect(texts()).toEqual([]);
+      expect(events.some(([k, n]) => k === "call" && n === "roundRect")).toBe(false);
+      expect(stops().some((c) => c.startsWith("rgba(0,0,0,"))).toBe(false); // no scrim at all
+      expect(lastImage()).toBeTruthy();
+      expect(screen.getByLabelText("Thumbnail checks").textContent).toMatch(/exactly as it is/);
+    });
+
+    it("darkens behind the text only when there is text, and the slider controls how much", async () => {
+      await addPhoto();
+      expect(stops().some((c) => c === "rgba(0,0,0,0.43)")).toBe(true); // 45% default
+      const slider = screen.getByLabelText("Darken behind text") as HTMLInputElement;
+      events.length = 0;
+      fireEvent.change(slider, { target: { value: "80" } });
+      expect(stops().some((c) => c === "rgba(0,0,0,0.76)")).toBe(true);
+      events.length = 0;
+      fireEvent.change(slider, { target: { value: "0" } });
+      expect(stops().some((c) => c.startsWith("rgba(0,0,0,"))).toBe(false);
+    });
+
+    it("hides the darken slider when there is no text or in the side layout", async () => {
+      await addPhoto();
+      fireEvent.click(screen.getByRole("button", { name: "Side photo" }));
+      expect(screen.queryByLabelText("Darken behind text")).toBeNull();
+      fireEvent.click(screen.getByRole("button", { name: "Full image" }));
+      expect(screen.getByLabelText("Darken behind text")).toBeTruthy();
+      fireEvent.change(screen.getByLabelText(/headline on the cover/i), { target: { value: "" } });
+      fireEvent.change(screen.getByLabelText(/label above the headline/i), { target: { value: "" } });
+      expect(screen.queryByLabelText("Darken behind text")).toBeNull();
+    });
+
+    it("text on a photo gets a stronger shadow so it stays readable", async () => {
+      await addPhoto();
+      const blur = events.filter(([k, n]) => k === "set" && n === "shadowBlur").map(([, , v]) => v);
+      expect(blur).toContain(36);
+    });
+
+    it("Reset drops the photo and returns to the default layout", async () => {
+      await addPhoto();
+      fireEvent.click(screen.getByRole("button", { name: "Fit whole image" }));
+      fireEvent.click(screen.getByRole("button", { name: /reset/i }));
+      expect(screen.queryByRole("group", { name: "Photo layout" })).toBeNull();
+      expect(screen.getByRole("button", { name: /add your photo/i })).toBeTruthy();
+    });
+
+    const slider = () => screen.getByLabelText("Darken behind text") as HTMLInputElement;
+    const solid = (v: number) => Array.from({ length: 29 * 36 }).flatMap(() => [v, v, v, 255]);
+
+    it("(regression) a light image gets a stronger default darkening so the text stays readable", async () => {
+      imageData = solid(250);
+      await addPhoto();
+      expect(slider().value).toBe("70");
+    });
+
+    it("a dark image needs less darkening, so it stays as untouched as possible", async () => {
+      imageData = solid(15);
+      await addPhoto();
+      expect(slider().value).toBe("30");
+    });
+
+    it("(edge) when the image cannot be measured it falls back to 45%", async () => {
+      imageData = [];
+      await addPhoto();
+      expect(slider().value).toBe("45");
+    });
+
+    it("the creator can still override the automatic darkening", async () => {
+      imageData = solid(250);
+      await addPhoto();
+      fireEvent.change(slider(), { target: { value: "20" } });
+      expect(slider().value).toBe("20");
+    });
+
+    it("(edge) a new photo always starts in the full-image layout", async () => {
+      await addPhoto();
+      fireEvent.click(screen.getByRole("button", { name: "Side photo" }));
+      pick(new File(["x"], "second.png", { type: "image/png" }));
+      await waitFor(() => expect(screen.getByRole("button", { name: "Full image" }).getAttribute("aria-pressed")).toBe("true"));
     });
 
     it("(edge) a photo that fails to load shows an error and keeps the cover as it was", async () => {

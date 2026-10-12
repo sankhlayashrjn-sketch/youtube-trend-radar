@@ -6,7 +6,7 @@ Run date: 2026-10-12. Target: https://youtube-trend-radar-sankhlayashrjn-sketch.
 |---|---|---|
 | Static | `tsc --noEmit`, ESLint, production build | 0 errors, 0 warnings |
 | CI | GitHub Actions on every push (typecheck, lint, tests, secret-free build) | passing; also verified from a fresh clone |
-| Unit + edge + regression + component | Vitest, 14 files, 257 tests | 257 passed |
+| Unit + edge + regression + component | Vitest, 14 files, 278 tests | 278 passed |
 | Smoke (live, read-only) | `npm run smoke -- <url>`, 66 checks | 66 passed |
 | Browser (responsive) | 5 pages x 5 widths (320, 375, 768, 1024, 1280) | no horizontal overflow, nav fits |
 | Browser (accessibility) | structure audit on 3 pages | clean |
@@ -55,7 +55,7 @@ npm run smoke -- https://<your-site>       # read-only smoke test against a runn
 
 - GitHub Actions CI (`.github/workflows/ci.yml`): typecheck, lint, tests and a build with no secrets.
 - Security headers on every response (nosniff, frame options, referrer policy, permissions policy, HSTS).
-- `engines` field, old-data cleanup (videos older than 30 days), 26 new backend tests, 27 new cover-design tests.
+- `engines` field, old-data cleanup (videos older than 30 days), 26 new backend tests, 48 new cover-design tests.
 
 ## Known observations (not fixed)
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  COVER_STYLES, contrastRatio, coverChecks, deriveCoverText, headlineWords, kickerFor, luminance, pickAccentWord, withAlpha, worstBackground,
+  COVER_STYLES, autoDarken, averageLuminance, contrastRatio, coverChecks, deriveCoverText, headlineWords, kickerFor, luminance, pickAccentWord, withAlpha, worstBackground,
 } from "../cover";
 
 describe("palettes (regression: the old cover looked childish)", () => {
@@ -93,5 +93,40 @@ describe("coverChecks", () => {
   });
   it("derives a clean fallback headline from a title", () => {
     expect(deriveCoverText("I Stopped Paying for Productivity Apps")).toBe("STOPPED PAYING PRODUCTIVITY APPS");
+  });
+});
+
+describe("smart darkening for images behind text", () => {
+  const px = (r: number, g: number, b: number, a = 255, n = 4) => Array.from({ length: n }).flatMap(() => [r, g, b, a]);
+  it("measures brightness from pixel data", () => {
+    expect(averageLuminance(px(255, 255, 255))).toBeCloseTo(1, 5);
+    expect(averageLuminance(px(0, 0, 0))).toBeCloseTo(0, 5);
+    expect(averageLuminance([...px(255, 255, 255, 255, 1), ...px(0, 0, 0, 255, 1)])).toBeCloseTo(0.5, 5);
+  });
+  it("ignores transparent pixels and returns NaN when there is nothing to measure", () => {
+    expect(averageLuminance([...px(255, 255, 255, 255, 1), ...px(0, 0, 0, 0, 3)])).toBeCloseTo(1, 5);
+    expect(Number.isNaN(averageLuminance([]))).toBe(true);
+    expect(Number.isNaN(averageLuminance(px(10, 10, 10, 0)))).toBe(true);
+    expect(Number.isNaN(averageLuminance([1, 2, 3]))).toBe(true); // an incomplete pixel is ignored
+  });
+  it("darkens bright images more than dark ones, in readable steps", () => {
+    expect(autoDarken(0.05)).toBe(30);
+    expect(autoDarken(0.3)).toBe(45);
+    expect(autoDarken(0.5)).toBe(60);
+    expect(autoDarken(0.9)).toBe(70);
+    const steps = [0, 0.2, 0.3, 0.5, 0.7, 1].map(autoDarken);
+    expect([...steps].sort((a, b) => a - b)).toEqual(steps); // never darker for a darker image
+  });
+  it("falls back to the 45% default when brightness cannot be measured", () => {
+    expect(autoDarken(NaN)).toBe(45);
+    expect(autoDarken(Infinity)).toBe(45);
+  });
+  it("every result is a valid slider step (0 to 80 in steps of 5)", () => {
+    for (const b of [0, 0.1, 0.25, 0.4, 0.45, 0.6, 0.65, 0.8, 1]) {
+      const v = autoDarken(b);
+      expect(v % 5).toBe(0);
+      expect(v).toBeGreaterThanOrEqual(0);
+      expect(v).toBeLessThanOrEqual(80);
+    }
   });
 });
