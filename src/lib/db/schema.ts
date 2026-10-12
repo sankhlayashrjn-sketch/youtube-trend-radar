@@ -1,5 +1,5 @@
 import {
-  pgTable, text, integer, bigint, doublePrecision, timestamp, jsonb, serial, uuid, index,
+  pgTable, text, integer, bigint, doublePrecision, timestamp, jsonb, serial, uuid, index, uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 export const settings = pgTable("settings", {
@@ -53,3 +53,18 @@ export const runs = pgTable("runs", {
   startedAt: timestamp("started_at", { withTimezone: true }).notNull().defaultNow(),
   finishedAt: timestamp("finished_at", { withTimezone: true }),
 });
+
+/** Editable draft script per (brief, theme). */
+export const scripts = pgTable(
+  "scripts",
+  {
+    id: serial("id").primaryKey(),
+    briefId: uuid("brief_id").notNull(),
+    themeIndex: integer("theme_index").notNull(),
+    language: text("language").notNull().default("English"),
+    content: text("content").notNull(),
+    generatedAt: timestamp("generated_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("scripts_brief_theme_uq").on(t.briefId, t.themeIndex)],
+);

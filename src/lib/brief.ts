@@ -12,7 +12,7 @@ export type ClusterFacts = {
   avgEngagement: number;
   medianLengthMin: number;
   topTags: string[];
-  topVideos: { id: string; title: string; channel: string; url: string; views: number; lengthMin: number; publishedAt?: string }[];
+  topVideos: { id: string; title: string; channel: string; url: string; views: number; lengthMin: number; publishedAt?: string; channelId?: string; likes?: number; comments?: number; durationSec?: number; velocity?: number; engagement?: number }[];
 };
 
 const url = (id: string) => `https://www.youtube.com/watch?v=${id}`;
@@ -41,6 +41,8 @@ export function buildFacts(videos: VideoRow[], clusters: Cluster[]): ClusterFact
         topTags: [...tagCount.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([t]) => t),
         topVideos: diverse.slice(0, 8).map((v) => ({
           id: v.id, title: v.title, channel: v.channel, url: url(v.id), views: v.views, publishedAt: v.publishedAt.toISOString(),
+          channelId: v.channelId, likes: v.likes, comments: v.comments, durationSec: v.durationSec,
+          velocity: Math.round(v.velocity), engagement: +v.engagement.toFixed(4),
           lengthMin: +(v.durationSec / 60).toFixed(1),
         })),
       };
@@ -75,6 +77,8 @@ Return JSON ONLY with this exact shape:
     "winningFormat": "format that is winning (e.g. hands-on tutorial, comparison, news reaction, listicle)",
     "filmingTitle": "a suggested video title for the creator",
     "filmingAngle": "1-2 sentences on the angle to take",
+    "coverText": "2-4 punchy words in CAPS for the thumbnail, e.g. FREE AI STACK",
+    "coverEmoji": "ONE emoji that suits the thumbnail",
     "urgency": "film_now" | "soon" | "skip",
     "urgencyReason": "one line reason",
     "saturation": "low" | "medium" | "high"
@@ -101,6 +105,8 @@ export function assembleBrief(
     // Example videos come only from the fetched set; URLs are rebuilt from the verified id.
     const exampleVideos = f.topVideos.slice(0, 8).map((v) => ({
       id: v.id, title: v.title, channel: v.channel, url: url(v.id), views: v.views, publishedAt: v.publishedAt,
+      channelId: v.channelId, likes: v.likes, comments: v.comments, durationSec: v.durationSec,
+      velocity: v.velocity, engagement: v.engagement,
     }));
     themes.push({
       name: t.name,
@@ -114,6 +120,7 @@ export function assembleBrief(
       typicalLengthMinutes: Math.max(f.medianLengthMin, 0.1),
       exampleVideos,
       filmingAngle: { title: t.filmingTitle, angle: t.filmingAngle },
+      cover: t.coverText ? { text: t.coverText, emoji: t.coverEmoji } : undefined,
       urgency: { level: t.urgency, reason: t.urgencyReason },
       saturation: t.saturation,
     });

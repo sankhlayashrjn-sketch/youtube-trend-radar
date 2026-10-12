@@ -83,3 +83,13 @@ export async function generateJson<T>(prompt: string, schema: ZodType<T>): Promi
   if (second.ok) return second.data;
   throw new Error(`Gemini returned invalid brief JSON twice: ${second.error.slice(0, 300)}`);
 }
+
+/** Plain-text generation (e.g. a draft script) with the same 429 backoff. */
+export async function generateText(prompt: string, temperature = 0.7): Promise<string> {
+  const res = await withBackoff(() =>
+    ai().models.generateContent({ model: getEnv().GEMINI_MODEL, contents: prompt, config: { temperature } }),
+  );
+  const text = (res.text ?? "").trim();
+  if (!text) throw new Error("Gemini returned an empty script");
+  return text;
+}

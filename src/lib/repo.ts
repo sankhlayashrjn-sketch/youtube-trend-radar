@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, gte } from "drizzle-orm";
 import { db, schema } from "./db";
 import { briefSchema, type Brief, type Settings } from "./types";
 
@@ -87,4 +87,52 @@ export async function getBrief(id: string): Promise<StoredBrief | null> {
 export async function latestRun() {
   const rows = await db().select().from(schema.runs).orderBy(desc(schema.runs.startedAt)).limit(1);
   return rows[0] ?? null;
+}
+
+// ---- scripts ----------------------------------------------------------------
+
+export async function getScript(briefId: string, themeIndex: number) {
+  const rows = await db()
+    .select()
+    .from(schema.scripts)
+    .where(and(eq(schema.scripts.briefId, briefId), eq(schema.scripts.themeIndex, themeIndex)));
+  return rows[0] ?? null;
+}
+
+export async function scriptIndexes(briefId: string): Promise<number[]> {
+  const rows = await db()
+    .select({ i: schema.scripts.themeIndex })
+    .from(schema.scripts)
+    .where(eq(schema.scripts.briefId, briefId));
+  return rows.map((r) => r.i);
+}
+
+/** Create or fully replace the script (used by generate). */
+export async function upsertGeneratedScript(briefId: string, themeIndex: number, language: string, content: string) {
+  const now = new Date();
+  await db()
+    .insert(schema.scripts)
+    .values({ briefId, themeIndex, language, content, generatedAt: now, updatedAt: now })
+    .onConflictDoUpdate({
+      target: [schema.scripts.briefId, schema.scripts.themeIndex],
+      set: { language, content, generatedAt: now, updatedAt: now },
+    });
+}
+
+/** Save the user's edits to an existing script. Returns false if there is nothing to edit. */
+export async function saveScriptEdit(briefId: string, themeIndex: number, content: string): Promise<boolean> {
+  const rows = await db()
+    .update(schema.scripts)
+    .set({ content, updatedAt: new Date() })
+    .where(and(eq(schema.scripts.briefId, briefId), eq(schema.scripts.themeIndex, themeIndex)))
+    .returning({ id: schema.scripts.id });
+  return rows.length > 0;
+}
+
+/** Scripts generated since UTC midnight, for the daily cap. */
+export async function scriptsGeneratedToday(): Promise<number> {
+  const start = new Date();
+  start.setUTCHours(0, 0, 0, 0);
+  const rows = await db().select({ id: schema.scripts.id }).from(schema.scripts).where(gte(schema.scripts.generatedAt, start));
+  return rows.length;
 }

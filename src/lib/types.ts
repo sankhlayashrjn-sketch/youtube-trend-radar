@@ -10,6 +10,13 @@ export const exampleVideoSchema = z.object({
   url: z.string().url(),
   publishedAt: z.string().optional(),
   views: z.number().int().nonnegative(),
+  // Extra detail (older briefs don't have these)
+  channelId: z.string().optional(),
+  likes: z.number().int().nonnegative().optional(),
+  comments: z.number().int().nonnegative().optional(),
+  durationSec: z.number().int().nonnegative().optional(),
+  velocity: z.number().nonnegative().optional(), // views per hour since upload
+  engagement: z.number().nonnegative().optional(), // (likes+comments)/views
 });
 
 export const themeSchema = z.object({
@@ -27,6 +34,8 @@ export const themeSchema = z.object({
   typicalLengthMinutes: z.number().positive(),
   exampleVideos: z.array(exampleVideoSchema).min(1).max(8),
   filmingAngle: z.object({ title: z.string().min(3), angle: z.string().min(10) }),
+  /** Short punchy text and emoji for the thumbnail (older briefs don't have this) */
+  cover: z.object({ text: z.string(), emoji: z.string() }).optional(),
   urgency: z.object({ level: urgencySchema, reason: z.string().min(3) }),
   saturation: saturationSchema,
 });
@@ -61,6 +70,8 @@ export const aiThemeSchema = z.object({
   winningFormat: z.string().min(3),
   filmingTitle: z.string().min(3),
   filmingAngle: z.string().min(10),
+  coverText: z.string().max(40).default(""),
+  coverEmoji: z.string().max(8).default(""),
   urgency: urgencySchema,
   urgencyReason: z.string().min(3),
   saturation: saturationSchema,
@@ -90,3 +101,15 @@ export type VideoRow = {
   views: number; likes: number; comments: number; durationSec: number;
   publishedAt: Date; tags: string[]; velocity: number; engagement: number;
 };
+
+export const SCRIPT_LANGUAGES = ["English", "Hinglish"] as const;
+export const scriptRequestSchema = z.object({
+  briefId: z.string().uuid(),
+  themeIndex: z.number().int().min(0).max(4),
+  language: z.enum(SCRIPT_LANGUAGES).default("English"),
+});
+export const scriptSaveSchema = z.object({
+  briefId: z.string().uuid(),
+  themeIndex: z.number().int().min(0).max(4),
+  content: z.string().max(60_000),
+});

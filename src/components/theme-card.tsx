@@ -1,6 +1,10 @@
-import { Eye, Clock3, Lightbulb, Play, Timer, Users, Zap } from "lucide-react";
+import { Eye, Clock3, Lightbulb, Timer, Users, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { fmtNum, timeAgo } from "@/lib/format";
+import { fmtNum } from "@/lib/format";
+import { deriveCoverText, defaultEmoji } from "@/lib/cover";
+import { VideoCard } from "@/components/video-card";
+import { CoverMaker } from "@/components/cover-maker";
+import { ScriptEditor } from "@/components/script-editor";
 import type { Theme } from "@/lib/types";
 import type { ThemeSignals } from "@/lib/signals";
 
@@ -52,8 +56,8 @@ function Meter({ label, value, color, hint }: { label: string; value: number; co
 }
 
 export function ThemeCard({
-  theme, rank, minViews = 0, signals, flash = false,
-}: { theme: Theme; rank: number; minViews?: number; signals: ThemeSignals; flash?: boolean }) {
+  theme, rank, minViews = 0, signals, flash = false, briefId = null, hasScript = false,
+}: { theme: Theme; rank: number; minViews?: number; signals: ThemeSignals; flash?: boolean; briefId?: string | null; hasScript?: boolean }) {
   const u = URGENCY[theme.urgency.level];
   const examples = theme.exampleVideos.filter((v) => v.views >= minViews);
   const mins = Math.max(1, Math.round(theme.typicalLengthMinutes));
@@ -90,25 +94,8 @@ export function ThemeCard({
         ) : (
           <ul className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2" aria-label="Example videos">
             {examples.map((v) => (
-              <li key={v.id} className="relative w-44 shrink-0 snap-start">
-                <a href={v.url} target="_blank" rel="noopener noreferrer" className="group/v block rounded-xl outline-none focus-visible:ring-3 focus-visible:ring-ring/60">
-                  <span className="relative block aspect-video overflow-hidden rounded-xl bg-muted">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={`https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`} alt="" loading="lazy" className="size-full object-cover transition-transform duration-300 group-hover/v:scale-110 motion-reduce:transform-none" />
-                    <span className="absolute inset-0 grid place-items-center bg-black/0 transition-colors group-hover/v:bg-black/30">
-                      <span className="grid h-7 w-10 scale-75 place-items-center rounded-lg bg-[#ff0000] opacity-0 shadow-lg transition-all group-hover/v:scale-100 group-hover/v:opacity-100 group-focus-visible/v:scale-100 group-focus-visible/v:opacity-100">
-                        <Play className="size-3.5 fill-white text-white" aria-hidden />
-                      </span>
-                    </span>
-                    <span className="absolute bottom-1.5 right-1.5 rounded bg-black/80 px-1.5 py-0.5 text-[10px] font-bold text-white">{fmtNum(v.views)} views</span>
-                  </span>
-                  <span className="mt-2 line-clamp-2 block text-[13px] font-semibold leading-snug group-hover/v:text-primary">{v.title}</span>
-                  <span className="mt-0.5 block text-xs text-muted-foreground">
-                    {v.channel}
-                    {v.publishedAt && <span suppressHydrationWarning> · {timeAgo(v.publishedAt)}</span>}
-                  </span>
-                  <span className="sr-only">Opens on YouTube</span>
-                </a>
+              <li key={v.id} className="relative w-60 shrink-0 snap-start">
+                <VideoCard v={v} />
               </li>
             ))}
           </ul>
@@ -143,14 +130,18 @@ export function ThemeCard({
         <p className="flex items-center gap-1.5 px-4 pt-3 text-xs font-bold uppercase tracking-wider text-primary">
           <Lightbulb className="size-3.5" aria-hidden /> Your next video
         </p>
-        <div className="relative mx-4 mt-2 grid aspect-video place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-red-600 via-red-700 to-zinc-900 p-4 text-center">
-          <div aria-hidden className="absolute -right-6 -top-6 size-28 rounded-full bg-white/10 blur-2xl" />
-          <p className="font-heading relative line-clamp-4 text-lg font-bold leading-tight text-white drop-shadow sm:text-xl">{theme.filmingAngle.title}</p>
-          <span className="absolute bottom-2 right-2 rounded bg-black/80 px-1.5 py-0.5 text-[10px] font-bold text-white">{mins}:00</span>
+        <div className="mx-4 mt-3">
+          <CoverMaker
+            defaultText={theme.cover?.text || deriveCoverText(theme.filmingAngle.title)}
+            defaultEmoji={theme.cover?.emoji || defaultEmoji(theme.urgency.level)}
+            durationMin={mins}
+            slug={theme.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 30)}
+          />
         </div>
         <div className="px-4 pb-4 pt-3">
           <p className="text-sm leading-relaxed text-foreground/85">{theme.filmingAngle.angle}</p>
           <p className="mt-2 text-xs text-muted-foreground">{theme.urgency.reason}</p>
+          <div className="mt-4"><ScriptEditor briefId={briefId} themeIndex={rank - 1} hasScript={hasScript} title={theme.filmingAngle.title} /></div>
         </div>
       </div>
     </article>

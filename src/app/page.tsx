@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { RefreshCw } from "lucide-react";
 import { getLatest } from "@/lib/latest";
+import { scriptIndexes } from "@/lib/repo";
 import { fmtDate } from "@/lib/format";
 import { BriefView } from "@/components/brief-view";
 import { EmptyState } from "@/components/empty-state";
@@ -22,6 +23,7 @@ function Chips({ items }: { items: string[] }) {
 export default async function Dashboard() {
   const latest = await getLatest();
   const minViews = latest.settings?.minViews ?? 0;
+  const scriptIdx = latest.briefId ? await scriptIndexes(latest.briefId).catch(() => []) : [];
 
   // Settings changed since the newest brief was made: don't present old-niche content as current.
   if (latest.brief && latest.settingsMismatch) {
@@ -59,7 +61,7 @@ export default async function Dashboard() {
         {latest.brief && <GenerateButton variant="outline" />}
       </div>
       {latest.stale && latest.staleReason && <StaleBanner reason={latest.staleReason} />}
-      {latest.brief ? <BriefView brief={latest.brief} minViews={minViews} /> : <EmptyState />}
+      {latest.brief ? <BriefView brief={latest.brief} minViews={minViews} briefId={latest.briefId} scriptIdx={scriptIdx} /> : <EmptyState />}
     </div>
   );
 }

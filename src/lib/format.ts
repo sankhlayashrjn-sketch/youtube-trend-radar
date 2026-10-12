@@ -16,3 +16,17 @@ export function timeAgo(iso?: string, now = Date.now()): string {
 
 /** Slider stops for the minimum-views filter: 0 to 20M. Non-linear so low and high ranges are both usable. */
 export const VIEW_STEPS = [0, 1_000, 5_000, 10_000, 25_000, 50_000, 100_000, 250_000, 500_000, 1_000_000, 2_500_000, 5_000_000, 10_000_000, 20_000_000];
+
+/** 754 -> "12:34", 3725 -> "1:02:05" */
+export function fmtDuration(sec?: number): string {
+  if (!sec || sec <= 0) return "";
+  const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+  const mm = h ? String(m).padStart(2, "0") : String(m);
+  return `${h ? `${h}:` : ""}${mm}:${String(s).padStart(2, "0")}`;
+}
+
+/** "8 Oct 2026" in IST */
+export const fmtDay = (iso?: string) =>
+  iso ? new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kolkata" }).format(new Date(iso)) : "";
+
+export const fmtPct = (n?: number) => (n === undefined ? "" : `${(n * 100).toFixed(n >= 0.1 ? 0 : 1)}%`);

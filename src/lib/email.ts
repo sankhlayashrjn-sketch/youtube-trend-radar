@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 import { getEnv } from "./env";
-import { fmtNum, timeAgo } from "./format";
-import type { Brief } from "./types";
+import { fmtDay, fmtDuration, fmtNum, fmtPct, timeAgo } from "./format";
+import type { Brief, Theme } from "./types";
 
 const esc = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -17,17 +17,27 @@ export function appUrl(): string {
   return host ? (host.startsWith("http") ? host : `https://${host}`) : "http://localhost:3000";
 }
 
+/** One example video with every detail we have for it. */
+function exampleLine(v: Theme["exampleVideos"][number], accent: string): string {
+  const bits = [
+    esc(v.channel),
+    `${fmtNum(v.views)} views`,
+    v.publishedAt ? `posted ${timeAgo(v.publishedAt)} (${fmtDay(v.publishedAt)})` : "",
+    v.durationSec ? fmtDuration(v.durationSec) : "",
+    v.likes !== undefined ? `${fmtNum(v.likes)} likes` : "",
+    v.comments !== undefined ? `${fmtNum(v.comments)} comments` : "",
+    v.velocity !== undefined ? `${fmtNum(v.velocity)}/hr` : "",
+    v.engagement !== undefined ? `${fmtPct(v.engagement)} engaged` : "",
+  ].filter(Boolean);
+  return `<li style="margin:0 0 8px 0;"><a href="${esc(v.url)}" style="color:${accent};text-decoration:none;font-weight:600;">${esc(v.title)}</a><br><span style="color:#6b7280;font-size:12px;">${bits.join(" · ")}</span></li>`;
+}
+
 export function renderEmail(brief: Brief, opts: { stale?: boolean } = {}): { subject: string; html: string } {
   const accent = "#e11d1d";
   const themes = brief.themes
     .map((t) => {
       const u = URG[t.urgency.level];
-      const examples = t.exampleVideos
-        .map(
-          (v) =>
-            `<li style="margin:0 0 4px 0;"><a href="${esc(v.url)}" style="color:${accent};text-decoration:none;">${esc(v.title)}</a> <span style="color:#6b7280;">· ${esc(v.channel)} · ${fmtNum(v.views)} views${v.publishedAt ? ` · ${timeAgo(v.publishedAt)}` : ""}</span></li>`,
-        )
-        .join("");
+      const examples = t.exampleVideos.map((v) => exampleLine(v, accent)).join("");
       return `
 <tr><td style="padding:0 0 16px 0;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e5e7eb;border-radius:12px;background:#ffffff;">
@@ -45,6 +55,7 @@ export function renderEmail(brief: Brief, opts: { stale?: boolean } = {}): { sub
     <div style="font-size:15px;font-weight:600;color:#111827;margin:2px 0;">${esc(t.filmingAngle.title)}</div>
     <div style="font-size:14px;color:#374151;line-height:1.45;">${esc(t.filmingAngle.angle)}</div>
     <div style="font-size:12px;color:#6b7280;margin-top:6px;">${esc(t.urgency.reason)}</div>
+    <div style="margin-top:10px;"><a href="${esc(appUrl())}" style="display:inline-block;background:${accent};color:#ffffff;font-size:12px;font-weight:700;text-decoration:none;padding:7px 12px;border-radius:8px;">Draft the script and cover</a></div>
   </div>
   <ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.45;color:#374151;">${examples}</ul>
 </td></tr></table>

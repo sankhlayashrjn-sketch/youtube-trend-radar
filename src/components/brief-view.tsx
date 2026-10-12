@@ -26,7 +26,9 @@ const SORTS: { key: Sort; label: string }[] = [
   { key: "views", label: "Total views" },
 ];
 
-export function BriefView({ brief, minViews = 0 }: { brief: Brief; minViews?: number }) {
+export function BriefView({
+  brief, minViews = 0, briefId = null, scriptIdx = [],
+}: { brief: Brief; minViews?: number; briefId?: string | null; scriptIdx?: number[] }) {
   const [filter, setFilter] = useState<Filter>("all");
   const [sort, setSort] = useState<Sort>("rank");
   const [flash, setFlash] = useState<number | null>(null);
@@ -136,7 +138,7 @@ export function BriefView({ brief, minViews = 0 }: { brief: Brief; minViews?: nu
         ) : (
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {visible.map(({ t, i }) => (
-              <ThemeCard key={t.name} theme={t} rank={i + 1} minViews={minViews} signals={signals[i]} flash={flash === i} />
+              <ThemeCard key={t.name} theme={t} rank={i + 1} minViews={minViews} signals={signals[i]} flash={flash === i} briefId={briefId} hasScript={scriptIdx.includes(i)} />
             ))}
           </div>
         )}
