@@ -59,6 +59,15 @@ Each theme card has:
 - **Cover maker**: an editable thumbnail (headline, emoji, colour) you download as a 1280x720 PNG. It is drawn in the browser, so it is free. Gemini image models are paid and not used.
 - **Draft script**: Gemini Flash writes a script in English or Hinglish. You edit it in place; it auto-saves and can be copied or downloaded as Markdown.
 
+## Testing
+
+204 automated tests (unit, edge-case, regression, component) plus a read-only smoke test for any deployed URL. See [TEST_REPORT.md](TEST_REPORT.md) for coverage, results and the bugs found.
+
+```bash
+npm test
+npm run smoke -- https://your-site.vercel.app
+```
+
 ## Reliability notes
 
 - **Daily cache**: if videos for the same settings were fetched today, YouTube is not called again.

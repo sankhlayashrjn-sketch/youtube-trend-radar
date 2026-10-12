@@ -24,7 +24,7 @@ export default async function Archive() {
       {!failed && briefs.length === 0 && <EmptyState />}
       <ul className="grid gap-3">
         {briefs.map((b) => (
-          <li key={b.id}>
+          <li key={b.id} className="min-w-0">
             <Link href={`/archive/${b.id}`} className="group flex items-center justify-between gap-4 rounded-2xl border bg-card p-5 shadow-sm transition-shadow hover:shadow-md focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none">
               <div className="min-w-0">
                 <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Week of {b.brief.weekOf} · {b.brief.meta.dataSource}</p>
