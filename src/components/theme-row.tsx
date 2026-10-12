@@ -1,0 +1,46 @@
+import { Check } from "lucide-react";
+import { fmtNum } from "@/lib/format";
+import { cn } from "@/lib/utils";
+import { UrgencyBadge } from "@/components/urgency-badge";
+import type { Theme } from "@/lib/types";
+import type { ThemeSignals } from "@/lib/signals";
+
+/** One line in the "Choose what to film" list: enough to compare themes, nothing more. */
+export function ThemeRow({
+  theme, rank, signals, selected, best, onSelect,
+}: { theme: Theme; rank: number; signals: ThemeSignals; selected: boolean; best: boolean; onSelect: () => void }) {
+  return (
+    <button
+      type="button"
+      aria-pressed={selected}
+      onClick={onSelect}
+      className={cn(
+        "w-full rounded-2xl border bg-card p-4 text-left shadow-sm outline-none transition-all hover:-translate-y-0.5 hover:shadow-md focus-visible:ring-3 focus-visible:ring-ring/50 motion-reduce:transform-none",
+        selected && "border-primary ring-2 ring-primary/25",
+      )}
+    >
+      <span className="flex items-start gap-3">
+        <span aria-hidden className={cn("font-heading grid size-8 shrink-0 place-items-center rounded-xl text-sm font-bold", selected ? "bg-primary text-primary-foreground" : "bg-muted text-foreground")}>
+          {selected ? <Check className="size-4" /> : rank}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span className="font-heading text-base font-semibold leading-snug">{theme.name}</span>
+            {best && <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-primary">Best bet</span>}
+          </span>
+          <span className="mt-1 block text-xs text-muted-foreground">
+            {theme.stats.creatorCount} creators · {fmtNum(theme.stats.totalViews)} views · {fmtNum(theme.stats.avgVelocity)}/hr
+          </span>
+        </span>
+        <UrgencyBadge level={theme.urgency.level} />
+      </span>
+      <span className="mt-3 flex items-center gap-3 text-xs">
+        <span className="w-20 shrink-0 text-muted-foreground">Opportunity</span>
+        <span className="h-2 flex-1 overflow-hidden rounded-full bg-muted" role="meter" aria-label={`Opportunity score for ${theme.name}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={signals.opportunity}>
+          <span className="meter-fill block h-full rounded-full bg-primary" style={{ width: `${signals.opportunity}%` }} />
+        </span>
+        <span className="w-7 text-right font-bold tabular-nums">{signals.opportunity}</span>
+      </span>
+    </button>
+  );
+}

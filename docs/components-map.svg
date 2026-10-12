@@ -80,22 +80,22 @@
 <text x="1087" y="183" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">13</text>
 <text x="1198" y="203" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Reads the brief</text>
 <text x="1198" y="223" font-size="12" fill="#4b4036" text-anchor="middle">email on Sunday, or dashboard</text>
-<text x="1198" y="238.5" font-size="12" fill="#4b4036" text-anchor="middle">3-line headline · signals map</text>
-<text x="1198" y="254" font-size="12" fill="#4b4036" text-anchor="middle">filters · sort · jump to a theme</text>
+<text x="1198" y="238.5" font-size="12" fill="#4b4036" text-anchor="middle">3-line headline · 3 signals</text>
+<text x="1198" y="254" font-size="12" fill="#4b4036" text-anchor="middle">ranked theme list · optional map</text>
 <rect x="1355" y="176" width="226" height="88" rx="12" fill="#dde2f7" stroke="#7a86c9" stroke-width="2.4"/>
 <circle cx="1357" cy="178" r="13" fill="#6b5a4a" stroke="#fff" stroke-width="2"/>
 <text x="1357" y="183" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">14</text>
-<text x="1468" y="203" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Explores the themes</text>
-<text x="1468" y="223" font-size="12" fill="#4b4036" text-anchor="middle">example videos with full stats</text>
-<text x="1468" y="238.5" font-size="12" fill="#4b4036" text-anchor="middle">views · age · length · likes</text>
-<text x="1468" y="254" font-size="12" fill="#4b4036" text-anchor="middle">minimum-views filter</text>
+<text x="1468" y="203" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Picks a theme to plan</text>
+<text x="1468" y="223" font-size="12" fill="#4b4036" text-anchor="middle">one theme in focus at a time</text>
+<text x="1468" y="238.5" font-size="12" fill="#4b4036" text-anchor="middle">why it works · example videos</text>
+<text x="1468" y="254" font-size="12" fill="#4b4036" text-anchor="middle">views · age · length · likes</text>
 <rect x="1625" y="176" width="226" height="88" rx="12" fill="#dcd4f2" stroke="#8a72c8" stroke-width="2.4"/>
 <circle cx="1627" cy="178" r="13" fill="#6b5a4a" stroke="#fff" stroke-width="2"/>
 <text x="1627" y="183" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">15</text>
 <text x="1738" y="203" font-size="16.5" font-weight="800" fill="#2a2118" text-anchor="middle">Makes the video</text>
-<text x="1738" y="223" font-size="12" fill="#4b4036" text-anchor="middle">asks for a draft script</text>
-<text x="1738" y="238.5" font-size="12" fill="#4b4036" text-anchor="middle">edits it (auto-saves) · copies</text>
-<text x="1738" y="254" font-size="12" fill="#4b4036" text-anchor="middle">designs the cover → PNG</text>
+<text x="1738" y="223" font-size="12" fill="#4b4036" text-anchor="middle">designs the cover → PNG</text>
+<text x="1738" y="238.5" font-size="12" fill="#4b4036" text-anchor="middle">asks for a draft script</text>
+<text x="1738" y="254" font-size="12" fill="#4b4036" text-anchor="middle">edits it (auto-saves) · copies</text>
 <rect x="275" y="300" width="226" height="88" rx="12" fill="#d3e8cf" stroke="#68a465" stroke-width="2.4"/>
 <circle cx="277" cy="302" r="13" fill="#6b5a4a" stroke="#fff" stroke-width="2"/>
 <text x="277" y="307" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">2</text>
@@ -238,5 +238,5 @@
 <rect x="1403.8" y="1076" width="212" height="38" rx="19" fill="#cde6df" stroke="#4c9887" stroke-width="2.4"/>
 <text x="1509.8" y="1100" font-size="16" font-weight="600" fill="#2a2118" text-anchor="middle">Every step is stored</text>
 <text x="1000" y="1140" font-size="14" fill="#4b4036" text-anchor="middle">Stack: Next.js on Vercel · Supabase (Postgres) · Gemini Flash + embeddings · YouTube Data API · Resend · Vercel Cron · all free tiers</text>
-<text x="1000" y="1160" font-size="14" fill="#4b4036" text-anchor="middle">Safety net: every input and AI answer is checked (Zod) · last good brief if a run fails · 278 automated tests · CI on every push · 66-point live smoke test</text>
+<text x="1000" y="1160" font-size="14" fill="#4b4036" text-anchor="middle">Safety net: every input and AI answer is checked (Zod) · last good brief if a run fails · 307 automated tests · CI on every push · 66-point live smoke test</text>
 </svg>

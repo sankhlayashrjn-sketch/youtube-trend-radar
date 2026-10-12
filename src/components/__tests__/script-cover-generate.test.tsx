@@ -45,6 +45,54 @@ describe("ScriptEditor", () => {
     expect(screen.queryByRole("textbox")).toBeNull();
   });
 
+  it("(new) opened by default inside the Script tab: loads an existing script without a click", async () => {
+    fetchMock.mockResolvedValueOnce(ok({ script: { content: "# Already written", language: "English" } }));
+    render(<ScriptEditor briefId={ID} themeIndex={3} hasScript={true} title="T" defaultOpen />);
+    await waitFor(() => expect(editor().value).toBe("# Already written"));
+    expect(fetchMock.mock.calls[0][0]).toContain(`briefId=${ID}&themeIndex=3`);
+  });
+
+  it("(new) opened by default with no script yet: shows the empty state and the draft button, and fetches nothing", () => {
+    render(<ScriptEditor briefId={ID} themeIndex={0} hasScript={false} title="T" defaultOpen />);
+    expect(screen.getByText(/No script yet/)).toBeTruthy();
+    expect(screen.getByRole("button", { name: /draft with gemini/i })).toBeTruthy();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("(regression) typing and then leaving before the autosave fires still saves the text (keepalive request)", async () => {
+    fetchMock.mockResolvedValueOnce(ok({ script: { content: "start", language: "English" } }));
+    fetchMock.mockResolvedValue(ok({ ok: true }));
+    const { unmount } = render(<ScriptEditor briefId={ID} themeIndex={1} hasScript={true} title="T" defaultOpen />);
+    await waitFor(() => expect(editor().value).toBe("start"));
+    fireEvent.change(editor(), { target: { value: "start plus a last-second edit" } });
+    unmount(); // leave immediately: the 1.2s timer never fires
+    const puts = fetchMock.mock.calls.filter((c) => c[1]?.method === "PUT");
+    expect(puts).toHaveLength(1);
+    expect(puts[0][1].keepalive).toBe(true);
+    expect(JSON.parse(puts[0][1].body)).toEqual({ briefId: ID, themeIndex: 1, content: "start plus a last-second edit" });
+  });
+
+  it("leaving with nothing unsaved sends no extra request", async () => {
+    fetchMock.mockResolvedValueOnce(ok({ script: { content: "start", language: "English" } }));
+    const { unmount } = render(<ScriptEditor briefId={ID} themeIndex={0} hasScript={true} title="T" defaultOpen />);
+    await waitFor(() => expect(editor().value).toBe("start"));
+    unmount();
+    expect(fetchMock.mock.calls.filter((c) => c[1]?.method === "PUT")).toHaveLength(0);
+  });
+
+  it("after an autosave completes, leaving does not save the same text again", async () => {
+    vi.useFakeTimers();
+    fetchMock.mockResolvedValueOnce(ok({ script: { content: "start", language: "English" } }));
+    fetchMock.mockResolvedValue(ok({ ok: true }));
+    const { unmount } = render(<ScriptEditor briefId={ID} themeIndex={0} hasScript={true} title="T" defaultOpen />);
+    await act(async () => { await vi.advanceTimersByTimeAsync(10); });
+    fireEvent.change(editor(), { target: { value: "edited" } });
+    await act(async () => { await vi.advanceTimersByTimeAsync(1500); });
+    expect(fetchMock.mock.calls.filter((c) => c[1]?.method === "PUT")).toHaveLength(1);
+    unmount();
+    expect(fetchMock.mock.calls.filter((c) => c[1]?.method === "PUT")).toHaveLength(1);
+  });
+
   it("opens an existing script from the server into an editable box", async () => {
     fetchMock.mockResolvedValueOnce(ok({ script: { content: "# Saved script\nhello world", language: "Hinglish" } }));
     render(<ScriptEditor briefId={ID} themeIndex={2} hasScript={true} title="T" />);

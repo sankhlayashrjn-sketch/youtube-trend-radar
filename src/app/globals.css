@@ -143,3 +143,8 @@
 @media (prefers-reduced-motion: reduce) {
   .meter-fill, .pop-in, .live-dot, .hover-wiggle:hover, .flash-ring { animation: none !important; }
 }
+
+/* Anchor links (the step bar, "Next" buttons) glide instead of jumping. */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}

@@ -22,9 +22,9 @@ function spokenWords(md: string): number {
 }
 
 export function ScriptEditor({
-  briefId, themeIndex, hasScript, title,
-}: { briefId: string | null; themeIndex: number; hasScript: boolean; title: string }) {
-  const [open, setOpen] = useState(false);
+  briefId, themeIndex, hasScript, title, defaultOpen = false,
+}: { briefId: string | null; themeIndex: number; hasScript: boolean; title: string; defaultOpen?: boolean }) {
+  const [open, setOpen] = useState(defaultOpen);
   const [content, setContent] = useState("");
   const [loaded, setLoaded] = useState(false);
   const [exists, setExists] = useState(hasScript);
@@ -32,8 +32,32 @@ export function ScriptEditor({
   const [status, setStatus] = useState<Status>("idle");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const latest = useRef("");
+  const dirty = useRef(false); // typed but not yet saved
 
-  useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
+  // Opened by default (inside the Script tab): load an existing script straight away.
+  useEffect(() => {
+    if (!defaultOpen || !hasScript || !briefId) return;
+    const id = setTimeout(() => { void load(); }, 0);
+    return () => clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Leaving the page (or the tab) must not lose the last few seconds of typing.
+  useEffect(
+    () => () => {
+      if (timer.current) clearTimeout(timer.current);
+      if (dirty.current && briefId) {
+        void fetch("/api/script", {
+          method: "PUT",
+          keepalive: true,
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ briefId, themeIndex, content: latest.current }),
+        }).catch(() => {});
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   if (!briefId) {
     return (
@@ -52,6 +76,7 @@ export function ScriptEditor({
       if (data.script) {
         setContent(data.script.content);
         latest.current = data.script.content;
+        dirty.current = false;
         setLanguage(data.script.language === "Hinglish" ? "Hinglish" : "English");
         setExists(true);
       }
@@ -83,6 +108,7 @@ export function ScriptEditor({
       if (!res.ok) throw new Error(data.error ?? `Request failed (${res.status})`);
       setContent(data.script.content);
       latest.current = data.script.content;
+      dirty.current = false;
       setExists(true);
       setLoaded(true);
       setStatus("saved");
@@ -102,7 +128,10 @@ export function ScriptEditor({
         body: JSON.stringify({ briefId, themeIndex, content: text }),
       });
       if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? "Save failed");
-      if (latest.current === text) setStatus("saved");
+      if (latest.current === text) {
+        dirty.current = false;
+        setStatus("saved");
+      }
     } catch (e) {
       setStatus("error");
       toast.error("Couldn't save your edits", { description: (e as Error).message });
@@ -112,6 +141,7 @@ export function ScriptEditor({
   function onChange(text: string) {
     setContent(text);
     latest.current = text;
+    dirty.current = true;
     setStatus("dirty");
     if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(() => save(text), SAVE_DELAY_MS);

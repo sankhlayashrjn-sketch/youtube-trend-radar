@@ -61,7 +61,7 @@ Each theme card has:
 
 ## Testing
 
-278 automated tests (unit, edge-case, regression, component), run in GitHub Actions CI on every push, plus a read-only smoke test for any deployed URL. See [TEST_REPORT.md](TEST_REPORT.md) for coverage, results and the bugs found.
+307 automated tests (unit, edge-case, regression, component), run in GitHub Actions CI on every push, plus a read-only smoke test for any deployed URL. See [TEST_REPORT.md](TEST_REPORT.md) for coverage, results and the bugs found.
 
 ```bash
 npm test
@@ -139,8 +139,8 @@ flowchart TD
 
 ## Demo script
 
-1. Open the live URL: the hero shows the **3-line headline**, then the momentum chart and 3-5 theme cards.
-2. On a card, read **Why now** (real numbers), the highlighted **Film this** angle, and expand **Example videos**.
+1. Open the live URL. The dashboard is a three-step flow: **1 Read the week** (the 3-line headline), **2 Choose what to film** (three signals and a ranked theme list), **3 Plan the video** (one theme at a time).
+2. In step 3, move through the tabs with the Next buttons: **Why it works** (the Film this angle and real numbers), **Examples**, **Cover**, **Script**.
 3. Click **Generate now** and watch Fetching → Clustering → Writing brief → Done; check your inbox for the same brief.
 4. Open **Settings**, add a category (e.g. "AI coding tools"), save, and generate again: the brief changes.
 5. Open **Archive** for past briefs. Drag **Minimum views** to filter example videos.

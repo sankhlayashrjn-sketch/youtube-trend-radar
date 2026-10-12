@@ -42,6 +42,19 @@ async function main() {
     record("pages", `${p} is not an error page`, !/Something went wrong|Application error|Internal Server Error/.test(body));
   }
   {
+    // The dashboard is a guided three-step flow. (If the saved brief no longer matches the settings, the page
+    // shows a "settings changed" notice instead, so only check the flow when a brief is being shown.)
+    const { body } = await get("/");
+    if (!body.includes("Your settings changed")) {
+      record("dashboard", "shows the three steps in order", /Read the week[\s\S]*Choose what to film[\s\S]*Plan the video/.test(body));
+      record("dashboard", "has the step bar", body.includes("Dashboard steps"));
+      record("dashboard", "has no 'Fastest riser' signal (removed on request)", !/Fastest riser/i.test(body));
+      record("dashboard", "shows the three signals", ["Best bet", "Most crowded", "Audience loves"].every((s) => body.includes(s)));
+    } else {
+      record("dashboard", "settings-changed notice is shown instead of a stale brief", true);
+    }
+  }
+  {
     const { res } = await get("/components-map");
     record("pages", "/components-map is gone (404)", res.status === 404, String(res.status));
   }

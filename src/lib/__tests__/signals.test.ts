@@ -26,6 +26,11 @@ describe("signals", () => {
     expect(i.find((x) => x.key === "crowded")?.themeIndex).toBe(0);
     expect(i.find((x) => x.key === "loved")?.themeIndex).toBe(2);
   });
+  it("(regression) there are exactly three signals and no 'Fastest riser'", () => {
+    const i = computeInsights(themes, computeSignals(themes));
+    expect(i.map((x) => x.key)).toEqual(["bestBet", "crowded", "loved"]);
+    expect(JSON.stringify(i)).not.toMatch(/fastest/i);
+  });
   it("handles a single theme without NaN", () => {
     const s = computeSignals([mk(5, 100, 0.01)]);
     expect(Number.isNaN(s[0].opportunity)).toBe(false);

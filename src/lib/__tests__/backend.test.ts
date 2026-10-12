@@ -51,6 +51,8 @@ import { schema } from "../db";
 import { securityHeaders } from "../../../next.config";
 
 const NOW = new Date("2026-10-12T10:00:00Z").getTime();
+/** A run that started a minute ago by the REAL clock (runStage uses Date.now(), so a fixed date would go stale). */
+const liveRun = (over: Record<string, unknown> = {}) => ({ id: 7, status: "running", stage: "fetch", startedAt: new Date(Date.now() - 60_000), finishedAt: null, ...over });
 const run = (over: Record<string, unknown> = {}) => ({ id: 7, status: "running", stage: "fetch", startedAt: new Date(NOW - 60_000), finishedAt: null, ...over });
 
 describe("checkRunnable: a stage only runs for the right, live run (regression: any run id could replay any stage)", () => {
@@ -100,22 +102,22 @@ describe("runStage guard (regression: POST /api/generate {stage:'brief', runId:<
     untouched();
   });
   it("a finished run cannot be replayed", async () => {
-    h.runRows = [run({ status: "done", stage: "done" })];
+    h.runRows = [liveRun({ status: "done", stage: "done" })];
     await expect(runStage(7, "brief")).rejects.toBeInstanceOf(RunStateError);
     untouched();
   });
   it("jumping straight to 'brief' on a fresh run is refused", async () => {
-    h.runRows = [run({ stage: "fetch" })];
+    h.runRows = [liveRun({ stage: "fetch" })];
     await expect(runStage(7, "brief")).rejects.toBeInstanceOf(RunStateError);
     untouched();
   });
   it("a refused request does not mark the (legitimate) run as failed", async () => {
-    h.runRows = [run({ status: "done", stage: "done" })];
+    h.runRows = [liveRun({ status: "done", stage: "done" })];
     await expect(runStage(7, "fetch")).rejects.toBeInstanceOf(RunStateError);
     expect(h.updates).toEqual([]);
   });
   it("a valid run passes the guard and reaches the stage, and a stage failure marks the run failed", async () => {
-    h.runRows = [run({ stage: "fetch" })];
+    h.runRows = [liveRun({ stage: "fetch" })];
     h.getSettings.mockRejectedValueOnce(new Error("stop here"));
     const err = await runStage(7, "fetch").catch((e) => e);
     expect(err).not.toBeInstanceOf(RunStateError);

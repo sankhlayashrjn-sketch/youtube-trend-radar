@@ -12,12 +12,12 @@ export const legacyVideo = (id: string, views: number): Video => ({
   id, title: `Legacy ${id}`, channel: `Old ${id}`, url: `https://www.youtube.com/watch?v=${id}`, views,
 });
 
-export function mkTheme(name: string, level: Theme["urgency"]["level"], o: { creators?: number; velocity?: number; views?: number; videos?: Video[]; cover?: Theme["cover"] } = {}): Theme {
+export function mkTheme(name: string, level: Theme["urgency"]["level"], o: { creators?: number; velocity?: number; views?: number; videos?: Video[]; cover?: Theme["cover"]; engagement?: number } = {}): Theme {
   return {
     name,
     summary: `Summary of ${name}.`,
     whyNow: `Why now for ${name}.`,
-    stats: { creatorCount: o.creators ?? 5, videoCount: 8, totalViews: o.views ?? 1_000_000, avgVelocity: o.velocity ?? 1_000, avgEngagement: 0.05 },
+    stats: { creatorCount: o.creators ?? 5, videoCount: 8, totalViews: o.views ?? 1_000_000, avgVelocity: o.velocity ?? 1_000, avgEngagement: o.engagement ?? 0.05 },
     winningFormat: "hands-on tutorial",
     typicalLengthMinutes: 8,
     exampleVideos: o.videos ?? [fullVideo(`${name[0]}1`, 2_000_000), fullVideo(`${name[0]}2`, 30_000), fullVideo(`${name[0]}3`, 900)],
@@ -31,7 +31,7 @@ export function mkTheme(name: string, level: Theme["urgency"]["level"], o: { cre
 export const THEMES = [
   mkTheme("Alpha Theme", "film_now", { creators: 4, velocity: 20_000, views: 500_000 }),
   mkTheme("Bravo Theme", "soon", { creators: 20, velocity: 5_000, views: 9_000_000 }),
-  mkTheme("Charlie Theme", "skip", { creators: 9, velocity: 800, views: 100_000 }),
+  mkTheme("Charlie Theme", "skip", { creators: 9, velocity: 800, views: 100_000, engagement: 0.2 }),
 ];
 
 export const BRIEF: Brief = {

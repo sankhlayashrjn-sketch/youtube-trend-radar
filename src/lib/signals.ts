@@ -26,7 +26,7 @@ export function computeSignals(themes: Theme[]): ThemeSignals[] {
 }
 
 export type Insight = {
-  key: "bestBet" | "fastest" | "crowded" | "loved";
+  key: "bestBet" | "crowded" | "loved";
   label: string;
   themeIndex: number;
   detail: string;
@@ -38,12 +38,10 @@ const argmax = (a: number[]) => a.reduce((best, v, i) => (v > a[best] ? i : best
 export function computeInsights(themes: Theme[], sig: ThemeSignals[]): Insight[] {
   if (!themes.length) return [];
   const best = argmax(sig.map((s) => s.opportunity));
-  const fast = argmax(themes.map((t) => t.stats.avgVelocity));
   const crowd = argmax(themes.map((t) => t.stats.creatorCount));
   const loved = argmax(themes.map((t) => t.stats.avgEngagement));
   return [
     { key: "bestBet", label: "Best bet", themeIndex: best, detail: `${fmt(themes[best].stats.avgVelocity)} views/hr with only ${themes[best].stats.creatorCount} creators` },
-    { key: "fastest", label: "Fastest riser", themeIndex: fast, detail: `${fmt(themes[fast].stats.avgVelocity)} views per hour on average` },
     { key: "crowded", label: "Most crowded", themeIndex: crowd, detail: `${themes[crowd].stats.creatorCount} creators already covering it` },
     { key: "loved", label: "Audience loves", themeIndex: loved, detail: `${(themes[loved].stats.avgEngagement * 100).toFixed(1)}% likes + comments per view` },
   ];

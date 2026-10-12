@@ -10,12 +10,19 @@ import { StaleBanner } from "@/components/stale-banner";
 
 export const dynamic = "force-dynamic";
 
-function Chips({ items }: { items: string[] }) {
+function Chips({ items, max = 4 }: { items: string[]; max?: number }) {
+  const shown = items.slice(0, max);
+  const rest = items.slice(max);
   return (
     <span className="inline-flex flex-wrap gap-1.5 align-middle">
-      {items.map((c) => (
+      {shown.map((c) => (
         <span key={c} className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">{c}</span>
       ))}
+      {rest.length > 0 && (
+        <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-semibold text-muted-foreground" title={rest.join(", ")}>
+          +{rest.length} more
+        </span>
+      )}
     </span>
   );
 }
