@@ -81,7 +81,7 @@ export function OpportunityMap({ themes, signals, onSelect }: { themes: Theme[];
                 );
               }}
             />
-            <Scatter data={data} isAnimationActive shape={(p: unknown) => <Bubble {...(p as DotProps)} onSelect={onSelect} />} />
+            <Scatter data={data} isAnimationActive={false} shape={(p: unknown) => <Bubble {...(p as DotProps)} onSelect={onSelect} />} />
           </ScatterChart>
         </ResponsiveContainer>
       </div>
