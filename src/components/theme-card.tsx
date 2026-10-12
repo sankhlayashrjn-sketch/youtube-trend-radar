@@ -1,7 +1,7 @@
 import { Eye, Clock3, Lightbulb, Timer, Users, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { fmtNum } from "@/lib/format";
-import { deriveCoverText, defaultEmoji } from "@/lib/cover";
+import { deriveCoverText, kickerFor } from "@/lib/cover";
 import { VideoCard } from "@/components/video-card";
 import { CoverMaker } from "@/components/cover-maker";
 import { ScriptEditor } from "@/components/script-editor";
@@ -133,8 +133,9 @@ export function ThemeCard({
         <div className="mx-4 mt-3">
           <CoverMaker
             defaultText={theme.cover?.text || deriveCoverText(theme.filmingAngle.title)}
-            defaultEmoji={theme.cover?.emoji || defaultEmoji(theme.urgency.level)}
-            durationMin={mins}
+            defaultKicker={kickerFor(theme.winningFormat)}
+            exampleTitles={theme.exampleVideos.map((v) => v.title)}
+            stats={{ views: fmtNum(theme.stats.totalViews), creators: theme.stats.creatorCount, velocity: `${fmtNum(theme.stats.avgVelocity)}/hr` }}
             slug={theme.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 30)}
           />
         </div>

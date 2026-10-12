@@ -187,7 +187,7 @@ legend.forEach(([t, k], i) => {
   lx += lw[i] + 16;
 });
 add(`<text x="${W / 2}" y="1140" font-size="14" fill="${MUTED}" text-anchor="middle">Stack: Next.js on Vercel · Supabase (Postgres) · Gemini Flash + embeddings · YouTube Data API · Resend · Vercel Cron · all free tiers</text>`);
-add(`<text x="${W / 2}" y="1160" font-size="14" fill="${MUTED}" text-anchor="middle">Safety net: every input and AI answer is checked (Zod) · last good brief if a run fails · 230 automated tests · CI on every push · 66-point live smoke test</text>`);
+add(`<text x="${W / 2}" y="1160" font-size="14" fill="${MUTED}" text-anchor="middle">Safety net: every input and AI answer is checked (Zod) · last good brief if a run fails · 257 automated tests · CI on every push · 66-point live smoke test</text>`);
 add("</svg>");
 
 const out = nodePath.join(__dirname, "components-map.svg");

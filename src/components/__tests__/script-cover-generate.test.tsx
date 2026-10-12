@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 
 const toast = vi.hoisted(() => ({ success: vi.fn(), error: vi.fn() }));
 vi.mock("sonner", () => ({ toast }));
@@ -160,76 +160,165 @@ describe("ScriptEditor", () => {
 });
 
 describe("CoverMaker", () => {
-  type Rec = { calls: [string, unknown[]][]; sets: [string, unknown][] };
-  let rec: Rec;
+  type Ev = ["set" | "call", string, unknown];
+  let events: Ev[];
 
   beforeEach(() => {
-    rec = { calls: [], sets: [] };
+    events = [];
     const ctx = new Proxy({} as Record<string, unknown>, {
       get(_t, prop: string) {
         if (prop === "measureText") return (s: string) => ({ width: s.length * 12 });
         if (prop === "createLinearGradient" || prop === "createRadialGradient") return () => ({ addColorStop() {} });
-        return (...args: unknown[]) => { rec.calls.push([prop, args]); };
+        return (...args: unknown[]) => { events.push(["call", prop, args]); };
       },
-      set(_t, prop: string, value) { rec.sets.push([prop, value]); return true; },
+      set(_t, prop: string, value) { events.push(["set", prop, value]); return true; },
     });
     vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(ctx as unknown as CanvasRenderingContext2D);
   });
 
-  const text = (s: string) => rec.calls.filter(([n, a]) => n === "fillText" && a[0] === s);
+  /** Every fillText with the fill colour that was active when it was drawn. */
+  const texts = () => {
+    let fill: unknown;
+    const out: { text: string; fill: unknown }[] = [];
+    for (const [kind, name, v] of events) {
+      if (kind === "set" && name === "fillStyle") fill = v;
+      if (kind === "call" && name === "fillText") out.push({ text: String((v as unknown[])[0]), fill });
+    }
+    return out;
+  };
+  // the most recent draw of that text (the canvas is redrawn after every change)
+  const drawn = (s: string) => [...texts()].reverse().find((t) => t.text === s);
+  const props = { defaultText: "Best Phone Deals", defaultKicker: "Buyer's guide", exampleTitles: ["Best phone deals today", "Phone deals compared", "Top phone picks"], stats: { views: "3.6Cr", creators: 19, velocity: "10.9K/hr" }, slug: "s" };
+  const MIDNIGHT_ACCENT = "#4da3ff";
 
-  it("draws the headline and the duration badge from the props", () => {
-    render(<CoverMaker defaultText="Free AI Stack" defaultEmoji="🔥" durationMin={8} slug="s" />);
-    expect(rec.calls.some(([n, a]) => n === "fillText" && String(a[0]).includes("FREE"))).toBe(true);
-    expect(text("8:00").length).toBe(1);
-    expect(text("NEW").length).toBe(1);
+  it("draws the headline in capitals, word by word, with the label above it", () => {
+    render(<CoverMaker {...props} />);
+    for (const w of ["BEST", "PHONE", "DEALS"]) expect(drawn(w)).toBeTruthy();
+    expect(drawn("BUYER'S GUIDE")).toBeTruthy();
   });
 
-  it("(regression) draws the emoji fully opaque: fill style reset before the emoji, after the faint stripes", () => {
-    render(<CoverMaker defaultText="X Y" defaultEmoji="🔥" durationMin={5} slug="s" />);
-    const emojiIdx = rec.calls.findIndex(([n, a]) => n === "fillText" && a[0] === "🔥");
-    expect(emojiIdx).toBeGreaterThan(-1);
-    // Recorded sets and calls are in separate lists, so check the contract directly:
-    const fills = rec.sets.filter(([p]) => p === "fillStyle").map(([, v]) => v);
-    const stripes = fills.indexOf("rgba(255,255,255,0.07)");
-    const reset = fills.indexOf("#000");
-    expect(stripes).toBeGreaterThan(-1);
-    expect(reset).toBeGreaterThan(stripes);
-    expect(rec.sets.some(([p, v]) => p === "globalAlpha" && v === 1)).toBe(true);
+  it("highlights the word that is trending in the example titles, and nothing else", () => {
+    render(<CoverMaker {...props} />);
+    expect(drawn("PHONE")?.fill).toBe(MIDNIGHT_ACCENT);
+    expect(drawn("BEST")?.fill).toBe("#ffffff");
+    expect(drawn("DEALS")?.fill).toBe("#ffffff");
   });
 
-  it("(edge) shrinks a very long headline to fit and wraps it in at most 3 lines", () => {
-    render(<CoverMaker defaultText={"WORD ".repeat(12)} defaultEmoji="" durationMin={5} slug="s" />);
-    const headlineLines = rec.calls.filter(([n, a]) => n === "strokeText" && String(a[0]).includes("WORD"));
-    expect(headlineLines.length).toBeLessThanOrEqual(3);
+  it("lets you pick a different word to highlight, and go back to automatic", () => {
+    render(<CoverMaker {...props} />);
+    fireEvent.click(screen.getByRole("button", { name: "DEALS" }));
+    expect(screen.getByRole("button", { name: "DEALS" }).getAttribute("aria-pressed")).toBe("true");
+    expect(drawn("DEALS")?.fill).toBe(MIDNIGHT_ACCENT);
+    fireEvent.click(screen.getByRole("button", { name: /auto/i }));
+    expect(screen.getByRole("button", { name: "PHONE" }).getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("(regression) is professional: no emoji, no NEW sticker, no timestamp badge", () => {
+    render(<CoverMaker {...props} />);
+    const all = texts().map((t) => t.text).join(" ");
+    expect(all).not.toMatch(/NEW\b/);
+    expect(all).not.toMatch(/\d:\d\d/);
+    expect(all).not.toMatch(/\p{Extended_Pictographic}/u);
+    expect(screen.queryByLabelText(/emoji/i)).toBeNull();
+  });
+
+  it("shows this week's real numbers as the focal graphic, and can hide them", () => {
+    render(<CoverMaker {...props} />);
+    for (const s of ["THIS WEEK", "3.6Cr", "19", "10.9K/hr"]) expect(drawn(s)).toBeTruthy();
+    events.length = 0;
+    fireEvent.click(screen.getByLabelText(/show this week's numbers/i));
+    expect(drawn("3.6Cr")).toBeUndefined();
+    expect(drawn("BEST")).toBeTruthy();
+  });
+
+  it("without stats it still draws a clean headline-only cover", () => {
+    render(<CoverMaker {...props} stats={null} />);
+    expect(drawn("THIS WEEK")).toBeUndefined();
+    expect(screen.queryByLabelText(/show this week's numbers/i)).toBeNull();
+  });
+
+  it("(edge) a very long headline is wrapped into at most 3 lines", () => {
+    render(<CoverMaker {...props} defaultText={"WORD ".repeat(12)} />);
+    const ys = new Set(events.filter(([k, n, a]) => k === "call" && n === "fillText" && String((a as unknown[])[0]) === "WORD").map(([, , a]) => (a as number[])[2]));
+    expect(ys.size).toBeGreaterThanOrEqual(1);
+    expect(ys.size).toBeLessThanOrEqual(3);
   });
 
   it("(edge) an empty headline shows a placeholder instead of a blank cover", () => {
-    render(<CoverMaker defaultText="" defaultEmoji="" durationMin={5} slug="s" />);
-    expect(rec.calls.some(([n, a]) => n === "fillText" && String(a[0]).includes("YOUR TITLE"))).toBe(true);
+    render(<CoverMaker {...props} defaultText="" />);
+    expect(drawn("YOUR")).toBeTruthy();
   });
 
-  it("(edge) no emoji means no emoji is drawn, and a missing duration still gets a sane badge", () => {
-    render(<CoverMaker defaultText="Hi" defaultEmoji="" durationMin={0} slug="s" />);
-    expect(text("1:00").length).toBe(1);
+  it("(edge) no label means no label is drawn", () => {
+    render(<CoverMaker {...props} defaultKicker="" />);
+    expect(texts().some((t) => t.text.includes("GUIDE"))).toBe(false);
   });
 
-  it("redraws when the headline or style changes, and Reset restores the defaults", () => {
-    render(<CoverMaker defaultText="Original" defaultEmoji="🔥" durationMin={5} slug="s" />);
-    const box = screen.getByLabelText(/headline on the cover/i) as HTMLInputElement;
-    fireEvent.change(box, { target: { value: "Changed Text" } });
-    expect(rec.calls.some(([n, a]) => n === "fillText" && String(a[0]).includes("CHANGED"))).toBe(true);
-    fireEvent.click(screen.getByRole("button", { name: /^Mint$/ }));
-    expect(screen.getByRole("button", { name: /^Mint$/ }).getAttribute("aria-pressed")).toBe("true");
+  it("switches colour style and redraws with that style's accent", () => {
+    render(<CoverMaker {...props} />);
+    fireEvent.click(screen.getByRole("button", { name: /^Graphite$/ }));
+    expect(screen.getByRole("button", { name: /^Graphite$/ }).getAttribute("aria-pressed")).toBe("true");
+    expect(drawn("PHONE")?.fill).toBe("#ff8a1f");
+  });
+
+  it("explains how good the cover is: 2-4 words passes, 1 or 7 words warns", () => {
+    render(<CoverMaker {...props} />);
+    expect(within(screen.getByLabelText("Thumbnail checks")).getByText(/3 words/)).toBeTruthy();
+    fireEvent.change(screen.getByLabelText(/headline on the cover/i), { target: { value: "FREE" } });
+    expect(screen.getByLabelText("Thumbnail checks").textContent).toMatch(/Aim for 2 to 4 words/);
+    fireEvent.change(screen.getByLabelText(/headline on the cover/i), { target: { value: "ONE TWO THREE FOUR FIVE SIX SEVEN" } });
+    expect(screen.getByLabelText("Thumbnail checks").textContent).toMatch(/Aim for 2 to 4 words|trim it/);
+  });
+
+  it("Reset restores the original text, label, style and highlight", () => {
+    render(<CoverMaker {...props} />);
+    fireEvent.change(screen.getByLabelText(/headline on the cover/i), { target: { value: "Changed Text" } });
+    fireEvent.click(screen.getByRole("button", { name: /^Ember$/ }));
     fireEvent.click(screen.getByRole("button", { name: /reset/i }));
-    expect(box.value).toBe("Original");
-    expect(screen.getByRole("button", { name: /^Red hot$/ }).getAttribute("aria-pressed")).toBe("true");
+    expect((screen.getByLabelText(/headline on the cover/i) as HTMLInputElement).value).toBe("Best Phone Deals");
+    expect(screen.getByRole("button", { name: /^Midnight$/ }).getAttribute("aria-pressed")).toBe("true");
   });
 
-  it("limits the headline to 40 characters and the emoji to 4", () => {
-    render(<CoverMaker defaultText="x" defaultEmoji="🔥" durationMin={5} slug="s" />);
+  it("limits the headline to 40 characters and the label to 28", () => {
+    render(<CoverMaker {...props} />);
     expect((screen.getByLabelText(/headline on the cover/i) as HTMLInputElement).maxLength).toBe(40);
-    expect((screen.getByLabelText(/emoji/i) as HTMLInputElement).maxLength).toBe(4);
+    expect((screen.getByLabelText(/label above the headline/i) as HTMLInputElement).maxLength).toBe(28);
+  });
+
+  describe("adding a photo", () => {
+    const pick = (file: File) => fireEvent.change(screen.getByLabelText(/add your photo or product shot/i), { target: { files: [file] } });
+
+    beforeEach(() => {
+      (URL as unknown as Record<string, unknown>).createObjectURL = vi.fn(() => "blob:photo");
+      (URL as unknown as Record<string, unknown>).revokeObjectURL = vi.fn();
+      vi.stubGlobal("Image", class { onload: (() => void) | null = null; onerror: (() => void) | null = null; width = 800; height = 600; set src(_v: string) { setTimeout(() => this.onload?.(), 0); } });
+    });
+
+    it("rejects a file that is not an image, and one over 8 MB, with a clear message", () => {
+      render(<CoverMaker {...props} />);
+      pick(new File(["x"], "notes.txt", { type: "text/plain" }));
+      expect(screen.getByRole("alert").textContent).toMatch(/image file/i);
+      pick(new File([new Uint8Array(8 * 1024 * 1024 + 1)], "huge.png", { type: "image/png" }));
+      expect(screen.getByRole("alert").textContent).toMatch(/over 8 MB/);
+    });
+
+    it("draws the photo instead of the numbers, and can remove it again", async () => {
+      render(<CoverMaker {...props} />);
+      pick(new File(["x"], "me.png", { type: "image/png" }));
+      await waitFor(() => expect(screen.getByRole("button", { name: /change photo/i })).toBeTruthy());
+      expect(events.some(([k, n]) => k === "call" && n === "drawImage")).toBe(true);
+      expect(texts().filter((t) => t.text === "3.6Cr").length).toBeLessThanOrEqual(1); // only the earlier first draw
+      fireEvent.click(screen.getByRole("button", { name: /remove photo/i }));
+      expect(screen.getByRole("button", { name: /add your photo/i })).toBeTruthy();
+    });
+
+    it("(edge) a photo that fails to load shows an error and keeps the cover as it was", async () => {
+      vi.stubGlobal("Image", class { onload: (() => void) | null = null; onerror: (() => void) | null = null; set src(_v: string) { setTimeout(() => this.onerror?.(), 0); } });
+      render(<CoverMaker {...props} />);
+      pick(new File(["x"], "broken.png", { type: "image/png" }));
+      await waitFor(() => expect(screen.getByRole("alert").textContent).toMatch(/Couldn't read/));
+      expect(screen.getByRole("button", { name: /add your photo/i })).toBeTruthy();
+    });
   });
 
   it("downloads a PNG named after the idea, and releases the object URL", () => {
@@ -241,7 +330,7 @@ describe("CoverMaker", () => {
     (URL as unknown as Record<string, unknown>).createObjectURL = url;
     (URL as unknown as Record<string, unknown>).revokeObjectURL = revoke;
     const click = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
-    render(<CoverMaker defaultText="Hi" defaultEmoji="🔥" durationMin={5} slug="sale-phones" />);
+    render(<CoverMaker {...props} slug="sale-phones" />);
     fireEvent.click(screen.getByRole("button", { name: /download png/i }));
     expect(click).toHaveBeenCalledTimes(1);
     vi.advanceTimersByTime(1100);

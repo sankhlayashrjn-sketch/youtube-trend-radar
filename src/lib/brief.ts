@@ -77,8 +77,7 @@ Return JSON ONLY with this exact shape:
     "winningFormat": "format that is winning (e.g. hands-on tutorial, comparison, news reaction, listicle)",
     "filmingTitle": "a suggested video title for the creator",
     "filmingAngle": "1-2 sentences on the angle to take",
-    "coverText": "2-4 punchy words in CAPS for the thumbnail, e.g. FREE AI STACK",
-    "coverEmoji": "ONE emoji that suits the thumbnail",
+    "coverText": "2-4 plain, punchy words in CAPS for the thumbnail, no emoji or hype, e.g. FREE AI STACK",
     "urgency": "film_now" | "soon" | "skip",
     "urgencyReason": "one line reason",
     "saturation": "low" | "medium" | "high"

@@ -28,3 +28,6 @@
 | 24 | Request timeouts: YouTube 20s, Gemini 60-90s | A hung upstream must not consume the whole function time budget |
 | 25 | No CSP header, other security headers on | The theme bootstrap and Next inline scripts would need nonces; the rest are safe baselines |
 | 26 | CI runs a build with no secrets | Env is validated lazily; this keeps that property from regressing |
+| 27 | Cover redesigned to a professional dark style: label, heavy Inter headline with one highlighted word, proof panel of real stats or an optional photo, no emoji, stickers or timestamp badge | The first version (stripes, emoji, thick outlines) looked childish. The new rules follow tech-creator thumbnails: 2-4 words, one focal point, high contrast, one accent colour, clear bottom-right corner |
+| 28 | The highlighted word is the headline word most repeated across the example video titles (a number wins); the label comes from the winning format | Ties the cover to what is actually working this week instead of taste |
+| 29 | A photo the creator adds is drawn in the browser only and never uploaded | Privacy and no storage cost; the app has no file storage by design |
