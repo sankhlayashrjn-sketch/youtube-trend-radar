@@ -19,3 +19,7 @@
 | 15 | Second cron `/api/health` daily | Keeps the free Supabase project from pausing. |
 | 16 | Replaced shadcn-generated `from "cn"` imports with `@/lib/utils` | The bare `cn` npm package is unrelated. |
 | 17 | `EMAIL_TO` env as default recipient, stored in DB settings after first load | Resend free sender only delivers to the signup address; keeps the address out of git. |
+| 18 | Cover art is a free in-browser thumbnail maker (canvas), not an AI image | Gemini Flash image models have no free tier (about $0.04-0.07 per image) and the project must stay free. Headline, emoji and colour are editable, and it exports a 1280x720 PNG. Gemini image generation can be added behind an env flag if billing is enabled. |
+| 19 | Draft scripts are generated on demand with Gemini Flash text and stored in a `scripts` table | Free tier; editing auto-saves after 1.2s; capped at 40 generations per day because the app is public with no login. The prompt bans invented facts and uses [VERIFY:] markers. |
+| 20 | Example videos store likes, comments, duration, velocity, engagement and channel id | The UI and email show full per-video detail; older briefs without these fields still render. |
+| 21 | Search budget is split evenly across keywords; cache key includes a pipeline version | An early cap let the first keywords crowd out the rest. A version bump invalidates cached videos when fetch logic changes. |

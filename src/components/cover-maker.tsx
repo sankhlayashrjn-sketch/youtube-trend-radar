@@ -46,6 +46,9 @@ function draw(canvas: HTMLCanvasElement, opts: { text: string; emoji: string; st
   // emoji
   if (emoji) {
     ctx.save();
+    // Color emoji glyphs inherit the fill alpha; the stripes above left it at 7%, so reset to opaque.
+    ctx.fillStyle = "#000";
+    ctx.globalAlpha = 1;
     ctx.font = EMOJI_FONT;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";

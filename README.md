@@ -52,6 +52,13 @@ Env vars are validated with Zod on first use; error messages list names only, ne
 | `npx tsx scripts/run-pipeline.ts [--email] [--seed]` | Run the real pipeline locally; `--seed` writes `seed/brief.json` |
 | `npm test` | Vitest: metrics, clustering rule, brief schema |
 
+## Per-theme tools
+
+Each theme card has:
+- **Example videos** with views, post age and date, duration, likes, comments, views per hour and engagement.
+- **Cover maker**: an editable thumbnail (headline, emoji, colour) you download as a 1280x720 PNG. It is drawn in the browser, so it is free. Gemini image models are paid and not used.
+- **Draft script**: Gemini Flash writes a script in English or Hinglish. You edit it in place; it auto-saves and can be copied or downloaded as Markdown.
+
 ## Reliability notes
 
 - **Daily cache**: if videos for the same settings were fetched today, YouTube is not called again.
