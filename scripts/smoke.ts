@@ -181,7 +181,8 @@ async function main() {
   const byArea = new Map<string, { pass: number; fail: number }>();
   for (const r of results) {
     const a = byArea.get(r.area) ?? { pass: 0, fail: 0 };
-    r.ok ? a.pass++ : a.fail++;
+    if (r.ok) a.pass++;
+    else a.fail++;
     byArea.set(r.area, a);
   }
   for (const r of results) console.log(`${r.ok ? "PASS" : "FAIL"}  [${r.area}] ${r.check}${r.detail && !r.ok ? `  -> ${r.detail}` : ""}`);
