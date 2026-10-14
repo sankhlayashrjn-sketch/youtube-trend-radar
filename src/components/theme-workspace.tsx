@@ -65,9 +65,9 @@ function SaturationMeter({ level }: { level: Theme["saturation"] }) {
 }
 
 export function ThemeWorkspace({
-  theme, index, total, allThemes, minViews = 0, briefId = null, hasScript = false, best = false, flash = false,
+  theme, index, total, allThemes, rpm, minViews = 0, briefId = null, hasScript = false, best = false, flash = false,
 }: {
-  theme: Theme; index: number; total: number; allThemes: Theme[]; minViews?: number; briefId?: string | null;
+  theme: Theme; index: number; total: number; allThemes: Theme[]; rpm: number; minViews?: number; briefId?: string | null;
   hasScript?: boolean; best?: boolean; flash?: boolean;
 }) {
   const [tab, setTab] = useState<TabId>("why");
@@ -159,7 +159,7 @@ export function ThemeWorkspace({
                   <p className="mt-2 text-sm leading-relaxed text-foreground/85">{theme.filmingAngle.angle}</p>
                   <p className="mt-2 text-xs text-muted-foreground">{theme.urgency.reason}</p>
                 </div>
-                <ExpectedResults theme={theme} />
+                <ExpectedResults theme={theme} rpm={rpm} />
                 <p className="text-sm leading-relaxed"><span className="font-semibold">Why now: </span>{theme.whyNow}</p>
                 <dl className="grid gap-4 text-sm sm:grid-cols-3">
                   <div>

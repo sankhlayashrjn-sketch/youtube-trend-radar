@@ -30,6 +30,7 @@ function Chips({ items, max = 4 }: { items: string[]; max?: number }) {
 export default async function Dashboard() {
   const latest = await getLatest();
   const minViews = latest.settings?.minViews ?? 0;
+  const rpm = latest.settings?.rpm ?? 80;
   const scriptIdx = latest.briefId ? await scriptIndexes(latest.briefId).catch(() => []) : [];
 
   // Settings changed since the newest brief was made: don't present old-niche content as current.
@@ -68,7 +69,7 @@ export default async function Dashboard() {
         {latest.brief && <GenerateButton variant="outline" />}
       </div>
       {latest.stale && latest.staleReason && <StaleBanner reason={latest.staleReason} />}
-      {latest.brief ? <BriefView brief={latest.brief} minViews={minViews} briefId={latest.briefId} scriptIdx={scriptIdx} /> : <EmptyState />}
+      {latest.brief ? <BriefView brief={latest.brief} minViews={minViews} rpm={rpm} briefId={latest.briefId} scriptIdx={scriptIdx} /> : <EmptyState />}
     </div>
   );
 }

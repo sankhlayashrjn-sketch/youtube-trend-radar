@@ -43,3 +43,5 @@
 | 39 | Expected views are computed in code from the example videos (median, quartile range), adjusted for urgency and crowding, best case capped at 3x | A transparent estimate beats an AI guess. Script text is not a statistical input, so it is not used |
 | 40 | Rough income = expected views / 1000 x an editable earnings-per-1,000-views figure (default Rs 80) | Creators know their own RPM from YouTube Studio; the default is a typical Indian tech figure, shown as an assumption |
 | 41 | Each headline stat (creators, views, views per hour) is compared with the average of the week's themes and labelled good, average or weak | A raw number like "19 creators" means nothing without a reference point |
+| 42 | Earnings per 1,000 views is a saved setting (new `rpm_inr` column), not a box on each theme; the "how this is worked out" paragraph was removed | Requested: set it once in Settings. One figure then drives every theme's income |
+| 43 | Each theme row shows expected views and rough income, and the list can be sorted by rough income | Income is the deciding number for a creator, so it sits next to the theme instead of inside it |

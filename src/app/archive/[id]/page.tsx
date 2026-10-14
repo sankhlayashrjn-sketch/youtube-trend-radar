@@ -11,7 +11,7 @@ export default async function ArchiveDetail({ params }: { params: Promise<{ id: 
   const { id } = await params;
   const stored = await getBrief(id);
   if (!stored) notFound();
-  const minViews = await getSettings().then((s) => s.minViews).catch(() => 0);
+  const { minViews, rpm } = await getSettings().then((s) => ({ minViews: s.minViews, rpm: s.rpm })).catch(() => ({ minViews: 0, rpm: 80 }));
   const scriptIdx = await scriptIndexes(stored.id).catch(() => []);
   return (
     <div className="space-y-6">
@@ -22,7 +22,7 @@ export default async function ArchiveDetail({ params }: { params: Promise<{ id: 
         <h1 className="font-heading text-3xl font-semibold">Week of {stored.brief.weekOf}</h1>
         <p className="mt-1 text-sm text-muted-foreground">Generated {fmtDate(stored.createdAt.toISOString())} IST</p>
       </div>
-      <BriefView brief={stored.brief} minViews={minViews} briefId={stored.id} scriptIdx={scriptIdx} />
+      <BriefView brief={stored.brief} minViews={minViews} rpm={rpm} briefId={stored.id} scriptIdx={scriptIdx} />
     </div>
   );
 }

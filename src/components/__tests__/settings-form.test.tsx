@@ -133,7 +133,26 @@ describe("SettingsForm saving", () => {
     await waitFor(() => expect(toast.success).toHaveBeenCalled());
     expect(fetchMock.mock.calls[0][0]).toBe("/api/settings");
     expect(fetchMock.mock.calls[0][1].method).toBe("PUT");
-    expect(sent()).toEqual({ categories: ["AI tools"], region: "IN", email: "me@example.com", minViews: 0 });
+    expect(sent()).toEqual({ categories: ["AI tools"], region: "IN", email: "me@example.com", minViews: 0, rpm: 80 });
+  });
+  it("lets you set earnings per 1,000 views and sends it", async () => {
+    render(<SettingsForm initial={initial} />);
+    fireEvent.change(screen.getByLabelText(/earnings per 1,000 views/i), { target: { value: "120" } });
+    save();
+    await waitFor(() => expect(toast.success).toHaveBeenCalled());
+    expect(sent().rpm).toBe(120);
+  });
+  it("rejects an earnings figure outside 10 to 500 and does not save", async () => {
+    render(<SettingsForm initial={initial} />);
+    fireEvent.change(screen.getByLabelText(/earnings per 1,000 views/i), { target: { value: "5000" } });
+    save();
+    await waitFor(() => expect(toast.error).toHaveBeenCalled());
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(screen.getByRole("alert").textContent).toMatch(/at most/i);
+  });
+  it("shows the saved earnings figure", () => {
+    render(<SettingsForm initial={{ ...initial, rpm: 150 }} />);
+    expect((screen.getByLabelText(/earnings per 1,000 views/i) as HTMLInputElement).value).toBe("150");
   });
   it("shows an error toast (not a success) when the server rejects the save", async () => {
     fetchMock.mockResolvedValueOnce({ ok: false, json: async () => ({ error: "Validation failed" }) });

@@ -1,0 +1,1 @@
+ALTER TABLE "settings" ADD COLUMN "rpm_inr" integer DEFAULT 80 NOT NULL;

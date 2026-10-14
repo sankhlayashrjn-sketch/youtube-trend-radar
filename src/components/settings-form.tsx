@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { REGIONS, settingsSchema, type Settings } from "@/lib/types";
 import { fmtNum, VIEW_STEPS } from "@/lib/format";
 
-export function SettingsForm({ initial }: { initial: Settings }) {
+export function SettingsForm({ initial }: { initial: Omit<Settings, "rpm"> & { rpm?: number } }) {
   const [categories, setCategories] = useState(initial.categories);
   const [region, setRegion] = useState(initial.region);
   const [email, setEmail] = useState(initial.email);
@@ -17,6 +17,7 @@ export function SettingsForm({ initial }: { initial: Settings }) {
     const i = VIEW_STEPS.findIndex((v) => v >= initial.minViews);
     return i === -1 ? VIEW_STEPS.length - 1 : i;
   });
+  const [rpm, setRpm] = useState(String(initial.rpm ?? 80));
   const [draft, setDraft] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
@@ -34,7 +35,7 @@ export function SettingsForm({ initial }: { initial: Settings }) {
 
   async function save(ev: React.FormEvent) {
     ev.preventDefault();
-    const parsed = settingsSchema.safeParse({ categories, region, email, minViews: VIEW_STEPS[step] });
+    const parsed = settingsSchema.safeParse({ categories, region, email, minViews: VIEW_STEPS[step], rpm: Number(rpm) });
     if (!parsed.success) {
       const map: Record<string, string> = {};
       parsed.error.issues.forEach((i) => (map[String(i.path[0])] ??= i.message));
@@ -102,6 +103,13 @@ export function SettingsForm({ initial }: { initial: Settings }) {
           className="w-full accent-[var(--primary)] sm:w-96"
         />
         <p className="text-xs text-muted-foreground">From 0 to 20M. Hides example videos below this many views on the dashboard and archive.</p>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="rpm">Earnings per 1,000 views (₹)</Label>
+        <Input id="rpm" type="number" inputMode="numeric" min={10} max={500} value={rpm} onChange={(e) => setRpm(e.target.value)} aria-invalid={!!errors.rpm} aria-describedby="rpm-help" className="sm:w-40" />
+        {errors.rpm && <p role="alert" className="text-sm text-destructive">{errors.rpm}</p>}
+        <p id="rpm-help" className="text-xs text-muted-foreground">Used to turn expected views into rough income for each theme. ₹80 is a typical figure for Indian tech channels. Find yours in YouTube Studio under Analytics, Revenue.</p>
       </div>
 
       <div className="space-y-2">

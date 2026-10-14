@@ -8,11 +8,12 @@ import { cn } from "@/lib/utils";
 import { SectionHeading } from "@/components/section-heading";
 import { SignalTiles } from "@/components/signal-tiles";
 import { OpportunityMap } from "@/components/opportunity-map";
+import { forecastViews, incomeFromViews } from "@/lib/forecast";
 import { ThemeRow } from "@/components/theme-row";
 import { ThemeWorkspace } from "@/components/theme-workspace";
 
 type Filter = "all" | Theme["urgency"]["level"];
-type Sort = "rank" | "opportunity" | "momentum" | "views";
+type Sort = "rank" | "income" | "opportunity" | "momentum" | "views";
 type Item = { t: Theme; i: number };
 
 const FILTERS: { key: Filter; label: string; icon: typeof Flame }[] = [
@@ -23,6 +24,7 @@ const FILTERS: { key: Filter; label: string; icon: typeof Flame }[] = [
 ];
 const SORTS: { key: Sort; label: string }[] = [
   { key: "rank", label: "Brief order" },
+  { key: "income", label: "Rough income" },
   { key: "opportunity", label: "Opportunity" },
   { key: "momentum", label: "Momentum" },
   { key: "views", label: "Total views" },
@@ -35,8 +37,8 @@ const STEPS = [
 ];
 
 export function BriefView({
-  brief, minViews = 0, briefId = null, scriptIdx = [],
-}: { brief: Brief; minViews?: number; briefId?: string | null; scriptIdx?: number[] }) {
+  brief, minViews = 0, rpm = 80, briefId = null, scriptIdx = [],
+}: { brief: Brief; minViews?: number; rpm?: number; briefId?: string | null; scriptIdx?: number[] }) {
   const signals = useMemo(() => computeSignals(brief.themes), [brief.themes]);
   // The recommended starting point: the theme the "Best bet" signal points at.
   const bestIdx = useMemo(() => computeInsights(brief.themes, signals).find((s) => s.key === "bestBet")?.themeIndex ?? 0, [brief.themes, signals]);
@@ -55,12 +57,13 @@ export function BriefView({
     const filtered = filter === "all" ? items : items.filter((x) => x.t.urgency.level === filter);
     const score: Record<Sort, (x: Item) => number> = {
       rank: (x) => -x.i,
+      income: (x) => incomeFromViews(forecastViews(x.t).expected, rpm),
       opportunity: (x) => signals[x.i].opportunity,
       momentum: (x) => signals[x.i].momentum,
       views: (x) => x.t.stats.totalViews,
     };
     return [...filtered].sort((a, b) => score[sort](b) - score[sort](a));
-  }, [brief.themes, filter, sort, signals]);
+  }, [brief.themes, filter, sort, signals, rpm]);
 
   /** Pick a theme and take the user straight to its workspace. */
   const select = useCallback((i: number) => {
@@ -161,7 +164,7 @@ export function BriefView({
             <ul aria-label="Themes" className="grid gap-3 lg:grid-cols-2">
               {visible.map(({ t, i }) => (
                 <li key={t.name} className="min-w-0">
-                  <ThemeRow theme={t} rank={i + 1} signals={signals[i]} selected={i === selected} best={i === bestIdx} onSelect={() => select(i)} />
+                  <ThemeRow theme={t} rank={i + 1} signals={signals[i]} selected={i === selected} best={i === bestIdx} rpm={rpm} onSelect={() => select(i)} />
                 </li>
               ))}
             </ul>
@@ -205,6 +208,7 @@ export function BriefView({
               index={i}
               total={brief.themes.length}
               allThemes={brief.themes}
+              rpm={rpm}
               minViews={minViews}
               briefId={briefId}
               hasScript={scriptIdx.includes(i)}

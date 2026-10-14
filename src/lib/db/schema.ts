@@ -8,6 +8,7 @@ export const settings = pgTable("settings", {
   region: text("region").notNull().default("IN"),
   email: text("email").notNull().default(""),
   minViews: integer("min_views").notNull().default(0),
+  rpm: integer("rpm_inr").notNull().default(80),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

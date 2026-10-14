@@ -88,6 +88,8 @@ export const settingsSchema = z.object({
   region: z.string().toUpperCase().refine((r) => REGIONS.some((x) => x.code === r), "Choose a supported region"),
   email: z.string().email("Enter a valid email"),
   minViews: z.number().int().min(0).max(20_000_000).default(0),
+  /** Rupees the creator earns per 1,000 views; turns expected views into rough income. */
+  rpm: z.number().int().min(10, "At least ₹10").max(500, "At most ₹500").default(80),
 });
 export type Settings = z.infer<typeof settingsSchema>;
 

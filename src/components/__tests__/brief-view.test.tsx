@@ -196,7 +196,9 @@ describe("step 2: choosing a theme", () => {
   it("sorts the list, and the numbers on the rows stay the brief's own numbers", () => {
     render(<BriefView brief={BRIEF} />);
     const sort = screen.getByLabelText(/sort by/i) as HTMLSelectElement;
-    expect([...sort.options].map((o) => o.textContent)).toEqual(["Brief order", "Opportunity", "Momentum", "Total views"]);
+    expect([...sort.options].map((o) => o.textContent)).toEqual(["Brief order", "Rough income", "Opportunity", "Momentum", "Total views"]);
+    fireEvent.change(sort, { target: { value: "income" } });
+    expect(rowNames().map((n) => n.match(/(Alpha|Bravo|Charlie)/)?.[1])).toEqual(["Alpha", "Bravo", "Charlie"]);
     fireEvent.change(sort, { target: { value: "views" } });
     expect(rowNames().map((n) => n.match(/(Alpha|Bravo|Charlie)/)?.[1])).toEqual(["Bravo", "Alpha", "Charlie"]);
     fireEvent.change(sort, { target: { value: "momentum" } });
@@ -261,18 +263,32 @@ describe("step 3: the workspace for the selected theme", () => {
     expect(within(panel).getByTestId("expected-views").textContent).toBe("34.5K");
     expect(within(panel).getByTestId("expected-income").textContent).toBe("₹2,800"); // 34,500 views at Rs 80 per 1,000
     expect(panel.textContent).toContain("Likely range");
-    expect(panel.textContent).toContain("not a promise");
+      });
+
+  it("the income follows the earnings-per-1,000-views setting, and the explainer text is gone", () => {
+    render(<BriefView brief={BRIEF} rpm={160} />);
+    const panel = screen.getByRole("tabpanel");
+    expect(within(panel).getByTestId("expected-income").textContent).toBe("₹5,500"); // 34,500 views at Rs 160 per 1,000
+    expect(panel.textContent).not.toContain("How this is worked out");
+    expect(panel.textContent).toContain("₹160 per 1,000 views");
+    expect(within(panel).queryByLabelText(/earnings per 1,000 views/i)).toBeNull(); // the input lives in Settings now
+    expect(within(panel).getByRole("link", { name: "Settings" }).getAttribute("href")).toBe("/settings");
   });
 
-  it("changing the earnings per 1,000 views updates the income, and an absurd value is clamped", () => {
-    render(<BriefView brief={BRIEF} />);
-    const panel = screen.getByRole("tabpanel");
-    const box = within(panel).getByLabelText(/earnings per 1,000 views/i) as HTMLInputElement;
-    fireEvent.change(box, { target: { value: "160" } });
-    expect(within(panel).getByTestId("expected-income").textContent).toBe("₹5,500");
-    fireEvent.change(box, { target: { value: "999999" } });
-    fireEvent.blur(box);
-    expect(box.value).toBe("500");
+  it("every theme row shows expected views and rough income, so themes can be compared by money", () => {
+    render(<BriefView brief={BRIEF} rpm={80} />);
+    const rows = within(screen.getByRole("list", { name: "Themes" })).getAllByTestId("row-income");
+    expect(rows).toHaveLength(3);
+    expect(rows[0].textContent).toContain("34.5K views");
+    expect(rows[0].textContent).toContain("₹2,800");
+    expect(rows[2].textContent).toContain("24.0K views"); // Charlie is 'skip': 30K x 0.8
+  });
+
+  it("sorting by rough income puts the highest earner first and follows the rate", () => {
+    const rich = mkTheme("Rich Theme", "soon", { videos: [fullVideo("R1", 5_000_000), fullVideo("R2", 4_000_000), fullVideo("R3", 3_000_000)] });
+    render(<BriefView brief={{ ...BRIEF, themes: [...THEMES, rich] }} rpm={80} />);
+    fireEvent.change(screen.getByLabelText(/sort by/i), { target: { value: "income" } });
+    expect(rowNames()[0]).toContain("Rich Theme");
   });
 
   it("'Why it works' explains each number against this week's average, with a verdict", () => {
