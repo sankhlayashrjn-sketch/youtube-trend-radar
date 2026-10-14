@@ -236,7 +236,7 @@ describe("step 3: the workspace for the selected theme", () => {
 
   it("has four tabs in workflow order, starting on 'Why it works'", () => {
     render(<BriefView brief={BRIEF} />);
-    expect(within(screen.getByRole("tablist", { name: /plan this video/i })).getAllByRole("tab").map((t) => t.textContent?.replace(/\d+$/, ""))).toEqual(["Why it works", "Examples", "Cover", "Script"]);
+    expect(within(screen.getByRole("tablist", { name: /plan this video/i })).getAllByRole("tab").map((t) => t.textContent?.replace(/\d+$/, ""))).toEqual(["Why it works", "Examples", "Script", "Cover"]);
     expect(tab(/Why it works/).getAttribute("aria-selected")).toBe("true");
   });
 
@@ -333,15 +333,15 @@ describe("step 3: the workspace for the selected theme", () => {
     render(<BriefView brief={BRIEF} />);
     fireEvent.click(screen.getByRole("button", { name: /next: see the examples/i }));
     expect(tab(/^Examples/).getAttribute("aria-selected")).toBe("true");
-    fireEvent.click(screen.getByRole("button", { name: /next: design the cover/i }));
-    expect(tab(/Cover/).getAttribute("aria-selected")).toBe("true");
     fireEvent.click(screen.getByRole("button", { name: /next: draft the script/i }));
     expect(tab(/Script/).getAttribute("aria-selected")).toBe("true");
+    fireEvent.click(screen.getByRole("button", { name: /next: design the cover/i }));
+    expect(tab(/Cover/).getAttribute("aria-selected")).toBe("true");
   });
 
   it("the last step has no 'Next' button and points back to choosing another theme", () => {
     render(<BriefView brief={BRIEF} />);
-    fireEvent.click(tab(/Script/));
+    fireEvent.click(tab(/Cover/));
     const panel = screen.getByRole("tabpanel");
     expect(within(panel).queryByRole("button", { name: /^next/i })).toBeNull();
     expect(within(panel).getByRole("link", { name: /choose another theme/i }).getAttribute("href")).toBe("#choose");
@@ -354,11 +354,11 @@ describe("step 3: the workspace for the selected theme", () => {
     fireEvent.keyDown(list, { key: "ArrowRight" });
     expect(tab(/^Examples/).getAttribute("aria-selected")).toBe("true");
     fireEvent.keyDown(list, { key: "End" });
-    expect(tab(/Script/).getAttribute("aria-selected")).toBe("true");
+    expect(tab(/Cover/).getAttribute("aria-selected")).toBe("true");
     fireEvent.keyDown(list, { key: "ArrowRight" });
     expect(tab(/Why it works/).getAttribute("aria-selected")).toBe("true"); // wraps
     fireEvent.keyDown(list, { key: "ArrowLeft" });
-    expect(tab(/Script/).getAttribute("aria-selected")).toBe("true"); // wraps back
+    expect(tab(/Cover/).getAttribute("aria-selected")).toBe("true"); // wraps back
     fireEvent.keyDown(list, { key: "Home" });
     expect(tab(/Why it works/).getAttribute("aria-selected")).toBe("true");
     fireEvent.keyDown(list, { key: "x" }); // unrelated keys do nothing

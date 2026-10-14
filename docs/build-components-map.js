@@ -42,7 +42,7 @@ const BOXES = [
   ["I2", 0, 1, "people", 1, "Sets his niche", ["8 keywords · region India", "email · minimum views", "checked before it is saved"]],
   ["I3", 0, 3, "people", 13, "Reads the brief", ["email on Sunday, or dashboard", "3-line headline · 3 signals", "ranked theme list · optional map"]],
   ["I4", 0, 4, "people", 14, "Picks a theme to plan", ["one theme in focus at a time", "why it works · example videos", "views · age · length · likes"]],
-  ["I5", 0, 5, "shape", 15, "Makes the video", ["designs the cover → PNG", "asks for a draft script", "edits it (auto-saves) · copies"]],
+  ["I5", 0, 5, "shape", 15, "Makes the video", ["asks for a draft script", "edits it (auto-saves) · copies", "designs the cover → PNG"]],
 
   ["V1", 1, 0, "service", 2, "Wakes up on Sunday", ["4:30 AM IST (Sat 23:00 UTC)", "proves itself with a secret key", "ignores a repeat delivery"]],
 
@@ -187,7 +187,7 @@ legend.forEach(([t, k], i) => {
   lx += lw[i] + 16;
 });
 add(`<text x="${W / 2}" y="1140" font-size="14" fill="${MUTED}" text-anchor="middle">Stack: Next.js on Vercel · Supabase (Postgres) · Gemini Flash + embeddings · YouTube Data API · Resend · Vercel Cron · all free tiers</text>`);
-add(`<text x="${W / 2}" y="1160" font-size="14" fill="${MUTED}" text-anchor="middle">Safety net: every input and AI answer is checked (Zod) · last good brief if a run fails · 330 automated tests · CI on every push · 66-point live smoke test</text>`);
+add(`<text x="${W / 2}" y="1160" font-size="14" fill="${MUTED}" text-anchor="middle">Safety net: every input and AI answer is checked (Zod) · last good brief if a run fails · 369 automated tests · CI on every push · 66-point live smoke test</text>`);
 add("</svg>");
 
 const out = nodePath.join(__dirname, "components-map.svg");

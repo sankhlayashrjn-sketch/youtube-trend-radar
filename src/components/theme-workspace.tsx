@@ -14,21 +14,21 @@ import { ExpectedResults } from "@/components/expected-results";
 import { NumbersGuide } from "@/components/numbers-guide";
 import { benchmarkTheme, type StatBenchmark, type Verdict } from "@/lib/forecast";
 
-type TabId = "why" | "examples" | "cover" | "script";
+type TabId = "why" | "examples" | "script" | "cover";
 
 const TABS: { id: TabId; label: string; icon: typeof Lightbulb }[] = [
   { id: "why", label: "Why it works", icon: Lightbulb },
   { id: "examples", label: "Examples", icon: Film },
-  { id: "cover", label: "Cover", icon: ImageIcon },
   { id: "script", label: "Script", icon: FileText },
+  { id: "cover", label: "Cover", icon: ImageIcon },
 ];
 
 /** What "Next" means on each tab: the whole workflow is one straight line. */
 const NEXT: Record<TabId, { to: TabId; label: string } | null> = {
   why: { to: "examples", label: "See the examples" },
-  examples: { to: "cover", label: "Design the cover" },
-  cover: { to: "script", label: "Draft the script" },
-  script: null,
+  examples: { to: "script", label: "Draft the script" },
+  script: { to: "cover", label: "Design the cover" },
+  cover: null,
 };
 
 const SAT_LEVEL = { low: 1, medium: 2, high: 3 } as const;
@@ -204,6 +204,7 @@ export function ThemeWorkspace({
                 defaultKicker={kickerFor(theme.winningFormat)}
                 exampleTitles={theme.exampleVideos.map((v) => v.title)}
                 stats={{ views: fmtNum(theme.stats.totalViews), creators: theme.stats.creatorCount, velocity: `${fmtNum(theme.stats.avgVelocity)}/hr` }}
+                filmTitle={theme.filmingAngle.title}
                 slug={theme.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 30)}
               />
             )}

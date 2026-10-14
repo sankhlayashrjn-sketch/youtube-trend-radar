@@ -56,12 +56,12 @@ Env vars are validated with Zod on first use; error messages list names only, ne
 
 Each theme card has:
 - **Example videos** with views, post age and date, duration, likes, comments, views per hour and engagement.
-- **Cover maker**: a professional dark thumbnail (small label, heavy headline with one highlighted word, this week's real numbers). Add your own image and it becomes the cover (full image, fit whole image, or a side photo), darkened automatically behind the text; clear the headline and label to use your image exactly as it is you download as a 1280x720 PNG. The highlighted word and label come from what is trending in the example videos. It is drawn in the browser, so it is free; your photo never leaves the browser. Gemini image models are paid and not used.
+- **Cover maker**: a professional dark thumbnail (small label, heavy headline with one highlighted word, this week's real numbers). Pick a template (Classic, Centred, Big number, Versus), a font, an outline or boxed highlight, a background pattern, a badge and an arrow or circle; drag the headline, badge or photo anywhere; see a phone-size preview and the timestamp safe zone. Add your own image and it becomes the cover (full image, fit whole image, side photo or a framed, tilted photo with zoom and pan), darkened automatically behind the text; clear the headline and label to use your image exactly as it is you download as a 1280x720 PNG. The highlighted word and label come from what is trending in the example videos. It is drawn in the browser, so it is free; your photo never leaves the browser. Gemini image models are paid and not used.
 - **Draft script**: Gemini Flash writes a script in English or Hinglish. You edit it in place; it auto-saves and can be copied or downloaded as Markdown.
 
 ## Testing
 
-330 automated tests (unit, edge-case, regression, component), run in GitHub Actions CI on every push, plus a read-only smoke test for any deployed URL. See [TEST_REPORT.md](TEST_REPORT.md) for coverage, results and the bugs found.
+369 automated tests (unit, edge-case, regression, component), run in GitHub Actions CI on every push, plus a read-only smoke test for any deployed URL. See [TEST_REPORT.md](TEST_REPORT.md) for coverage, results and the bugs found.
 
 ```bash
 npm test
@@ -140,7 +140,7 @@ flowchart TD
 ## Demo script
 
 1. Open the live URL. The dashboard is a three-step flow: **1 Read the week** (the 3-line headline), **2 Choose what to film** (three signals and a ranked theme list), **3 Plan the video** (one theme at a time).
-2. In step 3, move through the tabs with the Next buttons: **Why it works** (the Film this angle and real numbers), **Examples**, **Cover**, **Script**.
+2. In step 3, move through the tabs with the Next buttons: **Why it works** (the Film this angle and real numbers), **Examples**, **Script**, **Cover**.
 3. Click **Generate now** and watch Fetching → Clustering → Writing brief → Done; check your inbox for the same brief.
 4. Open **Settings**, add a category (e.g. "AI coding tools"), save, and generate again: the brief changes.
 5. Open **Archive** for past briefs. Drag **Minimum views** to filter example videos.

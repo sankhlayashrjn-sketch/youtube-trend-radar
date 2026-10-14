@@ -130,3 +130,89 @@ describe("smart darkening for images behind text", () => {
     }
   });
 });
+
+import { BADGE_IDEAS, DEFAULT_STUDIO, FONTS, PATTERNS, TEMPLATES, clamp, headlineIdeas, hitTest, splitVersus, type Region } from "@/lib/cover";
+
+describe("cover studio: defaults reproduce the plain cover", () => {
+  it("starts as the Classic template with nothing extra switched on", () => {
+    expect(DEFAULT_STUDIO).toMatchObject({ template: "classic", font: "inter", pattern: "gradient", outline: 0, highlight: "colour", textScale: 1, textDx: 0, textDy: 0, badgeOn: false, callout: "none", photoZoom: 1 });
+  });
+  it("offers distinct, labelled templates, fonts and backgrounds", () => {
+    for (const list of [TEMPLATES, FONTS, PATTERNS]) {
+      expect(new Set(list.map((x) => x.id)).size).toBe(list.length);
+      for (const x of list) expect(x.label.length).toBeGreaterThan(2);
+    }
+    expect(TEMPLATES.map((t) => t.id)).toEqual(["classic", "center", "number", "versus"]);
+    expect(BADGE_IDEAS.length).toBeGreaterThanOrEqual(4);
+  });
+});
+
+describe("splitVersus", () => {
+  it("splits on vs, vs., versus and v/s in any case", () => {
+    expect(splitVersus("iPhone vs Pixel")).toEqual(["iPhone", "Pixel"]);
+    expect(splitVersus("FOLD VS. FLAGSHIP")).toEqual(["FOLD", "FLAGSHIP"]);
+    expect(splitVersus("Mac versus PC")).toEqual(["Mac", "PC"]);
+    expect(splitVersus("A v/s B")).toEqual(["A", "B"]);
+  });
+  it("returns null without a clear two-sided headline", () => {
+    expect(splitVersus("Best phone deals")).toBeNull();
+    expect(splitVersus("vs Pixel")).toBeNull();
+    expect(splitVersus("iPhone vs")).toBeNull();
+    expect(splitVersus("A vs B vs C")).toBeNull();
+    expect(splitVersus("")).toBeNull();
+    expect(splitVersus("canvas")).toBeNull(); // "vs" inside a word is not a split
+  });
+});
+
+describe("hitTest", () => {
+  const regions: Region[] = [
+    { id: "photo", x: 0, y: 0, w: 1280, h: 720 },
+    { id: "headline", x: 100, y: 100, w: 400, h: 200 },
+    { id: "badge", x: 150, y: 120, w: 100, h: 50 },
+  ];
+  it("returns the topmost element under the point", () => {
+    expect(hitTest(regions, 160, 130)).toBe("badge");
+    expect(hitTest(regions, 300, 250)).toBe("headline");
+    expect(hitTest(regions, 900, 600)).toBe("photo");
+  });
+  it("returns null outside everything and for an empty list", () => {
+    expect(hitTest(regions, -5, 10)).toBeNull();
+    expect(hitTest([], 10, 10)).toBeNull();
+  });
+  it("includes the edges", () => {
+    expect(hitTest(regions, 100, 100)).toBe("headline");
+    expect(hitTest(regions, 500, 300)).toBe("headline");
+  });
+});
+
+describe("clamp", () => {
+  it("keeps a value in range and survives NaN", () => {
+    expect(clamp(5, 0, 1)).toBe(1);
+    expect(clamp(-5, 0, 1)).toBe(0);
+    expect(clamp(0.4, 0, 1)).toBe(0.4);
+    expect(clamp(NaN, 2, 9)).toBe(2);
+  });
+});
+
+describe("headlineIdeas", () => {
+  const titles = ["Pixel 10 Pro review", "Pixel 10 Pro camera test", "iPhone 17 review", "Best phone deals"];
+  it("suggests alternatives, never the current headline, at most four, all within the length limit", () => {
+    const ideas = headlineIdeas("PIXEL 10 PRO", "Is the Pixel 10 Pro worth it in India?", titles);
+    expect(ideas.length).toBeGreaterThan(0);
+    expect(ideas.length).toBeLessThanOrEqual(4);
+    expect(ideas).not.toContain("PIXEL 10 PRO");
+    for (const i of ideas) { expect(i).toBe(i.toUpperCase()); expect(i.length).toBeLessThanOrEqual(40); }
+    expect(new Set(ideas).size).toBe(ideas.length);
+  });
+  it("builds a versus headline when the idea compares two things", () => {
+    expect(headlineIdeas("", "Xiaomi 18 Fold vs iPhone: best flagship?", [])).toContain("XIAOMI 18 VS IPHONE")
+    expect(headlineIdeas("", "Pixel vs iPhone: which camera wins in India?", [])).toContain("PIXEL VS IPHONE"); // the subtitle is ignored;
+  });
+  it("uses the two-word phrase that appears in most example titles", () => {
+    const ideas = headlineIdeas("X", "Q", ["Galaxy fold review", "Galaxy fold camera", "Galaxy fold battery"]);
+    expect(ideas).toContain("GALAXY FOLD");
+  });
+  it("copes with empty input", () => {
+    expect(headlineIdeas("", "", [])).toEqual([]);
+  });
+});

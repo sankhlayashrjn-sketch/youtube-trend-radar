@@ -46,3 +46,7 @@
 | 42 | Earnings per 1,000 views is a saved setting (new `rpm_inr` column), not a box on each theme; the "how this is worked out" paragraph was removed | Requested: set it once in Settings. One figure then drives every theme's income |
 | 43 | Each theme row shows expected views and rough income, and the list can be sorted by rough income | Income is the deciding number for a creator, so it sits next to the theme instead of inside it |
 | 44 | Removed the Opportunity score from the theme rows, the sort menu and the map tooltip | Requested. It is still computed internally to choose the "Best bet" signal, but never shown as a number |
+| 45 | The tab order is now Why it works, Examples, Script, Cover | Requested: the script decides what the video says, so the cover comes after it |
+| 46 | The cover maker is a small thumbnail studio: four templates, three fonts, outline and boxed highlight, background patterns, badge, arrow/circle, framed photo with zoom and pan, drag to move, phone preview, safe zones, copy image | The old one was basic. Everything is drawn in the browser (free, private); Gemini image models are paid and not used |
+| 47 | Headline ideas are built in code from the film angle and the example titles, not by an AI call | No extra Gemini quota, instant, and easy to test |
+| 48 | Background removal was not added | It needs a large in-browser model (tens of MB) or a paid image API; the framed-photo and arrow look covers most of the same need |
