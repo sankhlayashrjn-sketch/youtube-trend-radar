@@ -45,3 +45,4 @@
 | 41 | Each headline stat (creators, views, views per hour) is compared with the average of the week's themes and labelled good, average or weak | A raw number like "19 creators" means nothing without a reference point |
 | 42 | Earnings per 1,000 views is a saved setting (new `rpm_inr` column), not a box on each theme; the "how this is worked out" paragraph was removed | Requested: set it once in Settings. One figure then drives every theme's income |
 | 43 | Each theme row shows expected views and rough income, and the list can be sorted by rough income | Income is the deciding number for a creator, so it sits next to the theme instead of inside it |
+| 44 | Removed the Opportunity score from the theme rows, the sort menu and the map tooltip | Requested. It is still computed internally to choose the "Best bet" signal, but never shown as a number |

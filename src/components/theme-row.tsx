@@ -3,13 +3,12 @@ import { fmtNum } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { UrgencyBadge } from "@/components/urgency-badge";
 import type { Theme } from "@/lib/types";
-import type { ThemeSignals } from "@/lib/signals";
 import { fmtINR, forecastViews, incomeFromViews } from "@/lib/forecast";
 
 /** One line in the "Choose what to film" list: enough to compare themes, nothing more. */
 export function ThemeRow({
-  theme, rank, signals, selected, best, rpm, onSelect,
-}: { theme: Theme; rank: number; signals: ThemeSignals; selected: boolean; best: boolean; rpm: number; onSelect: () => void }) {
+  theme, rank, selected, best, rpm, onSelect,
+}: { theme: Theme; rank: number; selected: boolean; best: boolean; rpm: number; onSelect: () => void }) {
   const f = forecastViews(theme);
   return (
     <button
@@ -39,13 +38,6 @@ export function ThemeRow({
       <span className="mt-3 flex items-baseline justify-between gap-3 rounded-xl bg-muted/60 px-3 py-2 text-xs" data-testid="row-income">
         <span className="text-muted-foreground">Expected <span className="font-semibold text-foreground">{fmtNum(f.expected)} views</span></span>
         <span className="text-right"><span className="text-muted-foreground">Rough income </span><span className="font-heading text-sm font-bold text-foreground">{fmtINR(incomeFromViews(f.expected, rpm))}</span></span>
-      </span>
-      <span className="mt-2 flex items-center gap-3 text-xs">
-        <span className="w-20 shrink-0 text-muted-foreground">Opportunity</span>
-        <span className="h-2 flex-1 overflow-hidden rounded-full bg-muted" role="meter" aria-label={`Opportunity score for ${theme.name}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={signals.opportunity}>
-          <span className="meter-fill block h-full rounded-full bg-primary" style={{ width: `${signals.opportunity}%` }} />
-        </span>
-        <span className="w-7 text-right font-bold tabular-nums">{signals.opportunity}</span>
       </span>
     </button>
   );

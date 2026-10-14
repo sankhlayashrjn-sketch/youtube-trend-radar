@@ -13,7 +13,7 @@ import { ThemeRow } from "@/components/theme-row";
 import { ThemeWorkspace } from "@/components/theme-workspace";
 
 type Filter = "all" | Theme["urgency"]["level"];
-type Sort = "rank" | "income" | "opportunity" | "momentum" | "views";
+type Sort = "rank" | "income" | "momentum" | "views";
 type Item = { t: Theme; i: number };
 
 const FILTERS: { key: Filter; label: string; icon: typeof Flame }[] = [
@@ -25,7 +25,6 @@ const FILTERS: { key: Filter; label: string; icon: typeof Flame }[] = [
 const SORTS: { key: Sort; label: string }[] = [
   { key: "rank", label: "Brief order" },
   { key: "income", label: "Rough income" },
-  { key: "opportunity", label: "Opportunity" },
   { key: "momentum", label: "Momentum" },
   { key: "views", label: "Total views" },
 ];
@@ -58,7 +57,6 @@ export function BriefView({
     const score: Record<Sort, (x: Item) => number> = {
       rank: (x) => -x.i,
       income: (x) => incomeFromViews(forecastViews(x.t).expected, rpm),
-      opportunity: (x) => signals[x.i].opportunity,
       momentum: (x) => signals[x.i].momentum,
       views: (x) => x.t.stats.totalViews,
     };
@@ -164,7 +162,7 @@ export function BriefView({
             <ul aria-label="Themes" className="grid gap-3 lg:grid-cols-2">
               {visible.map(({ t, i }) => (
                 <li key={t.name} className="min-w-0">
-                  <ThemeRow theme={t} rank={i + 1} signals={signals[i]} selected={i === selected} best={i === bestIdx} rpm={rpm} onSelect={() => select(i)} />
+                  <ThemeRow theme={t} rank={i + 1} selected={i === selected} best={i === bestIdx} rpm={rpm} onSelect={() => select(i)} />
                 </li>
               ))}
             </ul>
@@ -192,7 +190,7 @@ export function BriefView({
           </button>
           {mapOpen && (
             <div id="opportunity-map" className="border-t">
-              <OpportunityMap themes={brief.themes} signals={signals} onSelect={select} />
+              <OpportunityMap themes={brief.themes} onSelect={select} />
             </div>
           )}
         </div>

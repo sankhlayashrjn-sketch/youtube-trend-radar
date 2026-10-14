@@ -57,7 +57,7 @@ The brief says no Supabase Auth/Storage/client. I use the transaction pooler (po
 I cluster in application code, not in SQL, and each run only has about 100 vectors. pgvector would add a dependency and migration with no benefit here. If I did similarity search across history, I'd add pgvector.
 
 **12. How are the signals (momentum, competition, opportunity) calculated?**
-Computed in code, relative to the other themes in the same brief: momentum from views per hour, competition from creator count, engagement from (likes+comments)/views. Opportunity = 50% momentum + 35% (100 − competition) + 15% engagement. They're my own weights, easy to change and unit-tested. Gemini decides urgency and saturation from the same facts, so I'd say that part is AI judgement.
+Computed in code, relative to the other themes in the same brief: momentum from views per hour, competition from creator count, engagement from (likes+comments)/views. The score is no longer shown to the user; it only picks the "Best bet" signal. Opportunity = 50% momentum + 35% (100 − competition) + 15% engagement. They're my own weights, easy to change and unit-tested. Gemini decides urgency and saturation from the same facts, so I'd say that part is AI judgement.
 
 **13. How do you rank the top themes?**
 Surviving clusters are sorted by total views × number of creators and the top 5 are kept. Weakness: it favours big mainstream topics (festival sales) over small fast-rising ones. The improvement is a momentum-based ranking.

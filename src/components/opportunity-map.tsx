@@ -2,12 +2,12 @@
 
 import { CartesianGrid, ReferenceArea, ReferenceLine, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis } from "recharts";
 import type { Theme } from "@/lib/types";
-import { median, type ThemeSignals } from "@/lib/signals";
+import { median } from "@/lib/signals";
 import { fmtNum } from "@/lib/format";
 
 const LEVEL_COLOR = { film_now: "#10b981", soon: "#f59e0b", skip: "#a1a1aa" } as const;
 
-type Dot = { x: number; y: number; r: number; i: number; name: string; level: Theme["urgency"]["level"]; opp: number };
+type Dot = { x: number; y: number; r: number; i: number; name: string; level: Theme["urgency"]["level"] };
 type DotProps = { cx?: number; cy?: number; payload?: Dot };
 
 function Bubble({ cx = 0, cy = 0, payload, onSelect }: DotProps & { onSelect: (i: number) => void }) {
@@ -32,7 +32,7 @@ function Bubble({ cx = 0, cy = 0, payload, onSelect }: DotProps & { onSelect: (i
 }
 
 /** Bubble chart: competition (creators) across, momentum (views per hour) up. Click a bubble to pick that theme. */
-export function OpportunityMap({ themes, signals, onSelect }: { themes: Theme[]; signals: ThemeSignals[]; onSelect: (i: number) => void }) {
+export function OpportunityMap({ themes, onSelect }: { themes: Theme[]; onSelect: (i: number) => void }) {
   const maxViews = Math.max(...themes.map((t) => t.stats.totalViews), 1);
   const data: Dot[] = themes.map((t, i) => ({
     x: t.stats.creatorCount,
@@ -41,7 +41,6 @@ export function OpportunityMap({ themes, signals, onSelect }: { themes: Theme[];
     i,
     name: t.name,
     level: t.urgency.level,
-    opp: signals[i].opportunity,
   }));
   const medX = median(data.map((d) => d.x));
   const medY = median(data.map((d) => d.y));
@@ -76,7 +75,6 @@ export function OpportunityMap({ themes, signals, onSelect }: { themes: Theme[];
                   <div className="max-w-60 rounded-xl border bg-card p-3 text-xs shadow-lg">
                     <p className="font-semibold text-foreground">{d.i + 1}. {d.name}</p>
                     <p className="mt-1 text-muted-foreground">{d.x} creators · {fmtNum(d.y)}/hr</p>
-                    <p className="text-muted-foreground">Opportunity score <span className="font-bold text-foreground">{d.opp}</span>/100</p>
                   </div>
                 );
               }}

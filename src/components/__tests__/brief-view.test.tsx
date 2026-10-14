@@ -122,17 +122,16 @@ describe("step 2: choosing a theme", () => {
     expect(row(/Bravo Theme/).textContent).not.toContain("Best bet");
   });
 
-  it("each row has what you need to compare themes: creators, views, views per hour, urgency, opportunity", () => {
+  it("each row has what you need to compare themes: creators, views, views per hour, urgency, expected income", () => {
     render(<BriefView brief={BRIEF} />);
     const r = row(/Alpha Theme/);
     expect(r.textContent).toContain("4 creators");
     expect(r.textContent).toContain("5.0L views");
     expect(r.textContent).toContain("20.0K/hr");
     expect(r.textContent).toContain("Film now");
-    const meter = within(r).getByRole("meter");
-    const v = Number(meter.getAttribute("aria-valuenow"));
-    expect(v).toBeGreaterThanOrEqual(0);
-    expect(v).toBeLessThanOrEqual(100);
+    expect(within(r).queryByRole("meter")).toBeNull(); // the opportunity score bar was removed on request
+    expect(r.textContent).not.toMatch(/Opportunity/);
+    expect(r.textContent).toContain("Rough income");
   });
 
   it("clicking a row selects it, moves to its workspace, and starts that workspace at 'Why it works'", () => {
@@ -196,7 +195,7 @@ describe("step 2: choosing a theme", () => {
   it("sorts the list, and the numbers on the rows stay the brief's own numbers", () => {
     render(<BriefView brief={BRIEF} />);
     const sort = screen.getByLabelText(/sort by/i) as HTMLSelectElement;
-    expect([...sort.options].map((o) => o.textContent)).toEqual(["Brief order", "Rough income", "Opportunity", "Momentum", "Total views"]);
+    expect([...sort.options].map((o) => o.textContent)).toEqual(["Brief order", "Rough income", "Momentum", "Total views"]);
     fireEvent.change(sort, { target: { value: "income" } });
     expect(rowNames().map((n) => n.match(/(Alpha|Bravo|Charlie)/)?.[1])).toEqual(["Alpha", "Bravo", "Charlie"]);
     fireEvent.change(sort, { target: { value: "views" } });
