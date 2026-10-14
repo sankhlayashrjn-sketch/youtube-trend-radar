@@ -238,5 +238,5 @@
 <rect x="1403.8" y="1076" width="212" height="38" rx="19" fill="#cde6df" stroke="#4c9887" stroke-width="2.4"/>
 <text x="1509.8" y="1100" font-size="16" font-weight="600" fill="#2a2118" text-anchor="middle">Every step is stored</text>
 <text x="1000" y="1140" font-size="14" fill="#4b4036" text-anchor="middle">Stack: Next.js on Vercel · Supabase (Postgres) · Gemini Flash + embeddings · YouTube Data API · Resend · Vercel Cron · all free tiers</text>
-<text x="1000" y="1160" font-size="14" fill="#4b4036" text-anchor="middle">Safety net: every input and AI answer is checked (Zod) · last good brief if a run fails · 307 automated tests · CI on every push · 66-point live smoke test</text>
+<text x="1000" y="1160" font-size="14" fill="#4b4036" text-anchor="middle">Safety net: every input and AI answer is checked (Zod) · last good brief if a run fails · 325 automated tests · CI on every push · 66-point live smoke test</text>
 </svg>

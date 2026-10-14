@@ -18,7 +18,7 @@ Answer in this order: **what it does, how it works, why I chose it, what I'd imp
 | Clustering | k = 3 to 6, a cluster needs 3+ distinct creators |
 | Themes in brief | 3 to 5 |
 | Manual limits | 4 runs/hour, 40 scripts/day |
-| Tests | 307 automated tests, 66 smoke checks on the live site, GitHub Actions CI |
+| Tests | 325 automated tests, 66 smoke checks on the live site, GitHub Actions CI |
 | Stack | Next.js 16 App Router, Tailwind, shadcn/ui, Drizzle + postgres-js, Supabase (DB only), Zod, Recharts, Resend |
 
 ## Likely questions and answers
@@ -66,7 +66,7 @@ Surviving clusters are sorted by total views × number of creators and the top 5
 Both. Every call uses `regionCode=IN`, which means "viewable in India", not "creator is from India". I observed Indian channels (Technical Dost, Tech Burner) and international ones (MKBHD), plus some unwanted languages. Next step: tag creators by country and language.
 
 **15. How did you test it? What bugs did you find?**
-307 tests (unit, edge cases, regression, component) plus CI on every push plus a read-only smoke test on the live URL, a responsive audit at 5 widths and an accessibility audit. Bugs it found: unsupported regions were accepted, a blank env var overrode defaults, a missing theme index meant theme 0, the script editor vanished when emptied, unknown archive pages returned 200 instead of 404, and an overflow on small phones. Earlier, a manual run showed an early result cap starving later keywords, which is now a regression test.
+325 tests (unit, edge cases, regression, component) plus CI on every push plus a read-only smoke test on the live URL, a responsive audit at 5 widths and an accessibility audit. Bugs it found: unsupported regions were accepted, a blank env var overrode defaults, a missing theme index meant theme 0, the script editor vanished when emptied, unknown archive pages returned 200 instead of 404, and an overflow on small phones. Earlier, a manual run showed an early result cap starving later keywords, which is now a regression test.
 
 **16. Security?**
 Secrets only in env vars, validated by Zod at first use, never logged; error messages list variable names, not values. Cron route is secret-protected and fails closed. All untrusted text in email is HTML-escaped. External links use `rel="noopener"`. SQL is parameterized (Drizzle). Public routes that call paid or limited APIs are rate limited. **Weakness:** no login, so anyone with the URL can change settings.

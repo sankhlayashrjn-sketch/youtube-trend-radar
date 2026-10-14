@@ -10,7 +10,9 @@ import { CoverMaker } from "@/components/cover-maker";
 import { ScriptEditor } from "@/components/script-editor";
 import { UrgencyBadge } from "@/components/urgency-badge";
 import type { Theme } from "@/lib/types";
-import type { ThemeSignals } from "@/lib/signals";
+import { ExpectedResults } from "@/components/expected-results";
+import { NumbersGuide } from "@/components/numbers-guide";
+import { benchmarkTheme, type StatBenchmark, type Verdict } from "@/lib/forecast";
 
 type TabId = "why" | "examples" | "cover" | "script";
 
@@ -31,12 +33,19 @@ const NEXT: Record<TabId, { to: TabId; label: string } | null> = {
 
 const SAT_LEVEL = { low: 1, medium: 2, high: 3 } as const;
 
-function Chip({ icon: Icon, children, label }: { icon: typeof Users; children: React.ReactNode; label: string }) {
+const CHIP_TONE: Record<Verdict, string> = {
+  good: "border-emerald-500/40 bg-emerald-500/10",
+  average: "border-amber-500/40 bg-amber-500/10",
+  weak: "border-rose-500/40 bg-rose-500/10",
+};
+
+function Chip({ icon: Icon, children, label, tone, note }: { icon: typeof Users; children: React.ReactNode; label: string; tone?: Verdict; note?: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border bg-background px-2.5 py-1 text-xs font-medium" title={label}>
+    <span className={cn("inline-flex items-center gap-1.5 rounded-full border bg-background px-2.5 py-1 text-xs font-medium", tone && CHIP_TONE[tone])} title={note ? `${label}: ${note}` : label}>
       <Icon className="size-3.5 text-primary" aria-hidden />
       <span className="sr-only">{label}: </span>
       {children}
+      {note && <span className="font-normal text-muted-foreground">{note}</span>}
     </span>
   );
 }
@@ -55,24 +64,10 @@ function SaturationMeter({ level }: { level: Theme["saturation"] }) {
   );
 }
 
-function Meter({ label, value, color, hint }: { label: string; value: number; color: string; hint: string }) {
-  return (
-    <div title={hint}>
-      <div className="flex items-baseline justify-between text-xs">
-        <span className="font-medium text-muted-foreground">{label}</span>
-        <span className="font-bold tabular-nums">{value}</span>
-      </div>
-      <div className="mt-1 h-2 overflow-hidden rounded-full bg-muted" role="meter" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={value}>
-        <div className={cn("meter-fill h-full rounded-full", color)} style={{ width: `${value}%` }} />
-      </div>
-    </div>
-  );
-}
-
 export function ThemeWorkspace({
-  theme, index, total, signals, minViews = 0, briefId = null, hasScript = false, best = false, flash = false,
+  theme, index, total, allThemes, minViews = 0, briefId = null, hasScript = false, best = false, flash = false,
 }: {
-  theme: Theme; index: number; total: number; signals: ThemeSignals; minViews?: number; briefId?: string | null;
+  theme: Theme; index: number; total: number; allThemes: Theme[]; minViews?: number; briefId?: string | null;
   hasScript?: boolean; best?: boolean; flash?: boolean;
 }) {
   const [tab, setTab] = useState<TabId>("why");
@@ -82,7 +77,8 @@ export function ThemeWorkspace({
 
   const examples = theme.exampleVideos.filter((v) => v.views >= minViews);
   const mins = Math.max(1, Math.round(theme.typicalLengthMinutes));
-  const compColor = signals.competition > 66 ? "bg-rose-500" : signals.competition > 33 ? "bg-amber-500" : "bg-emerald-500";
+  const bench = benchmarkTheme(theme, allThemes);
+  const note = (b: StatBenchmark, fmt: (n: number) => string) => `(avg ${fmt(b.avg)})`;
   const pid = (t: TabId) => `ws${index}-panel-${t}`;
   const tid = (t: TabId) => `ws${index}-tab-${t}`;
 
@@ -114,9 +110,9 @@ export function ThemeWorkspace({
         </div>
         <p className="text-sm leading-relaxed text-muted-foreground">{theme.summary}</p>
         <div className="flex flex-wrap gap-2">
-          <Chip icon={Users} label="Creators">{theme.stats.creatorCount} creators</Chip>
-          <Chip icon={Eye} label="Total views">{fmtNum(theme.stats.totalViews)} views</Chip>
-          <Chip icon={Zap} label="Velocity">{fmtNum(theme.stats.avgVelocity)}/hr</Chip>
+          <Chip icon={Users} label="Creators" tone={bench.creators.verdict} note={note(bench.creators, (n) => String(Math.round(n)))}>{theme.stats.creatorCount} creators</Chip>
+          <Chip icon={Eye} label="Total views" tone={bench.views.verdict} note={note(bench.views, fmtNum)}>{fmtNum(theme.stats.totalViews)} views</Chip>
+          <Chip icon={Zap} label="Velocity" tone={bench.velocity.verdict} note={note(bench.velocity, fmtNum)}>{fmtNum(theme.stats.avgVelocity)}/hr</Chip>
           <Chip icon={Timer} label="Typical length">~{mins} min</Chip>
         </div>
       </header>
@@ -163,6 +159,7 @@ export function ThemeWorkspace({
                   <p className="mt-2 text-sm leading-relaxed text-foreground/85">{theme.filmingAngle.angle}</p>
                   <p className="mt-2 text-xs text-muted-foreground">{theme.urgency.reason}</p>
                 </div>
+                <ExpectedResults theme={theme} />
                 <p className="text-sm leading-relaxed"><span className="font-semibold">Why now: </span>{theme.whyNow}</p>
                 <dl className="grid gap-4 text-sm sm:grid-cols-3">
                   <div>
@@ -178,12 +175,7 @@ export function ThemeWorkspace({
                     <dd className="mt-1"><SaturationMeter level={theme.saturation} /></dd>
                   </div>
                 </dl>
-                <div className="grid grid-cols-1 gap-x-5 gap-y-3 rounded-2xl bg-muted/50 p-4 sm:grid-cols-2">
-                  <Meter label="Momentum" value={signals.momentum} color="bg-emerald-500" hint="Views per hour vs the other themes" />
-                  <Meter label="Competition" value={signals.competition} color={compColor} hint="Creator count vs the other themes (lower is better)" />
-                  <Meter label="Engagement" value={signals.engagement} color="bg-pink-500" hint="Likes + comments per view vs the other themes" />
-                  <Meter label="Opportunity" value={signals.opportunity} color="bg-primary" hint="High momentum, low competition, some engagement" />
-                </div>
+                <NumbersGuide bench={bench} themeCount={allThemes.length} />
               </div>
             )}
 

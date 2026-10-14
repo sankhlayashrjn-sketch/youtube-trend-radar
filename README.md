@@ -61,7 +61,7 @@ Each theme card has:
 
 ## Testing
 
-307 automated tests (unit, edge-case, regression, component), run in GitHub Actions CI on every push, plus a read-only smoke test for any deployed URL. See [TEST_REPORT.md](TEST_REPORT.md) for coverage, results and the bugs found.
+325 automated tests (unit, edge-case, regression, component), run in GitHub Actions CI on every push, plus a read-only smoke test for any deployed URL. See [TEST_REPORT.md](TEST_REPORT.md) for coverage, results and the bugs found.
 
 ```bash
 npm test

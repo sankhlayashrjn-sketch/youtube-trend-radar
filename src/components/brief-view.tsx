@@ -204,7 +204,7 @@ export function BriefView({
               theme={brief.themes[i]}
               index={i}
               total={brief.themes.length}
-              signals={signals[i]}
+              allThemes={brief.themes}
               minViews={minViews}
               briefId={briefId}
               hasScript={scriptIdx.includes(i)}

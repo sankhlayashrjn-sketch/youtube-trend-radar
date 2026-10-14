@@ -249,11 +249,50 @@ describe("step 3: the workspace for the selected theme", () => {
     expect(panel.textContent).toContain("Why now for Alpha Theme.");
     expect(panel.textContent).toContain("hands-on tutorial");
     expect(within(panel).getByRole("img", { name: /saturation: medium/i })).toBeTruthy();
-    for (const m of ["Momentum", "Competition", "Engagement", "Opportunity"]) {
-      const v = Number(within(panel).getByRole("meter", { name: m }).getAttribute("aria-valuenow"));
-      expect(v).toBeGreaterThanOrEqual(0);
-      expect(v).toBeLessThanOrEqual(100);
-    }
+    // the four score bars were removed on request
+    expect(within(panel).queryAllByRole("meter")).toHaveLength(0);
+    expect(panel.textContent).not.toMatch(/Momentum|Competition|Engagement/);
+  });
+
+  it("'Why it works' shows expected views and a rough income in rupees, from the example videos", () => {
+    render(<BriefView brief={BRIEF} />);
+    const panel = screen.getByRole("tabpanel");
+    // Alpha: examples 2M, 30K, 900 -> median 30K, x1.15 (film now) x1 (medium crowding) = 34.5K views
+    expect(within(panel).getByTestId("expected-views").textContent).toBe("34.5K");
+    expect(within(panel).getByTestId("expected-income").textContent).toBe("₹2,800"); // 34,500 views at Rs 80 per 1,000
+    expect(panel.textContent).toContain("Likely range");
+    expect(panel.textContent).toContain("not a promise");
+  });
+
+  it("changing the earnings per 1,000 views updates the income, and an absurd value is clamped", () => {
+    render(<BriefView brief={BRIEF} />);
+    const panel = screen.getByRole("tabpanel");
+    const box = within(panel).getByLabelText(/earnings per 1,000 views/i) as HTMLInputElement;
+    fireEvent.change(box, { target: { value: "160" } });
+    expect(within(panel).getByTestId("expected-income").textContent).toBe("₹5,500");
+    fireEvent.change(box, { target: { value: "999999" } });
+    fireEvent.blur(box);
+    expect(box.value).toBe("500");
+  });
+
+  it("'Why it works' explains each number against this week's average, with a verdict", () => {
+    render(<BriefView brief={BRIEF} />);
+    const panel = screen.getByRole("tabpanel");
+    const guide = within(panel).getByRole("region", { name: /what these numbers mean/i });
+    expect(guide.textContent).toContain("Is this a good number?");
+    // Alpha has 4 creators vs an average of 11 (4, 20, 9): less crowded -> Good; fastest of the three -> Good
+    const creators = guide.querySelector('[data-stat="creators"]')!;
+    expect(creators.textContent).toContain("Good");
+    expect(creators.textContent).toContain("Less crowded than most themes");
+    expect(creators.textContent).toContain("11");
+    expect(guide.querySelector('[data-stat="velocity"]')!.textContent).toContain("Growing faster than most themes");
+  });
+
+  it("the stats under the theme name show this week's average next to each figure", () => {
+    render(<BriefView brief={BRIEF} />);
+    const header = screen.getByRole("article").querySelector("header")!;
+    expect(header.textContent).toContain("4 creators");
+    expect(header.textContent).toContain("(avg 11)");
   });
 
   it("builds a tab only when it is first opened, then keeps it (hidden) so work is not lost", () => {

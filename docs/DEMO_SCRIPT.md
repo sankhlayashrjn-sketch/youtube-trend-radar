@@ -31,7 +31,7 @@ The dashboard is a three-step flow (the step bar at the top shows it): **1 Read 
 | 2:20 | Settings: add a category, show the minimum-views slider, Save toast | "Categories, region and email are configurable. Changing them changes the next brief." |
 | 2:30 | Back to dashboard: "Your settings changed" notice | "The app won't show an old niche's brief as current. I'd click Generate now to build the new one." *(Don't click it on camera; say: "It fetches live data, clusters it, and writes the brief in about a minute.")* |
 | 2:40 | Switch to the email tab | "Every Sunday at about 4:30 AM IST, Vercel Cron triggers the pipeline and this email arrives, same structure as the dashboard." |
-| 2:50 | The Components Map image, then the test summary | "Under the hood: Next.js on Vercel, Supabase Postgres, Gemini Flash only, YouTube Data API, Resend, all on free tiers. 307 automated tests, CI on every push, and a live smoke test." |
+| 2:50 | The Components Map image, then the test summary | "Under the hood: Next.js on Vercel, Supabase Postgres, Gemini Flash only, YouTube Data API, Resend, all on free tiers. 325 automated tests, CI on every push, and a live smoke test." |
 | 3:00 | End card with the Vercel URL and GitHub URL | "Thanks." |
 
 ## If something goes wrong while recording

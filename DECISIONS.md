@@ -39,3 +39,7 @@
 | 35 | The opportunity map is optional (collapsed by default) and the theme list is the primary way to choose | The map is a comparison aid, not a decision step; hiding it removes clutter without losing it |
 | 36 | A theme's workspace and each tab are built when first opened, then kept hidden | Cover edits and scripts survive switching tabs and themes, and nothing heavy loads until needed |
 | 37 | The script editor saves pending edits with a keepalive request when it is closed | Typing then switching away within the 1.2 second autosave window used to lose the last words |
+| 38 | Removed the four score bars (momentum, competition, engagement, opportunity) from the theme workspace | Requested: they did not help a creator decide. The opportunity score still ranks the theme list |
+| 39 | Expected views are computed in code from the example videos (median, quartile range), adjusted for urgency and crowding, best case capped at 3x | A transparent estimate beats an AI guess. Script text is not a statistical input, so it is not used |
+| 40 | Rough income = expected views / 1000 x an editable earnings-per-1,000-views figure (default Rs 80) | Creators know their own RPM from YouTube Studio; the default is a typical Indian tech figure, shown as an assumption |
+| 41 | Each headline stat (creators, views, views per hour) is compared with the average of the week's themes and labelled good, average or weak | A raw number like "19 creators" means nothing without a reference point |
