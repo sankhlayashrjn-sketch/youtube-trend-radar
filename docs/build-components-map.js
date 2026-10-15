@@ -10,13 +10,13 @@ const COLS = ["Trigger", "Input", "Context", "Processing", "AI", "Output"];
 const LANE_TOP = 158, LANE_H = 124, BW = 226, BH = 88;
 
 const LANES = [
-  { name: "Ishaan", sub: "(Creator)", tint: "#e8ecf8" },
-  { name: "Vercel Cron", sub: "(Scheduler)", tint: "#eee9f6" },
-  { name: "Our app", sub: "(Next.js on Vercel)", tint: "#f1eed4" },
-  { name: "YouTube", sub: "(Data API v3)", tint: "#f6e7e3" },
-  { name: "Gemini", sub: "(Reasoning)", tint: "#f4e4ee" },
-  { name: "Supabase", sub: "(Memory)", tint: "#e1efe6" },
-  { name: "Resend", sub: "(Email)", tint: "#e0eef2" },
+  { name: "Ishaan", sub: "(The creator)", tint: "#e8ecf8" },
+  { name: "Sunday Timer", sub: "(Vercel Cron)", tint: "#eee9f6" },
+  { name: "Our app", sub: "(Website on Vercel)", tint: "#f1eed4" },
+  { name: "YouTube", sub: "(Live video data)", tint: "#f6e7e3" },
+  { name: "Gemini AI", sub: "(Understands and writes)", tint: "#f4e4ee" },
+  { name: "Database", sub: "(Supabase notebook)", tint: "#e1efe6" },
+  { name: "Email", sub: "(Resend)", tint: "#e0eef2" },
 ];
 
 const TYPES = {
@@ -38,31 +38,31 @@ const place = (id, lane, col) => (B[id] = { cx: COL_X[col], cy: laneC(lane) });
 
 // ---- every box: id, lane, column, type, step number, title, three detail lines
 const BOXES = [
-  ["I1", 0, 0, "people", "A", "Taps Generate now", ["or just waits for Sunday", "4 tries an hour", "progress bar shows each step"]],
-  ["I2", 0, 1, "people", 1, "Sets his niche", ["8 keywords · region India", "email · minimum views", "checked before it is saved"]],
-  ["I3", 0, 3, "people", 13, "Reads the brief", ["email on Sunday, or dashboard", "3-line headline · 3 signals", "ranked theme list · optional map"]],
-  ["I4", 0, 4, "people", 14, "Picks a theme to plan", ["one theme in focus at a time", "why it works · example videos", "views · age · length · likes"]],
-  ["I5", 0, 5, "shape", 15, "Makes the video", ["asks for a draft script", "edits it (auto-saves) · copies", "designs the cover → PNG"]],
+  ["I1", 0, 0, "people", "A", "Taps Generate now", ["or just waits for Sunday", "at most 4 times an hour", "progress shown step by step"]],
+  ["I2", 0, 1, "people", 1, "Sets his niche", ["topics · country · email", "minimum views · ₹ per 1,000 views", "checked before it is saved"]],
+  ["I3", 0, 3, "people", 13, "Reads the brief", ["email on Sunday, or dashboard", "3 headlines · 3 signals", "themes with expected ₹ income"]],
+  ["I4", 0, 4, "people", 14, "Picks a theme", ["one theme at a time", "why it works · example videos", "expected views and income"]],
+  ["I5", 0, 5, "shape", 15, "Makes the video", ["edits the script (auto-saves)", "then designs the cover", "downloads or copies it"]],
 
-  ["V1", 1, 0, "service", 2, "Wakes up on Sunday", ["4:30 AM IST (Sat 23:00 UTC)", "proves itself with a secret key", "ignores a repeat delivery"]],
+  ["V1", 1, 0, "service", 2, "Wakes up on Sunday", ["4:30 AM India time", "proves it is allowed (secret key)", "ignores a double alarm"]],
 
-  ["A1", 2, 1, "code", 3, "Checks the request", ["secret key · 4 runs per hour", "right run, right stage only", "bad input turned away (Zod)"]],
-  ["A2", 2, 2, "code", 4, "Plans the search", ["reads his niche and today's cache", "matching chart + up to 10 searches", "equal share each · quota guard"]],
-  ["A3", 2, 3, "code", 6, "Measures every video", ["views per hour · engagement", "length · creators counted", "Shorts and old videos dropped"]],
-  ["A4", 2, 4, "code", 8, "Groups by topic", ["clusters the meaning numbers", "a trend needs 3+ creators", "one channel can't fake it"]],
-  ["A5", 2, 5, "code", 10, "Builds the brief", ["adds the real numbers back", "checks every video link", "scores momentum · competition"]],
+  ["A1", 2, 1, "code", 3, "Checks the request", ["secret key · 4 runs an hour", "right order, right step only", "bad input is turned away"]],
+  ["A2", 2, 2, "code", 4, "Plans the search", ["reads his niche + today's saved data", "popular videos + up to 10 searches", "stays inside the free limit"]],
+  ["A3", 2, 3, "code", 6, "Measures every video", ["views per hour · likes ratio", "length · how many creators", "drops Shorts and old videos"]],
+  ["A4", 2, 4, "code", 8, "Groups by topic", ["puts similar videos together", "a trend needs 3+ creators", "one channel can't fake a trend"]],
+  ["A5", 2, 5, "code", 10, "Builds the brief", ["adds the real numbers back", "checks every video link", "works out views and income"]],
 
-  ["Y1", 3, 2, "service", 5, "Supplies live videos", ["search · most popular · details", "about 800 of 10,000 free units", "gives up after 20 seconds"]],
+  ["Y1", 3, 2, "service", 5, "Supplies live videos", ["search · popular · details", "uses about 800 of 10,000 free units", "gives up after 20 seconds"]],
 
-  ["G1", 4, 3, "ai", 7, "Turns titles into numbers", ["Gemini embeddings (768 numbers)", "titles + tags become a map", "waits and retries if busy"]],
-  ["G2", 4, 4, "ai", 9, "Writes the brief", ["names · why now · film angle", "urgency · cover text · on-topic?", "answer checked, retried once"]],
-  ["G3", 4, 5, "ai", null, "Drafts the script", ["hook · sections · [SHOW] notes", "[VERIFY] marks, no made-up facts", "English or Hinglish · 40 a day"]],
+  ["G1", 4, 3, "ai", 7, "Understands the titles", ["turns each title into meaning", "so similar topics sit together", "waits and retries if busy"]],
+  ["G2", 4, 4, "ai", 9, "Writes the brief", ["theme names · why now", "what to film · how urgent", "answer checked, retried once"]],
+  ["G3", 4, 5, "ai", null, "Drafts the script", ["hook · sections · visual notes", "marks facts to double-check", "English or Hinglish · 40 a day"]],
 
-  ["S1", 5, 1, "stored", null, "Remembers his niche", ["keywords · region · email", "minimum views", "the settings page reads it back"]],
-  ["S2", 5, 3, "stored", null, "Keeps today's videos", ["stats + meaning numbers", "same day + same niche = no refetch", "tidied up after 30 days"]],
+  ["S1", 5, 1, "stored", null, "Remembers his niche", ["topics · country · email", "minimum views · ₹ per 1,000", "the settings page shows it back"]],
+  ["S2", 5, 3, "stored", null, "Keeps today's videos", ["stats and meanings saved", "same day + same niche = no refetch", "cleared after 30 days"]],
   ["S3", 5, 5, "stored", 11, "Saves every brief", ["archive of past weeks", "run log · scripts you edited", "dashboard reads from here"]],
 
-  ["R1", 6, 5, "service", 12, "Emails the brief", ["same layout as the dashboard", "last good copy if a run fails", "free sender → his own inbox"]],
+  ["R1", 6, 5, "service", 12, "Emails the brief", ["same layout as the dashboard", "last good copy if a run fails", "sent to his own inbox"]],
 ];
 BOXES.forEach(([id, lane, col]) => place(id, lane, col));
 
@@ -104,7 +104,7 @@ add(`<defs><marker id="ah" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="1
 add(`<rect width="${W}" height="${H}" fill="#eceff8"/>`);
 
 add(`<text x="${W / 2}" y="58" font-size="40" font-weight="800" fill="${INK}" text-anchor="middle">YouTube Trend Radar — Components Map</text>`);
-add(`<text x="${W / 2}" y="94" font-size="19" fill="${MUTED}" text-anchor="middle">One Sunday run → live YouTube data → code measures and groups it → AI writes the brief → saved and emailed → Ishaan films the right video</text>`);
+add(`<text x="${W / 2}" y="94" font-size="19" fill="${MUTED}" text-anchor="middle">Every Sunday: get live YouTube videos → measure and group them → AI writes the brief → save it and email it → Ishaan plans the right video</text>`);
 
 add(`<path d="M12 128 a18 18 0 0 1 18 -18 H1970 a18 18 0 0 1 18 18 V156 H12 Z" fill="${BROWN}"/>`);
 add(`<text x="134" y="140" font-size="18" font-weight="800" fill="#fff" text-anchor="middle">Actor</text>`);
@@ -162,8 +162,8 @@ arrow([edge.right("G3", -14), [1952, L(4) - 14], [1952, L(0) - 14], edge.right("
 {
   const x = 1085, y = L(1) - 34, w = 496, h = 68;
   add(`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="${TYPES.service.fill}" stroke="${TYPES.service.stroke}" stroke-width="2.4" stroke-dasharray="6 5"/>`);
-  add(`<text x="${x + w / 2}" y="${y + 26}" font-size="16.5" font-weight="800" fill="${INK}" text-anchor="middle">Side job: pings every morning</text>`);
-  add(`<text x="${x + w / 2}" y="${y + 47}" font-size="12" fill="${MUTED}" text-anchor="middle">06:00 UTC health check keeps the free database awake (it sleeps after 7 idle days)</text>`);
+  add(`<text x="${x + w / 2}" y="${y + 26}" font-size="16.5" font-weight="800" fill="${INK}" text-anchor="middle">Side job: a daily wake-up call</text>`);
+  add(`<text x="${x + w / 2}" y="${y + 47}" font-size="12" fill="${MUTED}" text-anchor="middle">A quick check every morning keeps the free database awake (it sleeps after 7 idle days)</text>`);
 }
 
 BOXES.forEach(drawBox);
@@ -174,8 +174,8 @@ add(`<text x="${W / 2}" y="1058" font-size="16" font-style="italic" fill="${MUTE
 
 // ---- legend and footer
 const legend = [
-  ["Code does the rules", "code"], ["AI does the reasoning", "ai"], ["People decide", "people"],
-  ["People shape it", "shape"], ["Connected services", "service"], ["Every step is stored", "stored"],
+  ["Plain code (the rules)", "code"], ["AI (understands and writes)", "ai"], ["People decide", "people"],
+  ["People shape it", "shape"], ["Outside services", "service"], ["Saved in the database", "stored"],
 ];
 const lw = legend.map((l) => l[0].length * 8.6 + 40);
 const total = lw.reduce((a, b) => a + b, 0) + (legend.length - 1) * 16;
@@ -186,8 +186,8 @@ legend.forEach(([t, k], i) => {
   add(`<text x="${lx + lw[i] / 2}" y="1100" font-size="16" font-weight="600" fill="${INK}" text-anchor="middle">${esc(t)}</text>`);
   lx += lw[i] + 16;
 });
-add(`<text x="${W / 2}" y="1140" font-size="14" fill="${MUTED}" text-anchor="middle">Stack: Next.js on Vercel · Supabase (Postgres) · Gemini Flash + embeddings · YouTube Data API · Resend · Vercel Cron · all free tiers</text>`);
-add(`<text x="${W / 2}" y="1160" font-size="14" fill="${MUTED}" text-anchor="middle">Safety net: every input and AI answer is checked (Zod) · last good brief if a run fails · 369 automated tests · CI on every push · 66-point live smoke test</text>`);
+add(`<text x="${W / 2}" y="1140" font-size="14" fill="${MUTED}" text-anchor="middle">Built with: Vercel (hosting + timer) · Supabase (database) · Gemini Flash (AI) · YouTube Data API (videos) · Resend (email) · all free plans</text>`);
+add(`<text x="${W / 2}" y="1160" font-size="14" fill="${MUTED}" text-anchor="middle">Safety: every input and AI answer is checked · the last good brief is kept if a run fails · 369 automatic tests · tested on every code change · 70-point check on the live site</text>`);
 add("</svg>");
 
 const out = nodePath.join(__dirname, "components-map.svg");
