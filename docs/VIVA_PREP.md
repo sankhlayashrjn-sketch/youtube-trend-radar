@@ -1,91 +1,171 @@
 # Viva prep (15 Oct, 2:00-8:00 PM): 40% of your total
 
-Answer in this order: **what it does, how it works, why I chose it, what I'd improve.** Keep answers under 45 seconds. Use the numbers below.
+Answer in this order: **what it does, how it works, why I chose it, what I'd improve.** Keep answers under 45 seconds. When unsure, say what the code does, not what you hope it does. Honest limits score better than bluffing.
 
 ## 30-second pitch
 
-"Ishaan makes 3 videos a week and doesn't want a list of trending videos; he wants patterns. Every Sunday before noon, my app fetches live YouTube data for his categories, computes metrics in code, groups videos by topic with Gemini embeddings and k-means, keeps only topics that at least three different creators are covering, and has Gemini Flash write the explanation and filming advice. It saves the brief and emails it. It's free-tier end to end."
+"Ishaan makes 3 videos a week and doesn't want a list of trending videos; he wants patterns. Every Sunday morning my app fetches live YouTube data for his topics, measures every video in code, groups them by topic using Gemini, keeps only topics that at least three different creators are covering, and has Gemini Flash write the explanation and filming advice. For each theme it also estimates the views and the rough rupee income, so he can pick what to film by money, then plan the video: script first, then cover. It saves the brief and emails it. It's free-tier end to end."
 
 ## Numbers to know
 
 | Fact | Value |
 |---|---|
-| AI provider | Gemini Flash only (`gemini-3.8-flash`), embeddings `gemini-embedding-001` (768 dims). No Claude/Anthropic. |
+| AI provider | Gemini Flash only (`gemini-3.8-flash`), embeddings `gemini-embedding-001` (768 numbers per title). No Claude/Anthropic. |
 | Schedule | `0 23 * * 6` = Sat 23:00 UTC = Sun 04:30 IST (Hobby cron can fire anywhere in that hour) |
-| YouTube quota | 10,000 units/day free; search = 100, videos.list = 1; a run is about 800 units (8 searches) |
+| YouTube quota | 10,000 units/day free; a search costs 100, a details call costs 1; one run is about 800 units |
 | Search cap | max 10 searches per run, split evenly across keywords |
-| Videos per run | 50 to 100 target, Shorts (60s or less) and videos older than 14 days dropped |
-| Clustering | k = 3 to 6, a cluster needs 3+ distinct creators |
+| Videos per run | 50 to 100 target; Shorts (60s or less) and videos older than 14 days dropped |
+| Grouping | 3 to 6 groups, a group needs 3+ different creators |
 | Themes in brief | 3 to 5 |
 | Manual limits | 4 runs/hour, 40 scripts/day |
-| Tests | 369 automated tests, 66 smoke checks on the live site, GitHub Actions CI |
-| Stack | Next.js 16 App Router, Tailwind, shadcn/ui, Drizzle + postgres-js, Supabase (DB only), Zod, Recharts, Resend |
+| Expected income | expected views / 1,000 x earnings per 1,000 views (default ₹80, editable in Settings) |
+| Tests | 369 automated tests, 70 live smoke checks, GitHub Actions on every push |
+| Stack | Next.js 16, Tailwind, shadcn/ui, Drizzle + postgres-js, Supabase (database only), Zod, Recharts, Resend, Vercel |
 
-## Likely questions and answers
+## The user journey in one breath
 
-**1. Walk me through the pipeline.**
-Fetch (mostPopular for matching YouTube categories plus capped keyword searches, then batched videos.list) → metrics in code (views per hour, engagement, duration, unique creators) → embeddings of title and tags → k-means → drop clusters with fewer than 3 creators → Gemini Flash writes JSON → Zod validates → code merges real numbers and verifies URLs → save → email. Each stage saves its result, so a timeout never loses work.
+Settings (topics, country, email, minimum views, ₹ per 1,000 views) → Sunday timer or "Generate now" → live YouTube videos → measured in code → grouped by topic → AI writes the brief → saved and emailed → dashboard: **1 Read the week, 2 Choose a theme, 3 Plan the video** (Why it works, Examples, Script, Cover).
 
-**2. Why k-means and embeddings instead of keyword matching or asking the AI to group?**
-Titles that mean the same thing use different words ("free AI stack" vs "stop paying for apps"). Embeddings capture meaning. k-means is simple, deterministic (seeded), cheap in code, and I can test it. Asking an LLM to group 100 videos is slower, costs quota, and isn't reproducible.
+## Part A: Product and design questions
 
-**3. How do you choose k?**
-I try k = 3 to 6, keep the k that leaves the most clusters passing the 3-creator rule (capped at 5), and break ties with the silhouette score.
+**1. Who is this for and what problem does it solve?**
+A tech creator in India posting 3 videos a week. Scrolling YouTube to guess what to film wastes hours and is biased by his own feed. The app reads the whole niche for him and says what is rising, how crowded it is, what to film, and roughly what it could earn.
 
-**4. What is the "multi-creator rule" and why?**
-A trend means several creators independently covering something. One creator posting 10 videos on a topic is a series, not a trend. Clusters with fewer than 3 distinct channels are dropped.
+**2. Why "patterns" and not a list of trending videos?**
+A list tells you what already blew up; a pattern (several different creators covering the same idea) tells you what the audience wants now. The brief shows 3 to 5 themes, never a raw video list. Example videos are evidence under each theme.
 
-**5. How do you stop the AI from inventing stats or links?**
-Gemini only writes prose. The numbers (creators, views, velocity, length) are computed in code and merged in afterwards. Example videos come from the fetched set, URLs are rebuilt from the verified video ID, and `verifyExamples` rejects anything not in the fetched data. The output is Zod-validated; if invalid I retry once with the error message, then fall back to the last brief.
+**3. Why did you restructure the dashboard into three steps?**
+The first version showed everything at once (headline, chart, filters, long cards) and the user said it was confusing: no flow, unclear next step. Now each step has one job and a Next button: read the week, choose a theme, plan the video. One theme is in focus at a time, and tabs are built only when opened, so edits are never lost.
 
-**6. What happens if YouTube or Gemini fails?**
-The run is marked failed with a sanitized error, and the dashboard keeps showing the last saved brief with a "stale" banner. The Sunday cron also emails the last brief marked stale. Gemini 429s and 503s retry with exponential backoff.
+**4. Why is the Script before the Cover?**
+The script decides what the video says; the cover should promise exactly that. Requested by the user and it matches how a creator works.
 
-**7. How do you protect the YouTube quota?**
-Daily cache (same settings and day means no refetch), a per-run budget guard, a 24-hour usage guard, a hard cap of 10 searches, and a rate limit on manual runs. The cache key includes a pipeline version so old data from older logic is never reused.
+**5. How does the app help me pick between themes?**
+Each theme row shows creators, total views, views per hour, urgency (Film now / Soon / Skip), plus **expected views and rough income**. The list can be sorted by rough income. The "Best bet" signal points at the strongest theme and is pre-selected.
 
-**8. Why is the cron at 23:00 UTC on Saturday?**
-That is 04:30 IST on Sunday, safely before noon. Vercel Hobby crons run at most once a day, in UTC, and may fire anywhere within the scheduled hour, so I leave a big margin. The cron route requires `Authorization: Bearer CRON_SECRET`, compared with `timingSafeEqual`.
+**6. What do the numbers like "19 creators" mean, and is that good?**
+Each number is compared with the average of that week's themes and labelled Good, Average or Weak (within 20% of the average is Average). Fewer creators is good (less competition); more views and faster views are good. The comparison is only against this week's other themes. I have no outside benchmark data, and I say so.
 
-**9. Why split generation into stages (fetch, cluster, brief)?**
-Serverless functions have time limits and the dashboard needs a progress indicator (Fetching → Clustering → Writing brief). Each stage persists to the database, so it can be retried without losing work. The cron route runs all three in one call with `maxDuration = 300`.
+**7. How do you estimate expected views?**
+In code, no AI. I take the views of the example videos in that theme: the middle value is the expected figure and the lower and upper quarter give the range. Then I adjust for urgency (Film now x1.15, Soon x1, Skip x0.8) and crowding (low x1.1, medium x1, high x0.85). The best case is capped at 3x the expected figure so one viral video cannot inflate it.
 
-**10. Why Supabase only as a database, and why `prepare: false`?**
-The brief says no Supabase Auth/Storage/client. I use the transaction pooler (port 6543), which doesn't support prepared statements, so postgres-js is configured with `prepare: false`. Drizzle gives typed queries and migrations.
+**8. How do you get income in rupees? Is it accurate?**
+Income = expected views / 1,000 x earnings per 1,000 views. The default is ₹80, a typical figure for Indian tech channels, and the creator sets their real figure in Settings (from YouTube Studio). It's ad income only, before sponsorships, for regular videos not Shorts, and it assumes a typical-size channel. It is an estimate for comparing themes, not a promise, and I have not validated it against real channel results. That is the honest limit.
 
-**11. Why store embeddings as JSON instead of pgvector?**
-I cluster in application code, not in SQL, and each run only has about 100 vectors. pgvector would add a dependency and migration with no benefit here. If I did similarity search across history, I'd add pgvector.
+**9. Why doesn't the estimate use the script?**
+Nothing in a script's wording predicts views in a way I can measure honestly. A number built on it would be made up. The estimate rests on what similar videos actually achieved. Future work: learn from the creator's own past videos.
 
-**12. How are the signals (momentum, competition, opportunity) calculated?**
-Computed in code, relative to the other themes in the same brief: momentum from views per hour, competition from creator count, engagement from (likes+comments)/views. The score is no longer shown to the user; it only picks the "Best bet" signal. Opportunity = 50% momentum + 35% (100 − competition) + 15% engagement. They're my own weights, easy to change and unit-tested. Gemini decides urgency and saturation from the same facts, so I'd say that part is AI judgement.
+**10. Why did you remove the "Opportunity" score and the four score bars?**
+The user found them unhelpful: a 0-100 score compared only with this week's other themes means little on its own. They are replaced by concrete things: expected views, rupee income and good/average/weak labels. The score is still used inside the code to pick "Best bet" but is never shown as a number.
 
-**13. How do you rank the top themes?**
-Surviving clusters are sorted by total views × number of creators and the top 5 are kept. Weakness: it favours big mainstream topics (festival sales) over small fast-rising ones. The improvement is a momentum-based ranking.
+**11. Tell me about the cover maker.**
+A free thumbnail studio that runs in the browser. Four templates (Classic, Centred, Big number, Versus for "A vs B"), headline ideas from what is trending, three fonts, outline or boxed highlight, background patterns, a badge, an arrow or circle, your own photo (full, fit, side, or a framed tilted photo with zoom), drag to move anything, a phone-size preview, a timestamp safe zone, copy or download as a 1280x720 PNG. Your photo never leaves the browser.
 
-**14. Are you covering Indian creators or global?**
-Both. Every call uses `regionCode=IN`, which means "viewable in India", not "creator is from India". I observed Indian channels (Technical Dost, Tech Burner) and international ones (MKBHD), plus some unwanted languages. Next step: tag creators by country and language.
+**12. Why no AI-generated cover images or background removal?**
+Gemini image models have no free tier and the brief requires free tier. In-browser background removal needs a very large model (tens of MB) or a paid service. I chose layout tools that are free and private. Both are possible additions if billing is enabled.
 
-**15. How did you test it? What bugs did you find?**
-369 tests (unit, edge cases, regression, component) plus CI on every push plus a read-only smoke test on the live URL, a responsive audit at 5 widths and an accessibility audit. Bugs it found: unsupported regions were accepted, a blank env var overrode defaults, a missing theme index meant theme 0, the script editor vanished when emptied, unknown archive pages returned 200 instead of 404, and an overflow on small phones. Earlier, a manual run showed an early result cap starving later keywords, which is now a regression test.
+**13. How do you know the cover rules are good?**
+They come from what performs on tech channels: very few words (2 to 4), one highlighted word, high contrast, clear bottom-right corner for the timestamp. The maker shows live checks (word count, length, contrast) and a phone preview so the creator can judge at small size. I did not A/B test these on real viewers.
 
-**16. Security?**
-Secrets only in env vars, validated by Zod at first use, never logged; error messages list variable names, not values. Cron route is secret-protected and fails closed. All untrusted text in email is HTML-escaped. External links use `rel="noopener"`. SQL is parameterized (Drizzle). Public routes that call paid or limited APIs are rate limited. **Weakness:** no login, so anyone with the URL can change settings.
+**14. Why no login?**
+The brief didn't require it and it's a single-user tool. It is a real weakness: anyone with the URL can change settings. Next step would be a simple password or sign-in.
 
-**17. Why no AI-generated cover images?**
-Gemini's image models have no free tier (about $0.04-0.07 per image) and the brief requires free tier. I built a free in-browser thumbnail maker instead (editable text, emoji, colour, PNG export). Enabling billing would allow AI art as an opt-in.
+## Part B: How it works (pipeline)
 
-**18. What would you improve with more time?**
-Login; competitor-channel tracking; week-over-week trend history; creator country and language tagging; a content calendar; moving ranking to a momentum score; and an end-to-end browser test suite (Playwright) in CI.
+**15. Walk me through the pipeline.**
+Fetch (popular videos for matching YouTube categories plus capped keyword searches, then batched details) → measure in code (views per hour, likes ratio, length, creators) → turn titles into numbers with Gemini embeddings → group them (k-means) → drop groups with fewer than 3 creators → Gemini Flash writes JSON → Zod checks it → code adds the real numbers back and verifies every link → save → email. Each stage saves its result, so a timeout never loses work.
 
-**19. What are the known limitations?**
-Resend's free sender can only email the account owner; keyword search is loose, so a few example videos are only weakly on-topic; Gemini free tier has per-minute limits; velocity (views per hour) favours very new uploads; the app is single-user with no login.
+**16. Why embeddings and k-means instead of keywords or asking the AI to group?**
+Titles that mean the same use different words ("free AI stack" vs "stop paying for apps"). Embeddings capture meaning. k-means is simple, repeatable (seeded), cheap and testable. Asking an LLM to group 100 videos is slower, uses quota and gives different answers each run.
 
-**20. A tricky one: "Why did you pick these numbers (3 creators, 14 days, 60 seconds)?"**
-They're defensible defaults, documented in DECISIONS.md. 3 creators is the smallest number that rules out one creator's series; 14 days keeps it recent; 60 seconds removes Shorts so length stats reflect long-form videos. All are single constants and easy to change.
+**17. How do you choose the number of groups?**
+I try 3 to 6, keep the one that leaves the most groups passing the 3-creator rule (capped at 5), and break ties with the silhouette score.
+
+**18. What is the multi-creator rule?**
+A trend means several creators independently covering something. One creator posting 10 videos is a series, not a trend. Groups with fewer than 3 distinct channels are dropped.
+
+**19. How do you stop the AI inventing stats or links?**
+Gemini only writes the words. All numbers are computed in code and merged in afterwards. Example videos come from the fetched set, URLs are rebuilt from the verified video ID, and `verifyExamples` rejects anything not in the data. The output is Zod-validated; if invalid I retry once with the error, then fall back to the last brief. There is also an on-topic flag so off-niche themes are dropped.
+
+**20. What if YouTube or Gemini fails?**
+The run is marked failed with a safe error message and the dashboard keeps showing the last saved brief with a "stale" banner. The cron emails the last brief marked stale. Gemini 429 and 503 errors retry with exponential backoff, with timeouts of 20 seconds for YouTube and 60 to 90 for Gemini.
+
+**21. How do you protect the YouTube quota?**
+Daily cache (same settings and day = no refetch), a per-run budget guard, a hard cap of 10 searches, and a rate limit on manual runs. The cache key includes a pipeline version so old data from older logic is never reused.
+
+**22. Why is the cron at 23:00 UTC Saturday?**
+That is 04:30 IST Sunday, safely before noon. Vercel Hobby crons run once a day in UTC and may fire anywhere in that hour, so I leave a margin. The route requires `Authorization: Bearer CRON_SECRET`, compared with `timingSafeEqual`, and ignores a duplicate delivery.
+
+**23. Why split into stages?**
+Serverless functions have time limits and the dashboard needs a progress indicator. Each stage persists to the database so it can be retried. The cron runs all three in one call with `maxDuration = 300`. A run-state guard (HTTP 409) stops anyone replaying a stage on a run that isn't in the right state.
+
+**24. Why Supabase only as a database, and what is `prepare: false`?**
+The brief says no Supabase Auth, Storage or client. I use the transaction pooler (port 6543), which doesn't support prepared statements, so postgres-js is set to `prepare: false`. Drizzle gives typed queries and migrations. I added one migration for the earnings setting this week.
+
+**25. Why store embeddings as JSON, not pgvector?**
+I group in application code, not SQL, and a run has about 100 vectors. pgvector adds setup with no benefit here. I'd add it for similarity search across weeks.
+
+**26. How do you rank themes?**
+Surviving groups are sorted by total views x creators and the top 5 kept. Weakness: it favours big mainstream topics over small fast-rising ones. Improvement: rank by momentum.
+
+**27. Are you covering Indian or global creators?**
+Both. Every call uses `regionCode=IN`, meaning "viewable in India", not "creator is from India". I saw Indian channels (Technical Dost, Tech Burner) and international ones (MKBHD). Next step: tag creators by country and language.
+
+**28. How are the signals computed?**
+In code, relative to the other themes in the same brief: momentum from views per hour, competition from creator count, engagement from (likes+comments)/views. "Best bet" = highest of 50% momentum + 35% low competition + 15% engagement. They are my own weights, easy to change and unit-tested. Gemini decides urgency and saturation from the same facts, so that part is AI judgement.
+
+## Part C: Build quality, testing, security
+
+**29. How did you test it?**
+369 automated tests (units, edge cases, regressions, components) run in GitHub Actions on every push; a read-only 70-check smoke test against the live URL; a responsive check at 5 screen widths; keyboard and screen-reader labels checked. This session's additions each came with tests (forecast maths, benchmarks, cover studio, the settings field).
+
+**30. What bugs did testing find?**
+Unsupported regions were accepted; a blank env var overrode defaults; a missing theme index meant theme 0; the script editor vanished when emptied; unknown archive pages returned 200 instead of 404; overflow on small phones; a "search budget" bug where early keywords used up the cap so later ones were never searched; typing a script then switching away lost the last words (now saved on exit); and the opportunity-map tooltip jumped because bubbles animated under the cursor.
+
+**31. Security?**
+Secrets only in env vars, validated at first use, never logged. The cron route is secret-protected and fails closed. All untrusted text in the email is HTML-escaped. External links use `rel="noopener"`. SQL is parameterised (Drizzle). Public routes that call limited APIs are rate limited. Security headers are set. **Weakness:** no login and no strict content policy.
+
+**32. Did you expose any keys?**
+The keys were pasted into chat during the build, so I recommend rotating them after the exam. They are in `.env.local` (git-ignored) and Vercel's env settings, never in the repo or the browser bundle (the smoke test checks the bundles).
+
+**33. What is the hardest decision you made?**
+Keeping numbers in code and using AI only for words. It makes the output trustworthy and testable, at the cost of some richness. The second is not using AI to forecast views: I'd rather show a simple, explainable estimate with its limits.
+
+**34. How does deployment work?**
+Push to GitHub, CI runs lint, typecheck, tests and a secret-free build, and Vercel serves the app. I deploy with the Vercel CLI; the occasional "error" status on deploy is transient and a retry succeeds.
+
+## Part D: Honesty and improvement
+
+**35. What are the known limitations?**
+Resend's free sender only emails the account owner and may land in spam; keyword search is loose so a few examples are weakly on-topic; Gemini free tier has per-minute limits; views per hour favours very new uploads; single user, no login; income and views are estimates not validated against real results.
+
+**36. What would you improve with more time?**
+Login; learn the creator's own channel size and past results to make the estimate personal; competitor-channel tracking; week-over-week trend history; creator country and language tags; background removal for covers; an end-to-end browser test suite in CI.
+
+**37. Why did you pick 3 creators, 14 days, 60 seconds?**
+Defensible defaults documented in DECISIONS.md. 3 creators is the smallest number that rules out one creator's series; 14 days keeps it recent; 60 seconds removes Shorts so length stats reflect long-form. Each is a single constant, easy to change.
+
+**38. What did the AI do and what did you do?**
+Gemini Flash does the language work in the app: writing theme names, why-now, filming angle, scripts, and the meaning numbers for grouping. Everything else (measuring, grouping, rules, estimates, checks) is code I can explain line by line. A design assistant helped write the code; every decision is recorded in DECISIONS.md and I can defend each.
+
+**39. If I changed Ishaan to a fashion creator, what happens?**
+Change the topics in Settings. The cache key and a "settings changed" notice stop the old niche's brief being shown as current, then "Generate now" builds a new one. I fixed a real bug here: old tech videos leaked into a fashion brief until I added the pipeline version to the cache key and an on-topic check.
+
+**40. How does the Components Map map to the code?**
+Seven rows: Ishaan (settings, reads, picks, makes the video), Sunday Timer (cron route), Our app (check, plan, measure, group, build), YouTube (video data), Gemini AI (meaning numbers, brief, script), Database (settings, cache, briefs), Email (Resend). Follow numbers 1 to 15 left to right.
+
+## Quick answers if you blank
+
+- **Is it AI?** AI writes; code measures and checks.
+- **Is it live data?** Yes, YouTube Data API v3 on every run; a cache only reuses data from the same day.
+- **Is it free?** Yes: Vercel Hobby, Supabase free, Gemini free tier, Resend free, YouTube free quota.
+- **What if it breaks?** The last good brief stays on screen, marked stale.
+- **What is the weakness?** No login, and the income estimate is a guide, not a guarantee.
 
 ## Live-demo safety in the viva
 
-- Have the live URL, GitHub repo, DECISIONS.md and `docs/components-map.png` open.
-- If asked to run something live, prefer **Settings, Archive, Draft script and the cover maker**; they don't use YouTube quota.
+- Have the live URL, the GitHub repo, DECISIONS.md and `docs/components-map.png` open.
+- Prefer demoing **Settings, Archive, a drafted script and the cover studio**; they don't use YouTube quota.
 - If asked to click Generate: it uses about 800 of 10,000 daily units and is limited to 4 per hour. Say that before clicking.
 - If something fails: say what you'd check first (Vercel logs, the `runs` table error column, `/api/health`).
+- If an email seems missing: check Spam; it is sent from Resend's shared test address.
